@@ -91,8 +91,8 @@ import Pickers from './components/Forms/Pickers/Pickers'
 import FormValidation from './components/Forms/FormValidation/FormValidation'
 
 /// Pages
-import Registration from './pages/Registration'
-import Login from './pages/Login'
+import Registration from '../modules/auth/Registration.jsx'
+import Login from '../modules/auth/Login.jsx'
 import LockScreen from './pages/LockScreen'
 import Error400 from './pages/Error400'
 import Error403 from './pages/Error403'
