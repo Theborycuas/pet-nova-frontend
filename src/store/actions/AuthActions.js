@@ -17,7 +17,7 @@ export const LOADING_TOGGLE_ACTION = '[Loading action] toggle loading';
 export const LOGOUT_ACTION = '[Logout action] logout action';
 export const NAVTOGGLE = 'NAVTOGGLE';
 
-
+export const CLEAR_AUTH_ERROR_ACTION = 'CLEAR_AUTH_ERROR';
 
 export function signupAction(email, password, navigate) {
 	
@@ -50,6 +50,8 @@ export function Logout(navigate) {
 
 export function loginAction(credentials, navigate) {
     return (dispatch) => {
+
+        dispatch(clearAuthErrorAction());
         userLogin(credentials.username, credentials.password)
             .then((response) => { 
                 saveTokenInLocalStorage(response.data);
@@ -61,9 +63,14 @@ export function loginAction(credentials, navigate) {
                dispatch(loginConfirmedAction(response.data));			               
 				navigate('/dashboard');                
             })
-            .catch((error) => {				
-                const errorMessage = formatError(error.response.data);
+            .catch((error) => {
+                // Manejar el error y detener el loading
+                const errorMessage = error.message || "Error en el login"; // Usa el mensaje del backend o uno por defecto
                 dispatch(loginFailedAction(errorMessage));
+            })
+            .finally(() => {
+                // Siempre detener el loading, tanto en éxito como en error
+                dispatch(loadingToggleAction(false)); // <-- Esto detiene el spinner en cualquier caso
             });
     };
 }
@@ -108,3 +115,7 @@ export const navtoggle = () => {
       type: 'NAVTOGGLE',
     };
 };
+
+export const clearAuthErrorAction = () => ({
+    type: CLEAR_AUTH_ERROR_ACTION
+});

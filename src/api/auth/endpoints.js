@@ -1,4 +1,5 @@
 import axios from "axios";
+import {loadingToggleAction} from "../../store/actions/AuthActions.js";
 
 const authAPI = axios.create({
     baseURL: 'http://localhost:8080/apiPetNova/auth',
@@ -29,11 +30,17 @@ export const userLogin = async (username, password) => {
             expiresIn: response.data.expiresIn
         };
 
-    } catch (error){
-        if(error.response){
-            throw new Error(error.response.data.message || 'Error en el Login')
+    } catch (error) {
+        if (error.response) {
+            if (error.response.status === 403) {
+                const errorMessage = error.response.data.message || 'Usuario o contraseña incorrectos';
+                throw new Error(errorMessage);  // Mensaje personalizado del backend
+            }
+            throw new Error(error.response.data.message || 'Error en el servidor');
+        } else if (error.request) {
+            throw new Error('No hay conexión con el servidor');
         } else {
-            throw new Error('Error de conexión')
+            throw new Error('Error en la configuración de la solicitud');
         }
     }
 };

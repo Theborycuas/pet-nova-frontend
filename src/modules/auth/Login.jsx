@@ -1,12 +1,27 @@
 import React, { useState } from 'react'
 import { connect, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom'
-import { loadingToggleAction,loginAction,
+import {
+	clearAuthErrorAction, loadingToggleAction, loginAction,
 } from '../../store/actions/AuthActions.js';
 
 //
 import logo from '../../assets/images/logo.png'
 import logotext from '../../assets/images/logo-text.png'
+import PropTypes from 'prop-types';
+
+Login.propTypes = {
+	errorMessage: PropTypes.string,
+	successMessage: PropTypes.string,
+	showLoading: PropTypes.bool.isRequired,
+	dispatch: PropTypes.func.isRequired,
+	navigate: PropTypes.func.isRequired
+};
+
+Login.defaultProps = {
+	errorMessage: '',
+	successMessage: ''
+};
 
 function Login (props) {
 	const [credentials, setCredentials] = useState({
@@ -28,6 +43,11 @@ function Login (props) {
 			...prev,
 			[name]: value
 		}));
+
+		if (errors.general) {
+			setErrors(prev => ({...prev, general: ''}));
+			dispatch(clearAuthErrorAction());
+		}
 
 		// Limpiar errores al escribir
 		setErrors(prev => ({
@@ -63,9 +83,30 @@ function Login (props) {
 		e.preventDefault();
 		if (!validateForm()) return;
 
+		// Limpiar error general antes de nuevo intento
+		setErrors(prev => ({...prev, general: ''}));
+
 		dispatch(loadingToggleAction(true));
 		dispatch(loginAction(credentials, navigate));
 	};
+
+	// Efecto para manejar errores de Redux
+	React.useEffect(() => {
+		if (props.errorMessage) {
+			setErrors(prev => ({
+				...prev,
+				general: props.errorMessage
+			}));
+
+			// Opcional: limpiar el error después de 5 segundos
+			const timer = setTimeout(() => {
+				setErrors(prev => ({...prev, general: ''}));
+			}, 5000);
+
+			return () => clearTimeout(timer);
+		}
+	}, [props.errorMessage]);
+
 
 	return (
 
