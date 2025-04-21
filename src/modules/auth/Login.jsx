@@ -9,34 +9,66 @@ import logo from '../../assets/images/logo.png'
 import logotext from '../../assets/images/logo-text.png'
 
 function Login (props) {
-    const [email, setEmail] = useState('demo@example.com');
-    let errorsObj = { email: '', password: '' };
-    const [errors, setErrors] = useState(errorsObj);
-    const [password, setPassword] = useState('123456');
-    const dispatch = useDispatch();
-	const navigate = useNavigate();
-    function onLogin(e) {
-        e.preventDefault();
-        let error = false;
-        const errorObj = { ...errorsObj };
-        if (email === '') {
-            errorObj.email = 'Email is Required';
-            error = true;
-        }
-        if (password === '') {
-            errorObj.password = 'Password is Required';
-            error = true;
-        }
-        setErrors(errorObj);
-        if (error) {
-			return ;
-		}
-		dispatch(loadingToggleAction(true));	
-        dispatch(loginAction(email, password, navigate));
-    }
+	const [credentials, setCredentials] = useState({
+		username: '',
+		password: ''
+	});
 
-  return (
-  
+	const [errors, setErrors] = useState({
+		username: '',
+		password: ''
+	});
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const handleInputChange = (e) => {
+		const { name, value } = e.target;
+		setCredentials(prev => ({
+			...prev,
+			[name]: value
+		}));
+
+		// Limpiar errores al escribir
+		setErrors(prev => ({
+			...prev,
+			[name]: '',
+		}));
+	};
+
+	const validateForm = () => {
+		let isValid = true;
+		const newErrors = {
+			username: '',
+			password: ''
+		};
+
+		if (!credentials.username.trim()) {
+			newErrors.username = 'Username is required';
+			isValid = false;
+		}
+
+		if (!credentials.password) {
+			newErrors.password = 'Password is required';
+			isValid = false;
+		} else if (credentials.password.length < 6) {
+			newErrors.password = 'Password must be at least 6 characters';
+			isValid = false;
+		}
+		setErrors(newErrors);
+		return isValid;
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (!validateForm()) return;
+
+		dispatch(loadingToggleAction(true));
+		dispatch(loginAction(credentials, navigate));
+	};
+
+	return (
+
 		<div className="login-form-bx">
 			<div className="container-fluid">
 				<div className="row">
@@ -47,65 +79,89 @@ function Login (props) {
 								<img src={logotext} alt="" className="logo-text ms-1"/>
 							</Link>
 							<div className="mb-4">
-								<h3 className="mb-1 font-w600">Welcome to Eres</h3>
-								<p className="">Sign in by entering information below</p>
+								<h3 className="mb-1 font-w600">Welcome to PetNova</h3>
+								<p className="">Sign in to your veterinary account</p>
 							</div>
-							{props.errorMessage && (
-								<div className='bg-red-300 text-red-900 border border-red-900 p-1 my-2'>
-									{props.errorMessage}
+
+							{errors.general && (
+								<div className='alert alert-danger'>
+									{errors.general}
 								</div>
 							)}
-							{props.successMessage && (
-								<div className='bg-green-300 text-green-900 border border-green-900 p-1 my-2'>
-									{props.successMessage}
-								</div>
-							)}
-							<form onSubmit={onLogin}>
+
+							<form onSubmit={handleSubmit}>
 								<div className="form-group">
-									<label className="mb-2 ">
-										<strong className="">Email</strong><span className='required'>*</span>
+									<label className="mb-2">
+										<strong>Username</strong>
+										<span className='required'>*</span>
 									</label>
-									<input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)}/>
-									{errors.email && <div className="text-danger fs-12">{errors.email}</div>}
+									<input
+										type="text"
+										className={`form-control ${errors.username && 'is-invalid'}`}
+										name="username"
+										value={credentials.username}
+										onChange={handleInputChange}
+									/>
+									{errors.username &&
+										<div className="invalid-feedback">{errors.username}</div>}
 								</div>
+
 								<div className="form-group">
-									<label className="mb-2 "><strong className="">Password</strong><span className='required'>*</span></label>
-									<input type="password" className="form-control" value={password} onChange={(e) => setPassword(e.target.value)}/>
-									{errors.password && <div className="text-danger fs-12">{errors.password}</div>}
+									<label className="mb-2">
+										<strong>Password</strong>
+										<span className='required'>*</span>
+									</label>
+									<input
+										type="password"
+										className={`form-control ${errors.password && 'is-invalid'}`}
+										name="password"
+										value={credentials.password}
+										onChange={handleInputChange}
+									/>
+									{errors.password &&
+										<div className="invalid-feedback">{errors.password}</div>}
 								</div>
-								<div className="form-row d-flex justify-content-between mt-4 mb-2">
-									<div className="form-group">
-										<div className="custom-control custom-checkbox ms-1 ">
-											<input type="checkbox" className="form-check-input" id="basic_checkbox_1"/>
-											<label className="form-check-label" htmlFor="basic_checkbox_1">Remember my preference</label>
-										</div>
-									</div>
-								</div>
-								<div className="text-center">
-									<button type="submit" className="btn btn-primary btn-block">Sign In</button>
+
+								<div className="text-center mt-4">
+									<button
+										type="submit"
+										className="btn btn-primary btn-block"
+										disabled={props.showLoading}
+									>
+										{props.showLoading ? (
+											<span>
+                                                <span className="spinner-border spinner-border-sm me-2"
+													  role="status" aria-hidden="true"></span>
+                                                Signing In...
+                                            </span>
+										) : 'Sign In'}
+									</button>
 								</div>
 							</form>
-							<div className="new-account mt-2">
-								<p className="mb-0">Don't have an account?{" "}
-									<Link className="text-primary" to="/page-register">Sign up</Link>
+
+							<div className="new-account mt-3 text-center">
+								<p className="mb-0">
+									Don't have an account?{" "}
+									<Link className="text-primary" to="/page-register">
+										Sign up
+									</Link>
 								</p>
 							</div>
 						</div>
 					</div>
-					<div className="col-lg-6 col-md-5 d-flex box-skew1">						
-					</div>
+					<div className="col-lg-6 col-md-5 d-flex box-skew1"></div>
 				</div>
 			</div>
 		</div>
-		
-    )
+
+	)
 }
 
 const mapStateToProps = (state) => {
-    return {
-        errorMessage: state.auth.errorMessage,
-        successMessage: state.auth.successMessage,
-        showLoading: state.auth.showLoading,
-    };
+	return {
+		errorMessage: state.auth.errorMessage,
+		successMessage: state.auth.successMessage,
+		showLoading: state.auth.showLoading,
+	};
 };
 export default connect(mapStateToProps)(Login);

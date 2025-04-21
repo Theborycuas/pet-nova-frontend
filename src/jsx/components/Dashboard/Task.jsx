@@ -4,15 +4,15 @@ import {Dropdown, Modal} from 'react-bootstrap';
 import swal from "sweetalert";
 import {nanoid} from 'nanoid';
 //Images
-import card1 from './../../../assets/images/task/img1.jpg';
-import card2 from './../../../assets/images/task/img2.jpg';
-import card3 from './../../../assets/images/task/img3.jpg';
-import card4 from './../../../assets/images/task/img4.jpg';
-import card5 from './../../../assets/images/task/img5.jpg';
-import card6 from './../../../assets/images/task/img6.jpg';
-import card7 from './../../../assets/images/task/img7.jpg';
-import card8 from './../../../assets/images/task/img8.jpg';
-import user from './../../../assets/images/task/user.jpg';
+import card1 from '../../../assets/images/task/img1.jpg';
+import card2 from '../../../assets/images/task/img2.jpg';
+import card3 from '../../../assets/images/task/img3.jpg';
+import card4 from '../../../assets/images/task/img4.jpg';
+import card5 from '../../../assets/images/task/img5.jpg';
+import card6 from '../../../assets/images/task/img6.jpg';
+import card7 from '../../../assets/images/task/img7.jpg';
+import card8 from '../../../assets/images/task/img8.jpg';
+import user from '../../../assets/images/task/user.jpg';
 
 const CardListBlog = [
 	{ 
