@@ -56,13 +56,7 @@ export function saveTokenInLocalStorage(userDetails) {
     userDetails.expireDate = new Date(
         new Date().getTime() + userDetails.expiresIn * 1000,
     );
-    localStorage.setItem("userDetails", JSON.stringify({
-        token: userDetails.token,
-        expiresIn: userDetails.expiresIn,
-        displayName: userDetails.displayName,
-        role: userDetails.role,
-        officeId: userDetails.officeId
-    }));
+    localStorage.setItem('userDetails', JSON.stringify(userDetails));
 }
 
 export function runLogoutTimer(dispatch, timer, navigate) {

@@ -146,7 +146,7 @@ const SideBar = () => {
                 className={`heart ${heartBtn ? 'heart-blast' : ''}`}                
                 onClick={()=>setHeartBtn(!heartBtn)}
               ></span>{" "}
-              by DexignZone
+              by CodeSoftlution
             </p>
           </div>
 			  </div>
