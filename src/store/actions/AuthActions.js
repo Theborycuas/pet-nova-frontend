@@ -6,6 +6,8 @@ import {
     signUp,
 } from '../../services/AuthService';
 
+import { userLogin } from '../../api/auth/endpoints';
+
 
 export const SIGNUP_CONFIRMED_ACTION = '[signup action] confirmed signup';
 export const SIGNUP_FAILED_ACTION = '[signup action] failed signup';
@@ -46,9 +48,9 @@ export function Logout(navigate) {
     };
 }
 
-export function loginAction(email, password, navigate) {
+export function loginAction(credentials, navigate) {
     return (dispatch) => {
-         login(email, password)
+        userLogin(credentials.username, credentials.password)
             .then((response) => { 
                 saveTokenInLocalStorage(response.data);
                 runLogoutTimer(

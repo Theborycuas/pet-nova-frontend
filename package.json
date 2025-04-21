@@ -20,6 +20,7 @@
     "@loadable/component": "^5.16.4",
     "axios": "^1.7.3",
     "formik": "^2.4.6",
+    "jwt-decode": "^4.0.0",
     "lightgallery": "^2.7.2",
     "p-min-delay": "^4.0.2",
     "react": "^18.3.1",

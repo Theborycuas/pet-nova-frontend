@@ -1,7 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
-import nurse from './../../../assets/images/nurse.jpg';
+import nurse from '../../../assets/images/nurse.jpg';
 
 const StaffProfile = () => {
     return (

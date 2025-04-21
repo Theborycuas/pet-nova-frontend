@@ -7,7 +7,7 @@ import avater from "../../../assets/images/avatar/1.jpg";
 import avater02 from "../../../assets/images/avatar/2.jpg";
 import mapSvg from "../../../assets/images/svg/map.svg";
 
-import DoughnutChart from "../charts/Chartjs/donught";
+import DoughnutChart from "../charts/Chartjs/donught.jsx";
 
 const PatientDetails = () => {
    return (

@@ -18,7 +18,7 @@ import doctors8 from "../../../assets/images/doctors/8.jpg";
 import map from "../../../assets/images/svg/map.svg";
 
 /// Scroll
-import DoughnutChart from "../charts/Chartjs/donught";
+import DoughnutChart from "../charts/Chartjs/donught.jsx";
 
 const Doctordetail = () => {
    function SampleNextArrow(props) {

@@ -8,7 +8,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import { ThemeContext } from "../../../context/ThemeContext";
+import { ThemeContext } from "../../../context/ThemeContext.jsx";
 // Images
 import DrAlexandro from "../../../assets/images/doctors/5.jpg";
 import DrSamantha from "../../../assets/images/doctors/1.jpg";
@@ -22,8 +22,8 @@ import widget05 from "../../../assets/images/widget/5.jpg";
 
 
 
-const ApexBar3 = loadable(() => import("../charts/apexcharts/Bar3"));
-const ApexLine5 = loadable(() => import("../charts/apexcharts/Line5"));
+const ApexBar3 = loadable(() => import("../charts/apexcharts/Bar3.jsx"));
+const ApexLine5 = loadable(() => import("../charts/apexcharts/Line5.jsx"));
 
 const DashboardDark = () => {
    function SampleNextArrow(props) {
