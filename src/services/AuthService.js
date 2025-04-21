@@ -52,11 +52,17 @@ export function formatError(errorResponse) {
     }
 }
 
-export function saveTokenInLocalStorage(tokenDetails) {
-    tokenDetails.expireDate = new Date(
-        new Date().getTime() + tokenDetails.expiresIn * 1000,
+export function saveTokenInLocalStorage(userDetails) {
+    userDetails.expireDate = new Date(
+        new Date().getTime() + userDetails.expiresIn * 1000,
     );
-    localStorage.setItem('userDetails', JSON.stringify(tokenDetails));
+    localStorage.setItem("userDetails", JSON.stringify({
+        token: userDetails.token,
+        expiresIn: userDetails.expiresIn,
+        displayName: userDetails.displayName,
+        role: userDetails.role,
+        officeId: userDetails.officeId
+    }));
 }
 
 export function runLogoutTimer(dispatch, timer, navigate) {

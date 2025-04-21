@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import LogoutLink from './Logout'; 
 import { Dropdown } from "react-bootstrap";
+import { useSelector } from "react-redux";
 
 /// Image
 import profile from "../../../assets/images/profile/12.png";
@@ -12,6 +13,10 @@ import { ThemeContext } from "../../../context/ThemeContext";
 const Header = ({ onNote, toggle, onProfile, onNotification, onBox }) => {
    const {background, 
       changeBackground} = useContext(ThemeContext);
+
+   const userDetails = JSON.parse(localStorage.getItem("userDetails"));
+   const userName = userDetails?.displayName || "Usuario";
+
    function handleDarkMode (){
       if(background.value=="light"){
          changeBackground({ value: "dark", label: "Dark" });
@@ -345,7 +350,7 @@ const Header = ({ onNote, toggle, onProfile, onNotification, onBox }) => {
                            <img src={profile} width={20} alt="" />
                            <div className="header-info">
                               <span>
-                                 Hello,<strong> Roberto</strong>
+                                 Hello,<strong> {userName}</strong>
                               </span>
                            </div>
                         </Dropdown.Toggle>
