@@ -2,7 +2,7 @@ import React from "react";
 // import { Link } from 'react-router-dom';
 import { Row, Col, Card } from "react-bootstrap";
 
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 import BarChart1 from "./bar1";
 import BarChart5 from "./bar5";
 import BarChart6 from "./bar6";

@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Row, Col, Card, Accordion } from "react-bootstrap";
-import PageTitle from "../../layouts/PageTitle";
+import PageTitle from "../../../layouts/PageTitle";
 
 const defaultAccordion = [
   {

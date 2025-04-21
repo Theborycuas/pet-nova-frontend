@@ -21,7 +21,7 @@ import profile07 from "../../../../assets/images/profile/7.jpg";
 import profile08 from "../../../../assets/images/profile/8.jpg";
 import profile09 from "../../../../assets/images/profile/9.jpg";
 import profile from "../../../../assets/images/profile/profile.png";
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 
 const galleryBlog = [
 	{image: profile03}, {image: profile04},

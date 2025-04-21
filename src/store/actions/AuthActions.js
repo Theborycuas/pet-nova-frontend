@@ -61,7 +61,7 @@ export function loginAction(credentials, navigate) {
                     navigate,
                 );
                dispatch(loginConfirmedAction(response.data));			               
-				navigate('/dashboard');                
+				navigate('/home-admin');
             })
             .catch((error) => {
                 // Manejar el error y detener el loading

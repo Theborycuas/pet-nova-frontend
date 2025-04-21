@@ -6,9 +6,9 @@ const Footer = () => {
     <div className="footer">
       <div className="copyright">
         <p>
-          Copyright © Designed &amp; Developed by{" "}
-          <a href="http://dexignzone.com/" target="_blank"  rel="noreferrer">
-            DexignZone
+          Copyright © Developed by{" "}
+          <a href="https://codesoftlution.com" target="_blank"  rel="noreferrer">
+            CodeSoftlution
           </a>{" "}
           {dat.getFullYear()}
         </p>

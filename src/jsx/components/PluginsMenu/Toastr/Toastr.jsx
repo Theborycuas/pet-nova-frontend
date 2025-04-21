@@ -1,7 +1,7 @@
 import React from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 
 const Toastr = () => {
   const notifyTopRight = () => {

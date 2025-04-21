@@ -3,7 +3,7 @@ import React from "react";
 /// Bootstrap
 import { Col, Badge, Card, Row } from "react-bootstrap";
 
-import PageTitle from "../../layouts/PageTitle";
+import PageTitle from "../../../layouts/PageTitle";
 
 const UiBadge = () => {
   return (

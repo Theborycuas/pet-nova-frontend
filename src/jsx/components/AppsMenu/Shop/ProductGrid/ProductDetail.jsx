@@ -11,7 +11,7 @@ import tab1 from "../../../../../assets/images/tab/1.jpg";
 import tab2 from "../../../../../assets/images/tab/2.jpg";
 import tab3 from "../../../../../assets/images/tab/3.jpg";
 import tab4 from "../../../../../assets/images/tab/4.jpg";
-import PageTitle from "../../../../layouts/PageTitle";
+import PageTitle from "../../../../../layouts/PageTitle";
 
 const ProductDetail = () => {
   const [reviewToggle, setReviewToggle] = useState(false);

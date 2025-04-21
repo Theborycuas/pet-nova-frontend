@@ -2,7 +2,7 @@ import React from "react";
 import MapChart from './MapChart';
 import WorldMap from './WorldMap';
 
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 
 const JqvMap = () => {
 	

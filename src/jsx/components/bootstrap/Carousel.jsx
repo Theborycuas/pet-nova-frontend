@@ -2,7 +2,7 @@ import React from 'react'
 import { Fragment } from 'react'
 
 /// Page Title
-import PageTitle from '../../layouts/PageTitle'
+import PageTitle from '../../../layouts/PageTitle'
 
 /// Images
 import img1 from '../../../assets/images/big/img1.jpg'

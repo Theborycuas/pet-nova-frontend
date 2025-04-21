@@ -1,14 +1,14 @@
 import React, { useContext } from "react";
 
 import { Link } from "react-router-dom";
-import LogoutLink from './Logout'; 
+import LogoutLink from './Logout.jsx';
 import { Dropdown } from "react-bootstrap";
 import { useSelector } from "react-redux";
 
 /// Image
-import profile from "../../../assets/images/profile/12.png";
-import avatar from "../../../assets/images/avatar/1.jpg";
-import { ThemeContext } from "../../../context/ThemeContext";
+import profile from "../../assets/images/profile/12.png";
+import avatar from "../../assets/images/avatar/1.jpg";
+import { ThemeContext } from "../../context/ThemeContext.jsx";
 
 const Header = ({ onNote, toggle, onProfile, onNotification, onBox }) => {
    const {background, 

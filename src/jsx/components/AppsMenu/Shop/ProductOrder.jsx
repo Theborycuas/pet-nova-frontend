@@ -1,6 +1,6 @@
 import React from "react";
 
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 
 import { Dropdown } from "react-bootstrap";
 import { Link } from "react-router-dom";

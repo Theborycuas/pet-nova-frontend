@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import profileImage from '../../../../../assets/images/avatar/1.jpg'
 
 import { Dropdown } from 'react-bootstrap'
-import PageTitle from '../../../../layouts/PageTitle'
+import PageTitle from '../../../../../layouts/PageTitle'
 
 const Read = () => {
   return (

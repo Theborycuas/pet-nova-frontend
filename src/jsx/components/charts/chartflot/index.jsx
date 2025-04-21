@@ -9,7 +9,7 @@ import { Fragment } from "react";
 import BasicLine from "./BasicLine";
 import LineChart3 from "./Line3";
 
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 
 function ChartChartist() {
    return (

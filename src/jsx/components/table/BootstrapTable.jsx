@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
-import PageTitle from "../../layouts/PageTitle";
+import PageTitle from "../../../layouts/PageTitle";
 import { useState, useEffect } from "react";
 import {
   Row,

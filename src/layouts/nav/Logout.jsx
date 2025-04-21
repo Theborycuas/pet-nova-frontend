@@ -2,8 +2,8 @@ import React  from 'react';
 import {connect, useDispatch } from 'react-redux';
 import {  useLocation, useNavigate, useParams } from 'react-router-dom';
 
-import { Logout } from '../../../store/actions/AuthActions';
-import { isAuthenticated } from '../../../store/selectors/AuthSelectors';
+import { Logout } from '../../store/actions/AuthActions.js';
+import { isAuthenticated } from '../../store/selectors/AuthSelectors.js';
 
 function withRouter(Component) {
     function ComponentWithRouterProp(props) {

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Fragment } from 'react'
 
-import PageTitle from '../../layouts/PageTitle'
+import PageTitle from '../../../layouts/PageTitle'
 import { Row, Card, Nav, Col, Pagination } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 

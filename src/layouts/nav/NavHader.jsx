@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { useDispatch , useSelector } from 'react-redux';
 /// React router dom
 import { Link } from "react-router-dom";
-import { navtoggle } from "../../../store/actions/AuthActions";
+import { navtoggle } from "../../store/actions/AuthActions.js";
 
 /// images
-import logo from "../../../assets/images/logo.png";
-import logoText from "../../../assets/images/logo-text.png";
+import logo from "../../assets/images/logo.png";
+import logoText from "../../assets/images/logo-text.png";
 
 const NavHader = () => {   
    const dispatch = useDispatch();

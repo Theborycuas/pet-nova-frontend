@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect,  useReducer, useState } from "react";
 import {Collapse} from 'react-bootstrap';
 import { Link } from "react-router-dom";
-import {MenuList} from './Menu';
+import {MenuList} from './Menu.jsx';
 
 const reducer = (previousState, updatedState) => ({
   ...previousState,

@@ -1,4 +1,16 @@
 export const MenuList = [
+
+    {
+        title: 'Tenant Admin',
+        classsChange: 'mm-collapse',
+        iconStyle: <i className="flaticon-381-networking"></i>,
+        content: [
+            {
+                title: 'Tenant List',
+                to: 'home-admin',
+            }
+        ],
+    },
     //Dashboard
     {
         title: 'Dashboard',	

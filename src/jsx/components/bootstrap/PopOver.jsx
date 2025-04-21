@@ -1,5 +1,5 @@
 import React from "react";
-import PageTitle from "../../layouts/PageTitle";
+import PageTitle from "../../../layouts/PageTitle";
 import {
   Row,
   Col,

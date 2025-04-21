@@ -4,9 +4,9 @@ import React, { useState } from "react";
 // import PerfectScrollbar from "react-perfect-scrollbar";
 
 /// Components
-import Notes from "../components/chatBox/Notes";
-import Alerts from "../components/chatBox/Alerts";
-import Chat from "../components/chatBox/Chat";
+import Notes from "../jsx/components/chatBox/Notes.jsx";
+import Alerts from "../jsx/components/chatBox/Alerts.jsx";
+import Chat from "../jsx/components/chatBox/Chat.jsx";
 import { Link } from "react-router-dom";
 
 const ChatBox = ({ onClick, toggle }) => {

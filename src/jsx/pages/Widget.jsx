@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { Link } from 'react-router-dom'
 
 // Page titie
-import PageTitle from '../layouts/PageTitle'
+import PageTitle from '../../layouts/PageTitle'
 
 // BS
 import { Dropdown, Tab, Nav } from 'react-bootstrap'

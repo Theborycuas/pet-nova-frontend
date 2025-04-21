@@ -1,6 +1,6 @@
 import React,{ useMemo } from 'react';
 import { useTable, useSortBy } from 'react-table';
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 import MOCK_DATA from './MOCK_DATA_3.json';
 import { COLUMNS } from './Columns';
 //import './table.css';

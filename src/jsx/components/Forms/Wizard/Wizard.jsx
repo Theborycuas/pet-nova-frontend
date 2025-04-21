@@ -6,7 +6,7 @@ import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import StepFour from "./StepFour";
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 
 const Wizard = () => {
 	const [goSteps, setGoSteps] = useState(0);

@@ -10,10 +10,10 @@ import { isAuthenticated } from './store/selectors/AuthSelectors';
 
 import "./assets/css/style.css";
 
-const SignUp = lazy(() => import('./modules/auth/Registration.jsx'));
+const SignUp = lazy(() => import('./features/auth/Registration.jsx'));
 const Login = lazy(() => {
     return new Promise(resolve => {
-		setTimeout(() => resolve(import('./modules/auth/Login')), 500);
+		setTimeout(() => resolve(import('./features/auth/Login')), 500);
 	});
 });
 
