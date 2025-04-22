@@ -32,7 +32,10 @@ export const getAllTenants = async () =>{
             headers: {
                 'Content-Type': 'application/json',
             },
-            transformResponse: [data => data], // Evita transformación automática
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data); // Parsea la respuesta manualmente
+                return Array.isArray(parsedData) ? parsedData : []; // Fuerza un array
+            }],
         });
         return response;
     } catch (error) {

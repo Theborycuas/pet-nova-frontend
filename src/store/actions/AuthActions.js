@@ -64,7 +64,9 @@ export function loginAction(credentials, navigate) {
                 dispatch(loginConfirmedAction(response.data));
 
                 try {
-                    await dispatch(getAllTenants());
+                    await dispatch(getAllTenants()).then((response) => {
+                        sessionStorage.setItem('cachedTenants', JSON.stringify(response.data))
+                    });
                 } catch (tenantsError) {
                     console.error("Falló carga de tenants:", tenantsError);
                     dispatch({
