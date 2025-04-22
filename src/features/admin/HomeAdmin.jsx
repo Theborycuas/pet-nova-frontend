@@ -243,7 +243,7 @@ const HomeAdmin = () => {
                                       aria-label="Patient ID: activate to sort column ascending"
                                       style={{width: 79}}
                                   >
-                                     Patient ID
+                                     Tenand Id
                                   </th>
                                   <th
                                       className="sorting"
@@ -254,7 +254,7 @@ const HomeAdmin = () => {
                                       aria-label="Date Check In: activate to sort column ascending"
                                       style={{width: 113}}
                                   >
-                                     Date Check In
+                                     Nombre del Tenand
                                   </th>
                                   <th
                                       className="sorting"
@@ -265,7 +265,7 @@ const HomeAdmin = () => {
                                       aria-label="Patient Name: activate to sort column ascending"
                                       style={{width: 108}}
                                   >
-                                     Patient Name
+                                     Administrador
                                   </th>
                                   <th
                                       className="sorting"
@@ -276,7 +276,7 @@ const HomeAdmin = () => {
                                       aria-label="Doctor Assgined: activate to sort column ascending"
                                       style={{width: 135}}
                                   >
-                                     Doctor Assgined
+                                     Teléfono
                                   </th>
                                   <th
                                       className="sorting"
@@ -287,7 +287,7 @@ const HomeAdmin = () => {
                                       aria-label="Disease: activate to sort column ascending"
                                       style={{width: 68}}
                                   >
-                                     Disease
+                                     Dirección
                                   </th>
                                   <th
                                       className="sorting"
@@ -298,7 +298,7 @@ const HomeAdmin = () => {
                                       aria-label="Status: activate to sort column ascending"
                                       style={{width: 103}}
                                   >
-                                     Status
+                                     Plan Actual
                                   </th>
                                   <th
                                       className="sorting"
@@ -309,7 +309,7 @@ const HomeAdmin = () => {
                                       aria-label="Room No: activate to sort column ascending"
                                       style={{width: 75}}
                                   >
-                                     Room No
+                                     Fecha Registro
                                   </th>
                                   <th
                                       className="sorting"
