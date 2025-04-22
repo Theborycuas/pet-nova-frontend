@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
-import { registerUser } from '../../api/auth/endpoints'; // Importar el servicio
-import {confirmedSignupAction, loadingToggleAction} from '../../store/actions/AuthActions.js';
+import { registerUser } from '../api/authEndpoints.js'; // Importar el servicio
+import {confirmedSignupAction, loadingToggleAction} from '../../../store/actions/AuthActions.js';
 
 function Register(props) {
     const [formData, setFormData] = useState({

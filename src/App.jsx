@@ -4,16 +4,16 @@ import Index from './jsx/index';
 import { connect, useDispatch } from 'react-redux';
 import {  Route, Routes, useLocation , useNavigate , useParams } from 'react-router-dom';
 // action
-import { checkAutoLogin } from './services/AuthService';
+import { checkAutoLogin } from './features/auth/services/AuthService.js';
 import { isAuthenticated } from './store/selectors/AuthSelectors';
 /// Style
 
 import "./assets/css/style.css";
 
-const SignUp = lazy(() => import('./features/auth/Registration.jsx'));
+const SignUp = lazy(() => import('./features/auth/components/Registration.jsx'));
 const Login = lazy(() => {
     return new Promise(resolve => {
-		setTimeout(() => resolve(import('./features/auth/Login')), 500);
+		setTimeout(() => resolve(import('./features/auth/components/Login.jsx')), 500);
 	});
 });
 

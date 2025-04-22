@@ -3,11 +3,11 @@ import { connect, useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom'
 import {
 	clearAuthErrorAction, loadingToggleAction, loginAction,
-} from '../../store/actions/AuthActions.js';
+} from '../../../store/actions/AuthActions.js';
 
 //
-import logo from '../../assets/images/logo.png'
-import logotext from '../../assets/images/logo-text.png'
+import logo from '../../../assets/images/logo.png'
+import logotext from '../../../assets/images/logo-text.png'
 import PropTypes from 'prop-types';
 
 Login.propTypes = {

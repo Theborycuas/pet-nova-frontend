@@ -91,8 +91,8 @@ import Pickers from './components/Forms/Pickers/Pickers'
 import FormValidation from './components/Forms/FormValidation/FormValidation'
 
 /// Pages
-import Registration from '../features/auth/Registration.jsx'
-import Login from '../features/auth/Login.jsx'
+import Registration from '../features/auth/components/Registration.jsx'
+import Login from '../features/auth/components/Login.jsx'
 import LockScreen from './pages/LockScreen'
 import Error400 from './pages/Error400'
 import Error403 from './pages/Error403'
@@ -103,7 +103,7 @@ import Todo from './pages/Todo';
 
 //Scroll To Top
 import ScrollToTop from '../layouts/ScrollToTop';
-import HomeAdmin from "../features/admin/HomeAdmin.jsx";
+import HomeAdmin from "../features/admin/components/HomeAdmin.jsx";
 
 
 const Markup = () => {

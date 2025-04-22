@@ -4,9 +4,11 @@ import {
     runLogoutTimer,
     saveTokenInLocalStorage,
     signUp,
-} from '../../services/AuthService';
+} from '../../features/auth/services/AuthService.js';
 
-import { userLogin } from '../../api/auth/endpoints';
+import { userLogin } from '../../features/auth/api/authEndpoints.js';
+import {getAllTenantsList} from "../../features/admin/services/AdminServices.js";
+import {getAllTenants} from "../../features/admin/api/adminEndpoints.js";
 
 
 export const SIGNUP_CONFIRMED_ACTION = '[signup action] confirmed signup';
@@ -50,18 +52,28 @@ export function Logout(navigate) {
 
 export function loginAction(credentials, navigate) {
     return (dispatch) => {
-
         dispatch(clearAuthErrorAction());
         userLogin(credentials.username, credentials.password)
-            .then((response) => { 
+            .then(async (response) => {
                 saveTokenInLocalStorage(response.data);
                 runLogoutTimer(
                     dispatch,
                     response.data.expiresIn * 1000,
                     navigate,
                 );
-               dispatch(loginConfirmedAction(response.data));			               
-				navigate('/home-admin');
+                dispatch(loginConfirmedAction(response.data));
+
+                try {
+                    await dispatch(getAllTenants());
+                } catch (tenantsError) {
+                    console.error("Falló carga de tenants:", tenantsError);
+                    dispatch({
+                        type: 'TENANTS_ERROR',
+                        payload: "No se pudo cargar la lista de offices"
+                    });
+                    // Mostrar toast/notificación
+                }
+                navigate('/home-admin');
             })
             .catch((error) => {
                 // Manejar el error y detener el loading

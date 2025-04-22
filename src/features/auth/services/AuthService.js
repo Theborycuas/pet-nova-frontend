@@ -3,7 +3,7 @@ import swal from "sweetalert";
 import {
     loginConfirmedAction,
     Logout,
-} from '../store/actions/AuthActions';
+} from '../../../store/actions/AuthActions.js';
 
 export function signUp(email, password) {
     //axios call
