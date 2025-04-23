@@ -65,8 +65,8 @@ const PatientList = () => {
          <div className="form-head d-flex mb-3 mb-md-4 align-items-start">
             <div className="me-auto d-none d-lg-block">
                <Link
-                  to="/patient-details"
-                  className="btn btn-primary btn-rounded"
+                   to="/patient-details"
+                   className="btn btn-primary btn-rounded"
                >
                   + Add New
                </Link>

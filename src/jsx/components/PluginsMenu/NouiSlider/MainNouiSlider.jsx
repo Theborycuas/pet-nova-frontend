@@ -4,7 +4,7 @@ import Nouislider from "nouislider-react";
 
 import NouiColorPicker from "./NouiColor";
 
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 import Toggle from "./Toggle";
 import SnappingTOValues from "./SnappingToValues";
 import NonlinerSlider from "./Nonlinearslider";

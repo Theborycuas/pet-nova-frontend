@@ -4,9 +4,11 @@ import {
     runLogoutTimer,
     saveTokenInLocalStorage,
     signUp,
-} from '../../services/AuthService';
+} from '../../features/auth/services/AuthService.js';
 
-import { userLogin } from '../../api/auth/endpoints';
+import { userLogin } from '../../features/auth/api/authEndpoints.js';
+import {getAllTenantsList} from "../../features/admin/services/AdminServices.js";
+import {getAllTenants} from "../../features/admin/api/adminEndpoints.js";
 
 
 export const SIGNUP_CONFIRMED_ACTION = '[signup action] confirmed signup';
@@ -17,7 +19,7 @@ export const LOADING_TOGGLE_ACTION = '[Loading action] toggle loading';
 export const LOGOUT_ACTION = '[Logout action] logout action';
 export const NAVTOGGLE = 'NAVTOGGLE';
 
-
+export const CLEAR_AUTH_ERROR_ACTION = 'CLEAR_AUTH_ERROR';
 
 export function signupAction(email, password, navigate) {
 	
@@ -50,20 +52,39 @@ export function Logout(navigate) {
 
 export function loginAction(credentials, navigate) {
     return (dispatch) => {
+        dispatch(clearAuthErrorAction());
         userLogin(credentials.username, credentials.password)
-            .then((response) => { 
+            .then(async (response) => {
                 saveTokenInLocalStorage(response.data);
                 runLogoutTimer(
                     dispatch,
                     response.data.expiresIn * 1000,
                     navigate,
                 );
-               dispatch(loginConfirmedAction(response.data));			               
-				navigate('/dashboard');                
+                dispatch(loginConfirmedAction(response.data));
+
+                try {
+                    await dispatch(getAllTenants()).then((response) => {
+                        sessionStorage.setItem('cachedTenants', JSON.stringify(response.data))
+                    });
+                } catch (tenantsError) {
+                    console.error("Falló carga de tenants:", tenantsError);
+                    dispatch({
+                        type: 'TENANTS_ERROR',
+                        payload: "No se pudo cargar la lista de offices"
+                    });
+                    // Mostrar toast/notificación
+                }
+                navigate('/home-admin');
             })
-            .catch((error) => {				
-                const errorMessage = formatError(error.response.data);
+            .catch((error) => {
+                // Manejar el error y detener el loading
+                const errorMessage = error.message || "Error en el login"; // Usa el mensaje del backend o uno por defecto
                 dispatch(loginFailedAction(errorMessage));
+            })
+            .finally(() => {
+                // Siempre detener el loading, tanto en éxito como en error
+                dispatch(loadingToggleAction(false)); // <-- Esto detiene el spinner en cualquier caso
             });
     };
 }
@@ -108,3 +129,7 @@ export const navtoggle = () => {
       type: 'NAVTOGGLE',
     };
 };
+
+export const clearAuthErrorAction = () => ({
+    type: CLEAR_AUTH_ERROR_ACTION
+});

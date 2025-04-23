@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import NTable from "./NTable";
 import NTable2 from "./NTable2";
 
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 
 class Nestable extends Component {
    render() {

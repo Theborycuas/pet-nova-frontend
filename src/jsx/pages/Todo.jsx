@@ -3,7 +3,7 @@ import {Link}  from "react-router-dom";
 import {Modal} from 'react-bootstrap';
 import {nanoid} from 'nanoid';
 import swal from "sweetalert";
-import PageTitle from "../layouts/PageTitle";
+import PageTitle from "../../layouts/PageTitle";
 import pic1 from './../../assets/images/profile/small/pic1.jpg';
 import Editable from './Editable';
 

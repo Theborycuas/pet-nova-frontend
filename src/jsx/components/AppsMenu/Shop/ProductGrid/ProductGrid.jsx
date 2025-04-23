@@ -3,7 +3,7 @@ import Products from "./Products";
 
 /// Data
 import productData from "../productData";
-import PageTitle from "../../../../layouts/PageTitle";
+import PageTitle from "../../../../../layouts/PageTitle";
 
 const ProductGrid = () => {
    return (

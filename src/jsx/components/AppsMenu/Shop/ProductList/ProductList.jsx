@@ -2,7 +2,7 @@ import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 // import StarRating from './StarRating';
-import PageTitle from "../../../../layouts/PageTitle";
+import PageTitle from "../../../../../layouts/PageTitle";
 
 // images
 import avatar1 from "../../../../../assets/images/avatar/1.jpg";

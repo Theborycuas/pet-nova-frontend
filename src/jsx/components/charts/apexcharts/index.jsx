@@ -5,7 +5,7 @@ import { Row, Col, Card } from "react-bootstrap";
 
 import pMinDelay from "p-min-delay";
 
-import PageTitle from "../../../layouts/PageTitle";
+import PageTitle from "../../../../layouts/PageTitle";
 
 const ApexBar2 = loadable(() => pMinDelay(import("./Bar2"), 500));
 const ApexBar3 = loadable(() => pMinDelay(import("./Bar3"), 500));

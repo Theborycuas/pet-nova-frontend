@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 
 /// Compoents
-import PageTitle from '../../layouts/PageTitle'
+import PageTitle from '../../../layouts/PageTitle'
 
 /// Image
 import img1 from '../../../assets/images/card/1.png'

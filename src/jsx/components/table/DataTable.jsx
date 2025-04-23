@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import PageTitle from "../../layouts/PageTitle";
+import PageTitle from "../../../layouts/PageTitle";
 import BasicDatatable from "./BasicDatatable";
 import SimpleDataTable from "./SimpleDataTable";
 import ProfileDatatable from "./ProfileDatatable";

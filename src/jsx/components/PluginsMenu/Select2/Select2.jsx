@@ -3,7 +3,7 @@ import Select from 'react-select'
 import CustomGroup from './CustomGroup'
 import Disabling from './Disabling'
 import CustomClearIndicator from './MultiSelect'
-import PageTitle from '../../../layouts/PageTitle'
+import PageTitle from '../../../../layouts/PageTitle'
 
 import CustomSelete from './CustomeSelete'
 

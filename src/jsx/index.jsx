@@ -8,8 +8,8 @@ import './chart.css'
 import './step.css'
 
 /// Layout
-import Nav from './layouts/nav'
-import Footer from './layouts/Footer'
+import Nav from '../layouts/nav'
+import Footer from '../layouts/Footer'
 
 /// Dashboard
 import Home from "./components/Dashboard/Home";
@@ -91,8 +91,8 @@ import Pickers from './components/Forms/Pickers/Pickers'
 import FormValidation from './components/Forms/FormValidation/FormValidation'
 
 /// Pages
-import Registration from '../modules/auth/Registration.jsx'
-import Login from '../modules/auth/Login.jsx'
+import Registration from '../features/auth/components/Registration.jsx'
+import Login from '../features/auth/components/Login.jsx'
 import LockScreen from './pages/LockScreen'
 import Error400 from './pages/Error400'
 import Error403 from './pages/Error403'
@@ -102,14 +102,16 @@ import Error503 from './pages/Error503'
 import Todo from './pages/Todo';
 
 //Scroll To Top
-import ScrollToTop from './layouts/ScrollToTop';
+import ScrollToTop from '../layouts/ScrollToTop';
+import HomeAdmin from "../features/admin/components/HomeAdmin.jsx";
 
 
 const Markup = () => {
   
   const allroutes = [
     /// Dashboard
-    { url: "", component: <Home/> },
+    { url: "", component: <HomeAdmin/> },
+    { url: "home-admin", component: <HomeAdmin/> },
     { url: "dashboard", component: <Home/> },
     { url: 'dashboard-dark', component: <DashboardDark/> },
     { url: "patient-list", component: <PatientList/> },

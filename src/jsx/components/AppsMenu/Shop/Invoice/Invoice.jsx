@@ -4,7 +4,7 @@ import React, { Fragment } from "react";
 import qrcode from "../../../../../assets/images/qr.png";
 import logo from "../../../../../assets/images/logo.png";
 import logoText from "../../../../../assets/images/logo-text.png";
-import PageTitle from "../../../../layouts/PageTitle";
+import PageTitle from "../../../../../layouts/PageTitle";
 
 const Invoice = () => {
   return (
