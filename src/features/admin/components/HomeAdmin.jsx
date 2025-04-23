@@ -164,7 +164,7 @@ const HomeAdmin = () => {
 
                <div className="me-auto d-none d-lg-block">
                    <Link
-                       to="/patient-details"
+                       to="/add-tenants"
                        className="btn btn-primary btn-rounded"
                    >
                        + Add New
