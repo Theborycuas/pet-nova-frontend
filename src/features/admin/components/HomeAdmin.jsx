@@ -154,7 +154,7 @@ const HomeAdmin = () => {
    return (
        <div>
            <div className="form-head d-flex mb-3 mb-md-4 align-items-start">
-               <div className="me-auto d-none d-lg-block">
+               <div className="me-auto d-lg-block">
                    <h3 className="text-black font-w600">Bienvenido!</h3>
                    <p className="mb-0 fs-18">Desde este espacio podrás administrar los clientes de PetNova</p>
                </div>
@@ -162,7 +162,7 @@ const HomeAdmin = () => {
 
            <div className="form-head d-flex mb-3 mb-md-4 align-items-start">
 
-               <div className="me-auto d-none d-lg-block">
+               <div className="me-auto d-lg-block">
                    <Link
                        to="/add-tenants"
                        className="btn btn-primary btn-rounded"

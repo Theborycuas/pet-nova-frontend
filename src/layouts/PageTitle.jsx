@@ -8,7 +8,7 @@ const PageTitle = ({ motherMenu, activeMenu }) => {
     <div className="page-titles">		
 		<ol className="breadcrumb">
 			<li className="breadcrumb-item">
-				<Link to={`/${path[path.length - 1]}`}>{motherMenu}</Link>
+				<Link to={"/"}>{motherMenu}</Link>
 			</li>
 			<li className="breadcrumb-item active">
 			<Link to={`/${path[path.length - 1]}`}>{activeMenu}</Link>
