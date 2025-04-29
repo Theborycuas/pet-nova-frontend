@@ -14,10 +14,10 @@ const StepOne = ({ formData, setFormData }) => {
                   <label className="text-label">Nombre del Tenant <span className="required">*</span></label>
                   <input
                       type="text"
-                      name="name"
+                      name="tenantName"
                       className="form-control"
-                      placeholder="Veterinaria Pet Lovers"
-                      value={formData.name}
+                      placeholder="Clinica del Gato"
+                      value={formData.tenantName}
                       onChange={handleChange}
                       required
                   />
@@ -39,13 +39,15 @@ const StepOne = ({ formData, setFormData }) => {
             </div>
             <div className="col-lg-6 mb-2">
                <div className="form-group mb-3">
-                  <label className="text-label">Ruc <span className="required">*</span></label>
+                  <label className="text-label">Email <span className="required">*</span></label>
                   <input
-                      type="number"
-                      name="taxId"
+                      type="email"
+                      name="contactEmail"
                       className="form-control"
-                      placeholder="1711251482001"
-                      value={formData.taxId}
+                      id="inputGroupPrepend2"
+                      aria-describedby="inputGroupPrepend2"
+                      placeholder="example@example.com"
+                      value={formData.contactEmail}
                       onChange={handleChange}
                       required
                   />
@@ -53,13 +55,13 @@ const StepOne = ({ formData, setFormData }) => {
             </div>
             <div className="col-lg-6 mb-2">
                <div className="form-group mb-3">
-                  <label className="text-label">Url Foto <span className="required">*</span></label>
+                  <label className="text-label">Teléfono <span className="required">*</span></label>
                   <input
-                      type="text"
-                      name="logoUrl"
+                      type="number"
+                      name="contactPhone"
                       className="form-control"
-                      placeholder="http://logo.jpeg"
-                      value={formData.logoUrl}
+                      placeholder="0996588446"
+                      value={formData.contactPhone}
                       onChange={handleChange}
                       required
                   />
@@ -72,10 +74,10 @@ const StepOne = ({ formData, setFormData }) => {
 
 StepOne.propTypes = {
    formData: PropTypes.shape({
-      name: PropTypes.string.isRequired,
+      tenantName: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
-      taxId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
-      logoUrl: PropTypes.string.isRequired
+      contactEmail: PropTypes.string.isRequired,
+      contactPhone: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
    }).isRequired,
    setFormData: PropTypes.func.isRequired
 };

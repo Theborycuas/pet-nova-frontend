@@ -26,7 +26,7 @@ adminAPI.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-export const createTenant = async (tenantData) => {
+export const createOffice = async (tenantData) => {
     try {
         const response = await adminAPI.post(officeEndpoints.resgisterOffice, tenantData);
         return response.data;

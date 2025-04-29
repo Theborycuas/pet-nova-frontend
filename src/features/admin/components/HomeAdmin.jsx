@@ -248,7 +248,7 @@ const HomeAdmin = () => {
                                        rowSpan={1}
                                        colSpan={1}
                                        aria-label="ID: activate to sort column ascending"
-                                       style={{width: 61}}
+                                       style={{width: 50}}
                                    >
                                        Tenand Id
                                    </th>
@@ -281,7 +281,7 @@ const HomeAdmin = () => {
                                        rowSpan={1}
                                        colSpan={1}
                                        aria-label="Specialist: activate to sort column ascending"
-                                       style={{width: 95}}
+                                       style={{width: 80}}
                                    >
                                        Teléfono
                                    </th>
@@ -292,7 +292,7 @@ const HomeAdmin = () => {
                                        rowSpan={1}
                                        colSpan={1}
                                        aria-label="Schedule: activate to sort column ascending"
-                                       style={{width: 124}}
+                                       style={{width: 150}}
                                    >
                                        Dirección
                                    </th>
@@ -303,7 +303,7 @@ const HomeAdmin = () => {
                                        rowSpan={1}
                                        colSpan={1}
                                        aria-label="Schedule: activate to sort column ascending"
-                                       style={{width: 124}}
+                                       style={{width: 150}}
                                    >
                                        Fecha Inicio
                                    </th>
@@ -314,7 +314,7 @@ const HomeAdmin = () => {
                                        rowSpan={1}
                                        colSpan={1}
                                        aria-label="Contact: activate to sort column ascending"
-                                       style={{width: 79}}
+                                       style={{width: 150}}
                                    >
                                        Fecha Fín
                                    </th>

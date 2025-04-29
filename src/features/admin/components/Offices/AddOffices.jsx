@@ -8,7 +8,7 @@ import StepThree from "./StepThree";
 import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {createTenant} from "../../api/officeEndpoints.js";
+import {createOffice} from "../../api/officeEndpoints.js";
 
 const AddOffices = () => {
 	const [goSteps, setGoSteps] = useState(0);
@@ -36,7 +36,7 @@ const AddOffices = () => {
 
 	const handleSubmit = async () => {
 		try {
-			const response = await createTenant(formData);
+			const response = await createOffice(formData);
 			console.log('Office creado:', response.data);
 			navigate('/office-admin');
 		}catch (error) {

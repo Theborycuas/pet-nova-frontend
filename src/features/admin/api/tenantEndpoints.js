@@ -9,7 +9,7 @@ const adminAPI = axios.create({
 export const officeEndpoints = {
     createTenant: "/createTenant",
     getAllTenants: "/getAllTenants",
-    getTenantById: "/getOfficeById"
+    getTenantById: "/getTenantById"
 }
 
 
