@@ -151,6 +151,25 @@ const HomeAdmin = () => {
        changeBackground({ value: "light", label: "Light" });
    }, []);
 
+    function formatDateTime(dateString) {
+        const options = {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: 'numeric',
+            minute: 'numeric',
+            hour12: true
+        };
+        return new Date(dateString).toLocaleDateString('es-ES', options);
+    }
+    function formatDate(dateString) {
+        const options = {
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        };
+        return new Date(dateString).toLocaleDateString('es-ES', options);
+    }
 
    return (
        <div>
@@ -253,7 +272,7 @@ const HomeAdmin = () => {
                                        aria-label="Doctor Name: activate to sort column ascending"
                                        style={{width: 111}}
                                    >
-                                       Administrador
+                                       Email
                                    </th>
                                    <th
                                        className="sorting"
@@ -263,6 +282,17 @@ const HomeAdmin = () => {
                                        colSpan={1}
                                        aria-label="Specialist: activate to sort column ascending"
                                        style={{width: 95}}
+                                   >
+                                       Teléfono
+                                   </th>
+                                   <th
+                                       className="sorting"
+                                       tabIndex={0}
+                                       aria-controls="example5"
+                                       rowSpan={1}
+                                       colSpan={1}
+                                       aria-label="Schedule: activate to sort column ascending"
+                                       style={{width: 124}}
                                    >
                                        Dirección
                                    </th>
@@ -275,7 +305,7 @@ const HomeAdmin = () => {
                                        aria-label="Schedule: activate to sort column ascending"
                                        style={{width: 124}}
                                    >
-                                       Teléfono
+                                       Fecha Inicio
                                    </th>
                                    <th
                                        className="sorting"
@@ -286,7 +316,7 @@ const HomeAdmin = () => {
                                        aria-label="Contact: activate to sort column ascending"
                                        style={{width: 79}}
                                    >
-                                       Fecha Registro
+                                       Fecha Fín
                                    </th>
                                    <th
                                        className="sorting"
@@ -297,7 +327,7 @@ const HomeAdmin = () => {
                                        aria-label="Status: activate to sort column ascending"
                                        style={{width: 98}}
                                    >
-                                       Plan Actual
+                                       Estado
                                    </th>
                                </tr>
                                </thead>
@@ -321,36 +351,34 @@ const HomeAdmin = () => {
                                                        />
                                                    </div>
                                                </div>
-                                               <img
-                                                   alt=""
-                                                   src={doctors9}
-                                                   height={43}
-                                                   width={43}
-                                                   className="rounded-circle ms-4"
-                                               />
                                            </div>
                                        </td>
-                                       <td>{tenant.id}</td>
-                                       <td>{tenant.name}</td>
-                                       <td>{tenant.nombreAdministrador}</td>
-                                       <td>{tenant.address}</td>
+                                       <td>{`#T-${tenant.id.toString().padStart(4, '0')}`}</td>
+                                       <td>{tenant.tenantName}</td>
+                                       <td>{tenant.contactEmail}</td>
                                        <td>
                                            <Link
                                                to="/doctor-list"
                                                className="btn btn-primary light btn-rounded btn-sm text-nowrap"
                                            >
-                                               {tenant.phoneNumber}
+                                               {tenant.contactPhone}
                                            </Link>
+                                       </td>
+                                       <td>{tenant.address}</td>
+                                       <td>
+                                        <span className="font-w500">
+                                            {formatDate(tenant.subscriptionStartDate) || 'N/A'}
+                                        </span>
                                        </td>
                                        <td>
                                         <span className="font-w500">
-                                            {tenant.fechaRegistro || 'N/A'}
+                                            {formatDate(tenant.subscriptionEndDate) || 'N/A'}
                                         </span>
                                        </td>
                                        <td>
                                            <div className="d-flex align-items-center">
-                                    <span className="text-danger font-w600">
-                                          {tenant.planActual + 'Test Texto' || 'N/A'}
+                                    <span className={`${tenant.active ? 'text-primary' : 'text-danger'} font-w600`}>
+                                          {(tenant.active ? 'ACTIVO' : 'INACTIVO')}
                                     </span>
                                                <Dropdown className="dropdown ms-auto text-right">
                                                    <Dropdown.Toggle
@@ -412,7 +440,7 @@ const HomeAdmin = () => {
                                </tbody>
                            </table>
                            <div className="d-sm-flex text-center justify-content-between align-items-center">
-                               <div
+                           <div
                                    className="dataTables_info"
                                    id="example5_info"
                                    role="status"
