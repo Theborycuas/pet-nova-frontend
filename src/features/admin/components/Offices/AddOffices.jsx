@@ -8,9 +8,9 @@ import StepThree from "./StepThree";
 import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {createTenant} from "../../api/adminEndpoints.js";
+import {createTenant} from "../../api/officeEndpoints.js";
 
-const AddTenants = () => {
+const AddOffices = () => {
 	const [goSteps, setGoSteps] = useState(0);
 	const [formData, setFormData] = useState({
 		//StepOne
@@ -37,22 +37,22 @@ const AddTenants = () => {
 	const handleSubmit = async () => {
 		try {
 			const response = await createTenant(formData);
-			console.log('Tenant creado:', response.data);
-			navigate('/');
+			console.log('Office creado:', response.data);
+			navigate('/office-admin');
 		}catch (error) {
-			console.error('Error creando Tenant: ', error)
+			console.error('Error creando el Office: ', error)
 		}
 	}
 
 	return (
 		<Fragment>
-			<PageTitle activeMenu="Add Tenants" motherMenu="Home" />
+			<PageTitle activeMenu="Add Office" motherMenu="Home" />
 
 			<div className="row">
 				<div className="col-xl-12 col-xxl-12">
 					<div className="card">
 						<div className="card-header">
-							<h4 className="card-title">Crear Tenants</h4>
+							<h4 className="card-title">Crear Consultorio</h4>
 						</div>
 						<div className="card-body">
 						
@@ -100,4 +100,4 @@ const AddTenants = () => {
 	);
 };
 
-export default AddTenants;
+export default AddOffices;

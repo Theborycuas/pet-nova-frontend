@@ -86,7 +86,7 @@ import FilteringTable from "./components/table/FilteringTable/FilteringTable";
 /// Form
 import Element from './components/Forms/Element/Element'
 import Wizard from './components/Forms/Wizard/Wizard'
-import AddTenants from "../features/admin/components/addTenants/AddTenants.jsx";
+import AddTenants from "../features/admin/components/Tenants/AddTenants.jsx";
 import CkEditor from './components/Forms/CkEditor/CkEditor'
 import Pickers from './components/Forms/Pickers/Pickers'
 import FormValidation from './components/Forms/FormValidation/FormValidation'
@@ -105,6 +105,8 @@ import Todo from './pages/Todo';
 //Scroll To Top
 import ScrollToTop from '../layouts/ScrollToTop';
 import HomeAdmin from "../features/admin/components/HomeAdmin.jsx";
+import AddOffices from "../features/admin/components/Offices/AddOffices.jsx";
+import OfficeAdmin from "../features/admin/components/Offices/OfficeAdmin.jsx";
 
 
 const Markup = () => {
@@ -114,6 +116,8 @@ const Markup = () => {
     { url: "", component: <HomeAdmin/> },
     { url: "home-admin", component: <HomeAdmin/> },
     { url: 'add-tenants', component: <AddTenants/> },
+    { url: "office-admin", component: <OfficeAdmin/> },
+    { url: 'add-offices', component: <AddOffices/> },
     { url: "dashboard", component: <Home/> },
     { url: 'dashboard-dark', component: <DashboardDark/> },
     { url: "patient-list", component: <PatientList/> },

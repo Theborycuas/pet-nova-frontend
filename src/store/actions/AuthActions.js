@@ -7,8 +7,7 @@ import {
 } from '../../features/auth/services/AuthService.js';
 
 import { userLogin } from '../../features/auth/api/authEndpoints.js';
-import {getAllTenantsList} from "../../features/admin/services/AdminServices.js";
-import {getAllTenants} from "../../features/admin/api/adminEndpoints.js";
+import {getAllOffices} from "../../features/admin/api/officeEndpoints.js";
 
 
 export const SIGNUP_CONFIRMED_ACTION = '[signup action] confirmed signup';
@@ -64,7 +63,7 @@ export function loginAction(credentials, navigate) {
                 dispatch(loginConfirmedAction(response.data));
 
                 try {
-                    await dispatch(getAllTenants()).then((response) => {
+                    await dispatch(getAllOffices()).then((response) => {
                         sessionStorage.setItem('cachedTenants', JSON.stringify(response.data))
                     });
                 } catch (tenantsError) {

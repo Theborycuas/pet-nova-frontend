@@ -11,6 +11,17 @@ export const MenuList = [
             }
         ],
     },
+    {
+        title: 'Office Admin',
+        classsChange: 'mm-collapse',
+        iconStyle: <i className="flaticon-381-television"></i>,
+        content: [
+            {
+                title: 'Office List',
+                to: 'office-admin',
+            }
+        ],
+    },
     //Dashboard
     {
         title: 'Dashboard',	

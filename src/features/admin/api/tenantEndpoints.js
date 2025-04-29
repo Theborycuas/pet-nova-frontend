@@ -3,13 +3,13 @@ import axios from "axios";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,
-    baseURL: `${baseAPI.defaults.baseURL}/offices`
+    baseURL: `${baseAPI.defaults.baseURL}/tenants`
 })
 
-export const adminEndpoints = {
-    resgisterTenants: "/resgisterOffice",
-    listAllTenants: "/listAllOffice",
-    getTenantsById: "/getOfficeById"
+export const officeEndpoints = {
+    createTenant: "/createTenant",
+    getAllTenants: "/getAllOffices",
+    getTenantById: "/getOfficeById"
 }
 
 
@@ -28,7 +28,7 @@ adminAPI.interceptors.request.use((config) => {
 
 export const createTenant = async (tenantData) => {
     try {
-        const response = await adminAPI.post(adminEndpoints.resgisterTenants, tenantData);
+        const response = await adminAPI.post(officeEndpoints.createTenant, tenantData);
         return response.data;
     } catch (error) {
         throw error.response.data;
@@ -37,7 +37,7 @@ export const createTenant = async (tenantData) => {
 
 export const getAllTenants = async () =>{
     try {
-        const response = await adminAPI.get(adminEndpoints.listAllTenants, {
+        const response = await adminAPI.get(officeEndpoints.getAllTenants, {
             headers: {
                 'Content-Type': 'application/json',
             },

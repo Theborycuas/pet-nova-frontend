@@ -18,7 +18,8 @@ import widget03 from "../../../assets/images/widget/3.jpg";
 import widget05 from "../../../assets/images/widget/5.jpg";
 import doctors9 from "../../../assets/images/doctors/9.jpg";
 import {Dropdown} from "react-bootstrap";
-import {getAllTenants} from "../api/adminEndpoints.js";
+import {getAllOffices} from "../api/officeEndpoints.js";
+import {getAllTenants} from "../api/tenantEndpoints.js";
 
 const HomeAdmin = () => {
     const [tenants, setTenants] = useState([]);
