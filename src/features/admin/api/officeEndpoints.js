@@ -6,10 +6,10 @@ const adminAPI = axios.create({
     baseURL: `${baseAPI.defaults.baseURL}/offices`
 })
 
-export const adminEndpoints = {
-    resgisterTenants: "/resgisterOffice",
-    listAllTenants: "/listAllOffice",
-    getTenantsById: "/getOfficeById"
+export const officeEndpoints = {
+    resgisterOffice: "/resgisterOffice",
+    listAllOffices: "/listAllOffice",
+    getOfficeById: "/getOfficeById"
 }
 
 
@@ -26,18 +26,18 @@ adminAPI.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-export const createTenant = async (tenantData) => {
+export const createOffice = async (tenantData) => {
     try {
-        const response = await adminAPI.post(adminEndpoints.resgisterTenants, tenantData);
+        const response = await adminAPI.post(officeEndpoints.resgisterOffice, tenantData);
         return response.data;
     } catch (error) {
         throw error.response.data;
     }
 }
 
-export const getAllTenants = async () =>{
+export const getAllOffices = async () =>{
     try {
-        const response = await adminAPI.get(adminEndpoints.listAllTenants, {
+        const response = await adminAPI.get(officeEndpoints.listAllOffices, {
             headers: {
                 'Content-Type': 'application/json',
             },

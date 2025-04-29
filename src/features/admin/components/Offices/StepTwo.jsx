@@ -30,7 +30,7 @@ const StepTwo = ({ formData, setFormData}) => {
                       className="form-control"
                       id="inputGroupPrepend2"
                       aria-describedby="inputGroupPrepend2"
-                      placeholder="example@example.com.com"
+                      placeholder="example@example.com"
                       value={formData.contactEmail}
                       onChange={handleChange}
                       required
@@ -97,7 +97,7 @@ const StepTwo = ({ formData, setFormData}) => {
                       className="form-control"
                       id="inputGroupPrepend2"
                       aria-describedby="inputGroupPrepend2"
-                      placeholder="example@example.com.com"
+                      placeholder="example@example.com"
                       value={formData.managerEmail}
                       onChange={handleChange}
                       required

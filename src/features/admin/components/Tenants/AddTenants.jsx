@@ -8,26 +8,20 @@ import StepThree from "./StepThree";
 import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {createTenant} from "../../api/adminEndpoints.js";
+import {createOffice} from "../../api/officeEndpoints.js";
+import {createTenant} from "../../api/tenantEndpoints.js";
 
 const AddTenants = () => {
 	const [goSteps, setGoSteps] = useState(0);
 	const [formData, setFormData] = useState({
 		//StepOne
-		name: '',
+		tenantName: '',
 		address: '',
-		taxId: '',
-		logoUrl: '',
-
-		//StepTwo
 		contactEmail: '',
-		phoneNumber: '',
-		managerName: '',
-		managerPhone: '',
-		managerEmail: '',
+		contactPhone: '',
 
-		//Steap Three
-		currentPlan: '',
+		//SteapTwo
+		planId: '',
 		currency: ''
 	})
 
@@ -59,8 +53,8 @@ const AddTenants = () => {
 							<div className="form-wizard ">
 								<Stepper className="nav-wizard" activeStep={goSteps} label={false}>
 									<Step className="nav-link" onClick={() => setGoSteps(0)} />
-									<Step className="nav-link" onClick={() => setGoSteps(1)} />
-									<Step className="nav-link" onClick={() => setGoSteps(2)} />
+									<Step className="nav-link" onClick={() => setGoSteps(1)} />{/*
+									<Step className="nav-link" onClick={() => setGoSteps(2)} />*/}
 								</Stepper>
 							  {goSteps === 0 && (
 								<>
@@ -75,12 +69,14 @@ const AddTenants = () => {
 									<StepTwo formData={formData} setFormData={setFormData} />
 									<div className="text-end toolbar toolbar-bottom p-2">
 										<button  className="btn btn-secondary sw-btn-prev me-1" onClick={() => setGoSteps(0)}>Anterior</button>
-										<button className="btn btn-primary sw-btn-next ms-1" onClick={() => setGoSteps(2)}>Siguiente</button>
-									</div>	
+										<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar
+											Tenant
+										</button>
+									</div>
 								</>
 							  )}
-							  {goSteps === 2 && (
-								<>
+								{/*{goSteps === 2 && (
+									<>
 									<StepThree formData={formData} setFormData={setFormData} />
 									<div className="text-end toolbar toolbar-bottom p-2">
 										<button className="btn btn-secondary sw-btn-prev me-1"
@@ -89,7 +85,7 @@ const AddTenants = () => {
 										<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar Tenant</button>
 									</div>
 								</>
-							  )}
+							  )}*/}
 
 							</div>
 						</div>

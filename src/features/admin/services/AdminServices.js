@@ -1,10 +1,10 @@
-import { getAllTenants } from "../api/adminEndpoints.js";
+import { getAllOffices } from "../api/officeEndpoints.js";
 
 export function getAllTenantsList(){
 
     return async (dispatch) => {
         try {
-            const response = await getAllTenants();
+            const response = await getAllOffices();
             const listTenant = response.data;
 
             dispatch({
