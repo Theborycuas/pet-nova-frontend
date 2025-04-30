@@ -19,6 +19,7 @@ import widget05 from "../../../../assets/images/widget/5.jpg";
 import doctors9 from "../../../../assets/images/doctors/9.jpg";
 import {Dropdown} from "react-bootstrap";
 import {getAllOffices} from "../../api/officeEndpoints.js";
+import {formatDateTimeUtils} from "../../../../utils/formatters.js";
 
 const HomeAdmin = () => {
     const [offices, setOffices] = useState([]);
@@ -94,68 +95,10 @@ const HomeAdmin = () => {
             }
         }
     };
-
-   const settings = {
-      focusOnSelect: true,
-      infinite: true,
-      slidesToShow: 5,
-      slidesToScroll: 1,
-      speed: 500,
-      responsive: [
-         {
-            breakpoint: 1600,
-            settings: {
-               slidesToShow: 3,
-               slidesToScroll: 1,
-            },
-         },
-
-         {
-            breakpoint: 1200,
-            settings: {
-               slidesToShow: 2,
-               slidesToScroll: 1,
-            },
-         },
-         {
-            breakpoint: 991,
-            settings: {
-               slidesToShow: 3,
-               slidesToScroll: 1,
-            },
-         },
-         {
-            breakpoint: 767,
-            settings: {
-               slidesToShow: 2,
-               slidesToScroll: 1,
-            },
-         },
-         {
-            breakpoint: 575,
-            settings: {
-               slidesToShow: 1,
-               slidesToScroll: 1,
-            },
-         },
-      ],
-   };
    const { changeBackground } = useContext(ThemeContext);
    useEffect(() => {
        changeBackground({ value: "light", label: "Light" });
    }, []);
-
-    function formatDate(dateString) {
-        const options = {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
-        };
-        return new Date(dateString).toLocaleDateString('es-ES', options);
-    }
 
    return (
        <div>
@@ -351,7 +294,7 @@ const HomeAdmin = () => {
                                        <td>{office.managerName}</td>
                                        <td>
                                         <span className="font-w500">
-                                            {formatDate(office.createdAt) || 'N/A'}
+                                            {formatDateTimeUtils(office.createdAt) || 'N/A'}
                                         </span>
                                        </td>
                                        <td>

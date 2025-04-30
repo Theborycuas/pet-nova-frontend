@@ -20,6 +20,7 @@ import doctors9 from "../../../assets/images/doctors/9.jpg";
 import {Dropdown} from "react-bootstrap";
 import {getAllOffices} from "../api/officeEndpoints.js";
 import {getAllTenants} from "../api/tenantEndpoints.js";
+import {formatDateUtils} from "../../../utils/formatters.js";
 
 const HomeAdmin = () => {
     const [tenants, setTenants] = useState([]);
@@ -45,15 +46,16 @@ const HomeAdmin = () => {
     };
     // use effect
     useEffect(() => {
-        const cacheTenants = sessionStorage.getItem('cachedTenants');
-        if(cacheTenants){
-            setTenants(JSON.parse(cacheTenants));
-            return;
-        }
         const loadTenants = async () => {
+            const startTime = Date.now();
             setLoading(true);
+            setError(null);
             try {
                 const response = await getAllTenants();
+                // Espera al menos 500ms para evitar parpadeos
+                const elapsed = Date.now() - startTime;
+                if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+
                 setTenants(response.data);
             } catch (err) {
                 setError(err.message);
@@ -151,25 +153,6 @@ const HomeAdmin = () => {
        changeBackground({ value: "light", label: "Light" });
    }, []);
 
-    function formatDateTime(dateString) {
-        const options = {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
-        };
-        return new Date(dateString).toLocaleDateString('es-ES', options);
-    }
-    function formatDate(dateString) {
-        const options = {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        };
-        return new Date(dateString).toLocaleDateString('es-ES', options);
-    }
 
    return (
        <div>
@@ -212,254 +195,271 @@ const HomeAdmin = () => {
                <div className="col-xl-12">
                    <div className="table-responsive">
                        <div id="example5_wrapper" className="dataTables_wrapper no-footer">
-                           <table id="doctor_list"
-                                  className="table shadow-hover  mb-4 table-responsive-xl dataTablesCard fs-14 dataTable no-footer">
-                               <thead>
-                               <tr role="row">
-                                   <th
-                                       className="doctor_strg"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-sort="ascending"
-                                       style={{width: 91}}
-                                   >
-                                       <div className="checkbox align-self-center">
-                                           <div className="form-check custom-checkbox ms-1">
-                                               <input
-                                                   type="checkbox"
-                                                   onClick={() => chackboxFun("all")}
-                                                   className="form-check-input"
-                                                   id="checkAll"
-                                                   required
-                                               />
-                                               <label
-                                                   className="form-check-label"
-                                                   htmlFor="checkAll"
-                                               />
-                                           </div>
-                                       </div>
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="ID: activate to sort column ascending"
-                                       style={{width: 50}}
-                                   >
-                                       Tenand Id
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Date Join: activate to sort column ascending"
-                                       style={{width: 123}}
-                                   >
-                                       Nombre del Tenand
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Doctor Name: activate to sort column ascending"
-                                       style={{width: 111}}
-                                   >
-                                       Email
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Specialist: activate to sort column ascending"
-                                       style={{width: 80}}
-                                   >
-                                       Teléfono
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Schedule: activate to sort column ascending"
-                                       style={{width: 150}}
-                                   >
-                                       Dirección
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Schedule: activate to sort column ascending"
-                                       style={{width: 150}}
-                                   >
-                                       Fecha Inicio
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Contact: activate to sort column ascending"
-                                       style={{width: 150}}
-                                   >
-                                       Fecha Fín
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Status: activate to sort column ascending"
-                                       style={{width: 98}}
-                                   >
-                                       Estado
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Status: activate to sort column ascending"
-                                       style={{width: 10}}
-                                   >
-                                       Acciones
-                                   </th>
-                               </tr>
-                               </thead>
-                               <tbody>
-                               {tenants.map((tenant, index) => (
-                                   <tr role="row" className="odd">
-                                       <td className="doctor_checkbox">
-                                           <div className="d-flex align-items-center">
-                                               <div className="checkbox text-right align-self-center">
-                                                   <div className="form-check custom-checkbox ">
-                                                       <input
-                                                           type="checkbox"
-                                                           onClick={() => chackboxFun(tenant.id)}
-                                                           className="form-check-input"
-                                                           id="customCheckBox2"
-                                                           required
-                                                       />
-                                                       <label
-                                                           className="form-check-label"
-                                                           htmlFor="customCheckBox2"
-                                                       />
-                                                   </div>
+                           {loading && (
+                               <div className="text-center my-5">
+                                   <div className="spinner-grow text-success" role="status">
+                                       <span className="visually-hidden">Cargando...</span>
+                                   </div>
+                                   <p className="mt-2">Cargando tenants...</p>
+                               </div>
+                           )}
+                           {!loading && tenants.length > 0 && (
+                               <table id="doctor_list"
+                                      className="table shadow-hover  mb-4 table-responsive-xl dataTablesCard fs-14 dataTable no-footer">
+                                   <thead>
+                                   <tr role="row">
+                                       <th
+                                           className="doctor_strg"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-sort="ascending"
+                                           style={{width: 91}}
+                                       >
+                                           <div className="checkbox align-self-center">
+                                               <div className="form-check custom-checkbox ms-1">
+                                                   <input
+                                                       type="checkbox"
+                                                       onClick={() => chackboxFun("all")}
+                                                       className="form-check-input"
+                                                       id="checkAll"
+                                                       required
+                                                   />
+                                                   <label
+                                                       className="form-check-label"
+                                                       htmlFor="checkAll"
+                                                   />
                                                </div>
                                            </div>
-                                       </td>
-                                       <td>{`#T-${tenant.id.toString().padStart(4, '0')}`}</td>
-                                       <td>{tenant.tenantName}</td>
-                                       <td>{tenant.contactEmail}</td>
-                                       <td>
-                                           <Link
-                                               to="/tenant-details"
-                                               className="btn btn-primary light btn-rounded btn-sm text-nowrap"
-                                           >
-                                               {tenant.contactPhone}
-                                           </Link>
-                                       </td>
-                                       <td>{tenant.address}</td>
-                                       <td>
-                                        <span className="font-w500">
-                                            {formatDate(tenant.subscriptionStartDate) || 'N/A'}
-                                        </span>
-                                       </td>
-                                       <td>
-                                        <span className="font-w500">
-                                            {formatDate(tenant.subscriptionEndDate) || 'N/A'}
-                                        </span>
-                                       </td>
-                                       <td>
-                                           <div className="d-flex align-items-center">
-                                            <span
-                                                className={`${tenant.active ? 'text-primary' : 'text-danger'} font-w600`}>
-                                                  {(tenant.active ? 'ACTIVO' : 'INACTIVO')}
-                                            </span>
-                                           </div>
-                                       </td>
-                                       <td>
-                                           <div className="d-flex align-items-center">
-                                               <Dropdown className="dropdown ms-auto text-right">
-                                                   <Dropdown.Toggle
-                                                       variant=""
-                                                       className="btn-link i-false"
-                                                   >
-                                                       <svg
-                                                           width={24}
-                                                           height={24}
-                                                           viewBox="0 0 24 24"
-                                                           fill="none"
-                                                           xmlns="http://www.w3.org/2000/svg"
-                                                       >
-                                                           <path
-                                                               d="M12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11Z"
-                                                               stroke="#3E4954"
-                                                               strokeWidth={2}
-                                                               strokeLinecap="round"
-                                                               strokeLinejoin="round"
-                                                           />
-                                                           <path
-                                                               d="M12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18Z"
-                                                               stroke="#3E4954"
-                                                               strokeWidth={2}
-                                                               strokeLinecap="round"
-                                                               strokeLinejoin="round"
-                                                           />
-                                                           <path
-                                                               d="M12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4Z"
-                                                               stroke="#3E4954"
-                                                               strokeWidth={2}
-                                                               strokeLinecap="round"
-                                                               strokeLinejoin="round"
-                                                           />
-                                                       </svg>
-                                                   </Dropdown.Toggle>
-                                                   <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
-                                                       <Dropdown.Item
-                                                           as={Link}
-                                                           to={`/tenant-details/${tenant.id}`}
-                                                       >
-                                                           View Detail
-                                                       </Dropdown.Item>
-                                                       <Dropdown.Item
-                                                           as={Link}
-                                                           to={`/tenant-details/${tenant.id}`}
-                                                       >
-                                                           Edit
-                                                       </Dropdown.Item>
-                                                       <Dropdown.Item
-                                                           as={Link}
-                                                           to={`/tenant-details/${tenant.id}`}
-                                                       >
-                                                           Delete
-                                                       </Dropdown.Item>
-                                                   </Dropdown.Menu>
-                                               </Dropdown>
-                                           </div>
-                                       </td>
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="ID: activate to sort column ascending"
+                                           style={{width: 50}}
+                                       >
+                                           Tenand Id
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Date Join: activate to sort column ascending"
+                                           style={{width: 123}}
+                                       >
+                                           Nombre del Tenand
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Doctor Name: activate to sort column ascending"
+                                           style={{width: 111}}
+                                       >
+                                           Email
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Specialist: activate to sort column ascending"
+                                           style={{width: 80}}
+                                       >
+                                           Teléfono
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Schedule: activate to sort column ascending"
+                                           style={{width: 150}}
+                                       >
+                                           Dirección
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Schedule: activate to sort column ascending"
+                                           style={{width: 150}}
+                                       >
+                                           Fecha Inicio
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Contact: activate to sort column ascending"
+                                           style={{width: 150}}
+                                       >
+                                           Fecha Fín
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Status: activate to sort column ascending"
+                                           style={{width: 98}}
+                                       >
+                                           Estado
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Status: activate to sort column ascending"
+                                           style={{width: 10}}
+                                       >
+                                           Acciones
+                                       </th>
                                    </tr>
+                                   </thead>
+                                   <tbody>
+                                   {tenants.map((tenant, index) => (
+                                       <tr role="row" className="odd">
+                                           <td className="doctor_checkbox">
+                                               <div className="d-flex align-items-center">
+                                                   <div className="checkbox text-right align-self-center">
+                                                       <div className="form-check custom-checkbox ">
+                                                           <input
+                                                               type="checkbox"
+                                                               onClick={() => chackboxFun(tenant.id)}
+                                                               className="form-check-input"
+                                                               id="customCheckBox2"
+                                                               required
+                                                           />
+                                                           <label
+                                                               className="form-check-label"
+                                                               htmlFor="customCheckBox2"
+                                                           />
+                                                       </div>
+                                                   </div>
+                                               </div>
+                                           </td>
+                                           <td>{`#T-${tenant.id.toString().padStart(4, '0')}`}</td>
+                                           <td>{tenant.tenantName}</td>
+                                           <td>{tenant.contactEmail}</td>
+                                           <td>
+                                               <Link
+                                                   to="/tenant-details"
+                                                   className="btn btn-primary light btn-rounded btn-sm text-nowrap"
+                                               >
+                                                   {tenant.contactPhone}
+                                               </Link>
+                                           </td>
+                                           <td>{tenant.address}</td>
+                                           <td>
+                                            <span className="font-w500">
+                                                {formatDateUtils(tenant.subscriptionStartDate) || 'N/A'}
+                                            </span>
+                                           </td>
+                                           <td>
+                                            <span className="font-w500">
+                                                {formatDateUtils(tenant.subscriptionEndDate) || 'N/A'}
+                                            </span>
+                                           </td>
+                                           <td>
+                                               <div className="d-flex align-items-center">
+                                                <span
+                                                    className={`${tenant.active ? 'text-primary' : 'text-danger'} font-w600`}>
+                                                      {(tenant.active ? 'ACTIVO' : 'INACTIVO')}
+                                                </span>
+                                               </div>
+                                           </td>
+                                           <td>
+                                               <div className="d-flex align-items-center">
+                                                   <Dropdown className="dropdown ms-auto text-right">
+                                                       <Dropdown.Toggle
+                                                           variant=""
+                                                           className="btn-link i-false"
+                                                       >
+                                                           <svg
+                                                               width={24}
+                                                               height={24}
+                                                               viewBox="0 0 24 24"
+                                                               fill="none"
+                                                               xmlns="http://www.w3.org/2000/svg"
+                                                           >
+                                                               <path
+                                                                   d="M12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11Z"
+                                                                   stroke="#3E4954"
+                                                                   strokeWidth={2}
+                                                                   strokeLinecap="round"
+                                                                   strokeLinejoin="round"
+                                                               />
+                                                               <path
+                                                                   d="M12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18Z"
+                                                                   stroke="#3E4954"
+                                                                   strokeWidth={2}
+                                                                   strokeLinecap="round"
+                                                                   strokeLinejoin="round"
+                                                               />
+                                                               <path
+                                                                   d="M12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4Z"
+                                                                   stroke="#3E4954"
+                                                                   strokeWidth={2}
+                                                                   strokeLinecap="round"
+                                                                   strokeLinejoin="round"
+                                                               />
+                                                           </svg>
+                                                       </Dropdown.Toggle>
+                                                       <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
+                                                           <Dropdown.Item
+                                                               as={Link}
+                                                               to={`/tenant-details/${tenant.id}`}
+                                                           >
+                                                               View Detail
+                                                           </Dropdown.Item>
+                                                           <Dropdown.Item
+                                                               as={Link}
+                                                               to={`/tenant-details/${tenant.id}`}
+                                                           >
+                                                               Edit
+                                                           </Dropdown.Item>
+                                                           <Dropdown.Item
+                                                               as={Link}
+                                                               to={`/tenant-details/${tenant.id}`}
+                                                           >
+                                                               Delete
+                                                           </Dropdown.Item>
+                                                       </Dropdown.Menu>
+                                                   </Dropdown>
+                                               </div>
+                                           </td>
+                                       </tr>
                                    ))}
-                               </tbody>
-                           </table>
+                                   </tbody>
+                               </table>
+
+                           )}
+                           {!loading && tenants.length === 0 && !error && (
+                               <p className="text-center">No se encontraron tenants</p>
+                           )}
+                           {error && (
+                               <div className="alert alert-danger">{error}</div>
+                           )}
                            <div className="d-sm-flex text-center justify-content-between align-items-center">
-                           <div
+                               <div
                                    className="dataTables_info"
                                    id="example5_info"
                                    role="status"
