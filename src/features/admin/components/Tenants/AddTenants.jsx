@@ -10,6 +10,8 @@ import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {createOffice} from "../../api/officeEndpoints.js";
 import {createTenant} from "../../api/tenantEndpoints.js";
+import Swal from 'sweetalert2';
+import {Alerts} from "../../../../utils/alerts.js";
 
 const AddTenants = () => {
 	const [goSteps, setGoSteps] = useState(0);
@@ -30,10 +32,24 @@ const AddTenants = () => {
 
 	const handleSubmit = async () => {
 		try {
+			const loadingAlert = Alerts.showLoading('Registrando Tenant', 'Guardando información...');
+
 			const response = await createTenant(formData);
-			console.log('Tenant creado:', response);
+
+			Alerts.closeAlerts();
+			await Alerts.showSuccess('Tenant creado!', 'El registro se completó exitosamente');
 			navigate(`/tenant-details/${response.id}`);
 		}catch (error) {
+			Alerts.closeAlerts();
+			if (!error.response) {
+				// Error de conexión (no hay respuesta del backend)
+				console.error('Error de red:', error.message);
+				Alerts.showConnectionError();
+			} else {
+				// Error del servidor (4xx/5xx)
+				const errorMessage = error.response.data?.message || 'Error desconocido';
+				Alerts.showError('Error en el servidor', errorMessage);
+			}
 			console.error('Error creando Tenant: ', error)
 		}
 	}

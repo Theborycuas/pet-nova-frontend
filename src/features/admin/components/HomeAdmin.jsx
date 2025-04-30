@@ -21,6 +21,7 @@ import {Dropdown} from "react-bootstrap";
 import {getAllOffices} from "../api/officeEndpoints.js";
 import {getAllTenants} from "../api/tenantEndpoints.js";
 import {formatDateUtils} from "../../../utils/formatters.js";
+import {Alerts} from "../../../utils/alerts.js";
 
 const HomeAdmin = () => {
     const [tenants, setTenants] = useState([]);
@@ -58,7 +59,11 @@ const HomeAdmin = () => {
 
                 setTenants(response.data);
             } catch (err) {
-                setError(err.message);
+                if (!error.response) {
+                    setError("Error de Conexión");
+                } else {
+                    err.message
+                }
             } finally {
                 setLoading(false);
             }
