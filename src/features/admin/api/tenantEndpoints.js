@@ -9,7 +9,7 @@ const adminAPI = axios.create({
 export const officeEndpoints = {
     createTenant: "/createTenant",
     getAllTenants: "/getAllTenants",
-    getTenantById: "/getTenantById"
+    getTenantById: (tenantId) => `/getTenantById/${tenantId}`
 }
 
 
@@ -56,6 +56,24 @@ export const getAllTenants = async () =>{
         throw error;
     }
 };
+export const getTenantById = async (tenantId) =>{
+    try {
+        const response = await adminAPI.get(officeEndpoints.getTenantById(tenantId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
 
 const handleAdminError = (error) =>{
     const errorMessages = {

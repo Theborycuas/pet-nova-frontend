@@ -329,6 +329,17 @@ const HomeAdmin = () => {
                                    >
                                        Estado
                                    </th>
+                                   <th
+                                       className="sorting"
+                                       tabIndex={0}
+                                       aria-controls="example5"
+                                       rowSpan={1}
+                                       colSpan={1}
+                                       aria-label="Status: activate to sort column ascending"
+                                       style={{width: 10}}
+                                   >
+                                       Acciones
+                                   </th>
                                </tr>
                                </thead>
                                <tbody>
@@ -358,7 +369,7 @@ const HomeAdmin = () => {
                                        <td>{tenant.contactEmail}</td>
                                        <td>
                                            <Link
-                                               to="/doctor-list"
+                                               to="/tenant-details"
                                                className="btn btn-primary light btn-rounded btn-sm text-nowrap"
                                            >
                                                {tenant.contactPhone}
@@ -377,9 +388,14 @@ const HomeAdmin = () => {
                                        </td>
                                        <td>
                                            <div className="d-flex align-items-center">
-                                    <span className={`${tenant.active ? 'text-primary' : 'text-danger'} font-w600`}>
-                                          {(tenant.active ? 'ACTIVO' : 'INACTIVO')}
-                                    </span>
+                                            <span
+                                                className={`${tenant.active ? 'text-primary' : 'text-danger'} font-w600`}>
+                                                  {(tenant.active ? 'ACTIVO' : 'INACTIVO')}
+                                            </span>
+                                           </div>
+                                       </td>
+                                       <td>
+                                           <div className="d-flex align-items-center">
                                                <Dropdown className="dropdown ms-auto text-right">
                                                    <Dropdown.Toggle
                                                        variant=""
@@ -417,17 +433,20 @@ const HomeAdmin = () => {
                                                    </Dropdown.Toggle>
                                                    <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
                                                        <Dropdown.Item
-                                                           to="/doctor-list"
+                                                           as={Link}
+                                                           to={`/tenant-details/${tenant.id}`}
                                                        >
                                                            View Detail
                                                        </Dropdown.Item>
                                                        <Dropdown.Item
-                                                           to="/doctor-list"
+                                                           as={Link}
+                                                           to={`/tenant-details/${tenant.id}`}
                                                        >
                                                            Edit
                                                        </Dropdown.Item>
                                                        <Dropdown.Item
-                                                           to="/doctor-list"
+                                                           as={Link}
+                                                           to={`/tenant-details/${tenant.id}`}
                                                        >
                                                            Delete
                                                        </Dropdown.Item>
@@ -436,7 +455,7 @@ const HomeAdmin = () => {
                                            </div>
                                        </td>
                                    </tr>
-                               ))}
+                                   ))}
                                </tbody>
                            </table>
                            <div className="d-sm-flex text-center justify-content-between align-items-center">
@@ -456,7 +475,7 @@ const HomeAdmin = () => {
                                    className="dataTables_paginate paging_simple_numbers d-flex  justify-content-center align-items-center pb-3">
                                    <Link
                                        className="paginate_button previous disabled"
-                                       to="/doctor-list"
+                                       to="/tenant-details"
                                        onClick={() =>
                                            activePag.current > 0 &&
                                            onClick(activePag.current - 1)
@@ -471,7 +490,7 @@ const HomeAdmin = () => {
                                       className={`paginate_button  ${
                                           activePag.current === i ? "current" : ""
                                       } ${i > 0 ? "ms-1" : ""}`}
-                                      to="/doctor-list"
+                                      to="/tenant-details"
                                       onClick={() => onClick(i)}
                                   >
                                       {number}
@@ -480,7 +499,7 @@ const HomeAdmin = () => {
                            </span>
                                    <Link
                                        className="paginate_button next disabled"
-                                       to="/doctor-list"
+                                       to="/tenant-details"
                                        onClick={() =>
                                            activePag.current + 1 < paggination.length &&
                                            onClick(activePag.current + 1)
