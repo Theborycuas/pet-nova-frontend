@@ -31,8 +31,8 @@ const AddTenants = () => {
 	const handleSubmit = async () => {
 		try {
 			const response = await createTenant(formData);
-			console.log('Tenant creado:', response.data);
-			navigate('/');
+			console.log('Tenant creado:', response);
+			navigate(`/tenant-details/${response.id}`);
 		}catch (error) {
 			console.error('Error creando Tenant: ', error)
 		}
