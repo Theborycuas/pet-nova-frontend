@@ -15,7 +15,7 @@ const StepTwo = ({ formData, setFormData}) => {
    const handleSelectChange = (option) => {
       setFormData(prev => ({
          ...prev,
-         administratorName: option ? option.value : ''
+         managerName: option ? option.value : ''
       }));
    };
    return (

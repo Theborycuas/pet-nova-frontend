@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import Slider from "react-slick";
 import {Dropdown, Modal} from "react-bootstrap";
 import "slick-carousel/slick/slick.css";
@@ -30,6 +30,8 @@ import swal from "sweetalert";
 import {formatDateTimeUtils} from "../../../../utils/formatters.js";
 import Select from "react-select";
 import CustomClearIndicator from "../../../../jsx/components/PluginsMenu/Select2/MultiSelect.jsx";
+import {createOffice} from "../../api/officeEndpoints.js";
+import {Alerts} from "../../../../utils/alerts.js";
 
 const CardListBlog = [
    {
@@ -66,6 +68,20 @@ const CardListBlog = [
    }
 ];
 
+const initialFormData = {
+   name: '',
+   address: '',
+   taxId: '',
+   logoUrl: '',
+   contactEmail: '',
+   phoneNumber: '',
+   managerName: '',
+   managerPhone: '',
+   managerEmail: '',
+   currentPlan: '',
+   currency: '',
+};
+
 const TenantDetail = () => {
 
    const [tenant, setTenant] = useState(null);
@@ -74,6 +90,9 @@ const TenantDetail = () => {
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
 
+   const [formData, setFormData] = useState(initialFormData);
+
+   const navigate = useNavigate();
    useEffect(() => {
       const fetchTenant = async () => {
          try {
@@ -83,7 +102,6 @@ const TenantDetail = () => {
             // Espera al menos 500ms para evitar parpadeos
             const elapsed = Date.now() - startTime;
             if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-
             setTenant(data);
          } catch (error){
             setError(error.message);
@@ -94,6 +112,81 @@ const TenantDetail = () => {
       };
       fetchTenant();
    }, [tenantId])
+
+
+
+   const handleSubmitSaveOffice = async (e) => {
+      e.preventDefault();
+      const startTime = Date.now();
+      try {
+         Alerts.showLoading('Registrando Consultorio', 'Guardando información...');
+
+         const dataToSend = {
+            ...formData,
+            tenantId: tenant.id
+         };
+         const response = await createOffice(dataToSend);
+         const elapsed = Date.now() - startTime;
+         if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+
+         Alerts.closeAlerts();
+         await Alerts.showSuccess('Consultorio creado!', 'El registro se completó exitosamente');
+         setPostModal(false);
+      }catch (error) {
+         Alerts.closeAlerts();
+         if (!error.response) {
+            // Error de conexión (no hay respuesta del backend)
+            console.error('Error de red:', error.message);
+            Alerts.showConnectionError();
+         } else {
+            // Error del servidor (4xx/5xx)
+            const errorMessage = error.response.data?.message || 'Error desconocido';
+            Alerts.showError('Error en el servidor', errorMessage);
+         }
+         console.error('Error creando Office: ', error)
+      }
+   }
+
+   const handleChange = (e) => {
+      const { name, value } = e.target;
+      setFormData(prev => ({ ...prev, [name]: value }));
+   };
+   const handleSelectChange = (option) => {
+      setFormData(prev => ({
+         ...prev,
+         managerName: option ? option.value : ''
+      }));
+   };
+   const handlePlanChange = (option) => {
+      setFormData(prev => ({
+         ...prev,
+         currentPlan: option ? option.value : ''
+      }));
+   };
+   const handleCurrencyChange = (option) => {
+      setFormData(prev => ({
+         ...prev,
+         currency: option ? option.value : ''
+      }));
+   };
+
+   const managerOptions = [
+      { value: 1, label: 'José' },
+      { value: 2, label: 'Emilio' },
+      { value: 3, label: 'Juan' },
+   ]
+   const planOptions = [
+      { value: 1, label: 'Free' },
+      { value: 2, label: 'Plus' },
+      { value: 3, label: 'Premium' },
+   ]
+   const currencyOptions = [
+      { value: 1, label: 'USD' },
+      { value: 2, label: 'EU' },
+      { value: 3, label: 'MXN' },
+   ]
+
+
 
    function SampleNextArrow(props) {
       const { onClick } = props;
@@ -151,6 +244,7 @@ const TenantDetail = () => {
    }, [tenantId]);*/
 
    const [postModal, setPostModal] = useState(false);
+
    const [contacts, setContacts] = useState(CardListBlog);
    // delete data
    const handleDeleteClick = (contactId) => {
@@ -303,7 +397,13 @@ const TenantDetail = () => {
              </div>
           </div>
           <div className="d-block d-sm-flex mb-3 mb-md-4">
-             <Link className="btn btn-primary font-w600 mb-2 me-auto" onClick={() => setPostModal(true)}>+ Agregar Consultorios </Link>
+             <Link className="btn btn-primary font-w600 mb-2 me-auto"
+                   onClick={() => {
+                      setFormData(initialFormData);
+                      setFile(null);
+                      setPostModal(true)
+                   }}
+             >+ Agregar Consultorios </Link>
 
              <Dropdown className="dropdown ms-auto me-1 d-inline-block  ">
                 <Dropdown.Toggle
@@ -691,7 +791,7 @@ const TenantDetail = () => {
                                </button>
                             </div>
                             <div className="modal-body">
-                               <form>
+                               <form onSubmit={handleSubmitSaveOffice}>
                                   <div className="row">
                                      {/*<div className="col-xl-12">
                                         <div className="form-group">
@@ -725,8 +825,15 @@ const TenantDetail = () => {
                                         <div className="form-group">
                                            <label className="text-label">Nombre del Consultorio <span
                                                className="required">*</span></label>
-                                           <input type="text" className="form-control" id=""
-                                                  placeholder="Veterinaria Pet Lovers"/>
+                                           <input
+                                               type="text"
+                                               name="name"
+                                               className="form-control"
+                                               placeholder="Veterinaria Pet Lovers"
+                                               value={formData.name}
+                                               onChange={handleChange}
+                                               required
+                                           />
                                         </div>
                                      </div>
                                      <div className="col-xl-6">
@@ -738,8 +845,8 @@ const TenantDetail = () => {
                                                name="taxId"
                                                className="form-control"
                                                placeholder="1711251482001"
-                                               /*value={formData.taxId}
-                                               onChange={handleChange}*/
+                                               value={formData.taxId}
+                                               onChange={handleChange}
                                                required
                                            />
                                         </div>
@@ -753,8 +860,8 @@ const TenantDetail = () => {
                                                name="phoneNumber"
                                                className="form-control"
                                                placeholder="0996588446"
-                                               /*value={formData.phoneNumber}
-                                               onChange={handleChange}*/
+                                               value={formData.phoneNumber}
+                                               onChange={handleChange}
                                                required
                                            />
                                         </div>
@@ -770,8 +877,8 @@ const TenantDetail = () => {
                                                id="inputGroupPrepend2"
                                                aria-describedby="inputGroupPrepend2"
                                                placeholder="example@example.com"
-                                               /*value={formData.contactEmail}
-                                               onChange={handleChange}*/
+                                               value={formData.contactEmail}
+                                               onChange={handleChange}
                                                required
                                            />
                                         </div>
@@ -780,17 +887,38 @@ const TenantDetail = () => {
                                         <div className="form-group">
                                            <label className="text-label">Dirección <span
                                                className="required">*</span></label>
-                                           <textarea className="form-control" id="exampleFormControlTextarea1"
+                                           <textarea className="form-control"
+                                                     name="address"
                                                      placeholder="6 de Diciembre 125 y Patria"
-                                                     rows="3"></textarea>
+                                                     value={formData.address}
+                                                     onChange={handleChange}
+                                                     required
+                                                     rows="3">
+
+                                           </textarea>
                                         </div>
                                      </div>
                                      <div className="col-xl-12">
-                                        <div className="form-group">
+                                        <div className="form-group mb-3">
                                            <label className="text-label">Administrador <span
                                                className="required">*</span></label>
-                                           <input type="text" className="form-control" id=""
-                                                  placeholder="Veterinaria Pet Lovers"/>
+                                           <Select
+                                               name="managerName"
+                                               options={managerOptions}
+                                               // El value debe ser el objeto cuya value coincida con formData.nombreAdministrador
+                                               value={
+                                                   managerOptions.find(opt => opt.value === formData.managerName)
+                                                   || null
+                                               }
+                                               onChange={handleSelectChange}
+                                               isClearable
+                                               placeholder="Selecciona un administrador"
+                                               style={{
+                                                  lineHeight: '40px',
+                                                  color: '#7e7e7e',
+                                                  paddingLeft: ' 15px',
+                                               }}
+                                           />
                                         </div>
                                      </div>
                                      <div className="col-xl-6">
@@ -799,11 +927,11 @@ const TenantDetail = () => {
                                                className="required">*</span></label>
                                            <input
                                                type="number"
-                                               name="phoneNumber"
+                                               name="managerPhone"
                                                className="form-control"
                                                placeholder="0996588446"
-                                               /*value={formData.phoneNumber}
-                                               onChange={handleChange}*/
+                                               value={formData.managerPhone}
+                                               onChange={handleChange}
                                                required
                                            />
                                         </div>
@@ -814,13 +942,13 @@ const TenantDetail = () => {
                                                className="required">*</span></label>
                                            <input
                                                type="email"
-                                               name="contactEmail"
+                                               name="managerEmail"
                                                className="form-control"
                                                id="inputGroupPrepend2"
                                                aria-describedby="inputGroupPrepend2"
                                                placeholder="example@example.com"
-                                               /*value={formData.contactEmail}
-                                               onChange={handleChange}*/
+                                               value={formData.managerEmail}
+                                               onChange={handleChange}
                                                required
                                            />
                                         </div>
@@ -830,12 +958,12 @@ const TenantDetail = () => {
                                            <label className="text-label">Plan Actual <span className="required">*</span></label>
                                            <Select
                                                name="currentPlan"
-                                               /* options={planOptions}
+                                               options={planOptions}
                                                 value={
                                                     planOptions.find(opt => opt.value === formData.currentPlan)
                                                     || null
                                                 }
-                                                onChange={handlePlanChange}*/
+                                                onChange={handlePlanChange}
                                                isClearable
                                                placeholder="Selecciona un plan"
                                                styles={{
@@ -855,12 +983,12 @@ const TenantDetail = () => {
                                                className="required">*</span></label>
                                            <Select
                                                name="currency"
-                                               /*options={currencyOptions}
+                                               options={currencyOptions}
                                                value={
                                                    currencyOptions.find(opt => opt.value === formData.currency)
                                                    || null
                                                }
-                                               onChange={handleCurrencyChange}*/
+                                               onChange={handleCurrencyChange}
                                                isClearable
                                                placeholder="Selecciona una moneda"
                                                styles={{
@@ -884,10 +1012,14 @@ const TenantDetail = () => {
                                </form>
                             </div>
                             <div className="modal-footer">
-                               <button type="submit" className="btn btn-primary" onClick={handleAddFormSubmit}>Add
+                               <button type="submit" className="btn btn-primary" onClick={handleSubmitSaveOffice}>Crear
+                                  Consultorio
                                </button>
+                               {/*<button type="submit" className="btn btn-primary" onClick={handleAddFormSubmit}>Crear
+                                  Consultorio
+                               </button>*/}
                                <button type="button" onClick={() => setPostModal(false)} className="btn btn-danger"><i
-                                   className="flaticon-delete-1"></i> Discard
+                                   className="flaticon-delete-1"></i> Cancelar
                                </button>
                             </div>
                          </form>
