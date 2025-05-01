@@ -107,6 +107,7 @@ import ScrollToTop from '../layouts/ScrollToTop';
 import HomeAdmin from "../features/admin/components/HomeAdmin.jsx";
 import AddOffices from "../features/admin/components/Offices/AddOffices.jsx";
 import OfficeAdmin from "../features/admin/components/Offices/OfficeAdmin.jsx";
+import TenantDetail from "../features/admin/components/Tenants/TenantDetail.jsx";
 
 
 const Markup = () => {
@@ -116,6 +117,7 @@ const Markup = () => {
     { url: "", component: <HomeAdmin/> },
     { url: "home-admin", component: <HomeAdmin/> },
     { url: 'add-tenants', component: <AddTenants/> },
+    { url: 'tenant-details/:tenantId', component: <TenantDetail/>},
     { url: "office-admin", component: <OfficeAdmin/> },
     { url: 'add-offices', component: <AddOffices/> },
     { url: "dashboard", component: <Home/> },

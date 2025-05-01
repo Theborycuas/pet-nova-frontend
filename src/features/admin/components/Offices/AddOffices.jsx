@@ -9,6 +9,7 @@ import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
 import {createOffice} from "../../api/officeEndpoints.js";
+import {Alerts} from "../../../../utils/alerts.js";
 
 const AddOffices = () => {
 	const [goSteps, setGoSteps] = useState(0);
@@ -35,12 +36,31 @@ const AddOffices = () => {
 	const navigate = useNavigate();
 
 	const handleSubmit = async () => {
+		const startTime = Date.now();
 		try {
+			Alerts.showLoading('Registrando Consultorio', 'Guardando información...');
+
 			const response = await createOffice(formData);
-			console.log('Office creado:', response.data);
+
+			const elapsed = Date.now() - startTime;
+			if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+
+			Alerts.closeAlerts();
+			await Alerts.showSuccess('Consultorio creado!', 'El registro se completó exitosamente');
+
 			navigate('/office-admin');
 		}catch (error) {
-			console.error('Error creando el Office: ', error)
+			Alerts.closeAlerts();
+			if (!error.response) {
+				// Error de conexión (no hay respuesta del backend)
+				console.error('Error de red:', error.message);
+				Alerts.showConnectionError();
+			} else {
+				// Error del servidor (4xx/5xx)
+				const errorMessage = error.response.data?.message || 'Error desconocido';
+				Alerts.showError('Error en el servidor', errorMessage);
+			}
+			console.error('Error creando Office: ', error)
 		}
 	}
 

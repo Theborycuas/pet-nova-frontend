@@ -19,6 +19,7 @@ import widget05 from "../../../../assets/images/widget/5.jpg";
 import doctors9 from "../../../../assets/images/doctors/9.jpg";
 import {Dropdown} from "react-bootstrap";
 import {getAllOffices} from "../../api/officeEndpoints.js";
+import {formatDateTimeUtils} from "../../../../utils/formatters.js";
 
 const HomeAdmin = () => {
     const [offices, setOffices] = useState([]);
@@ -45,9 +46,15 @@ const HomeAdmin = () => {
     // use effect
     useEffect(() => {
         const loadOffices = async () => {
+            const startTime = Date.now();
             setLoading(true);
+            setError(null);
             try {
                 const response = await getAllOffices();
+                // Espera al menos 500ms para evitar parpadeos
+                const elapsed = Date.now() - startTime;
+                if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+
                 setOffices(response.data);
             } catch (err) {
                 setError(err.message);
@@ -94,68 +101,10 @@ const HomeAdmin = () => {
             }
         }
     };
-
-   const settings = {
-      focusOnSelect: true,
-      infinite: true,
-      slidesToShow: 5,
-      slidesToScroll: 1,
-      speed: 500,
-      responsive: [
-         {
-            breakpoint: 1600,
-            settings: {
-               slidesToShow: 3,
-               slidesToScroll: 1,
-            },
-         },
-
-         {
-            breakpoint: 1200,
-            settings: {
-               slidesToShow: 2,
-               slidesToScroll: 1,
-            },
-         },
-         {
-            breakpoint: 991,
-            settings: {
-               slidesToShow: 3,
-               slidesToScroll: 1,
-            },
-         },
-         {
-            breakpoint: 767,
-            settings: {
-               slidesToShow: 2,
-               slidesToScroll: 1,
-            },
-         },
-         {
-            breakpoint: 575,
-            settings: {
-               slidesToShow: 1,
-               slidesToScroll: 1,
-            },
-         },
-      ],
-   };
    const { changeBackground } = useContext(ThemeContext);
    useEffect(() => {
        changeBackground({ value: "light", label: "Light" });
    }, []);
-
-    function formatDate(dateString) {
-        const options = {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            hour: 'numeric',
-            minute: 'numeric',
-            hour12: true
-        };
-        return new Date(dateString).toLocaleDateString('es-ES', options);
-    }
 
    return (
        <div>
@@ -198,226 +147,243 @@ const HomeAdmin = () => {
                <div className="col-xl-12">
                    <div className="table-responsive">
                        <div id="example5_wrapper" className="dataTables_wrapper no-footer">
-                           <table id="doctor_list"
-                                  className="table shadow-hover  mb-4 table-responsive-xl dataTablesCard fs-14 dataTable no-footer">
-                               <thead>
-                               <tr role="row">
-                                   <th
-                                       className="doctor_strg"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-sort="ascending"
-                                       style={{width: 91}}
-                                   >
-                                       <div className="checkbox align-self-center">
-                                           <div className="form-check custom-checkbox ms-1">
-                                               <input
-                                                   type="checkbox"
-                                                   onClick={() => chackboxFun("all")}
-                                                   className="form-check-input"
-                                                   id="checkAll"
-                                                   required
-                                               />
-                                               <label
-                                                   className="form-check-label"
-                                                   htmlFor="checkAll"
-                                               />
-                                           </div>
-                                       </div>
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="ID: activate to sort column ascending"
-                                       style={{width: 61}}
-                                   >
-                                       Office Id
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Date Join: activate to sort column ascending"
-                                       style={{width: 123}}
-                                   >
-                                       Nombre del Consultorio
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Specialist: activate to sort column ascending"
-                                       style={{width: 95}}
-                                   >
-                                       Dirección
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Schedule: activate to sort column ascending"
-                                       style={{width: 124}}
-                                   >
-                                       Teléfono
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Doctor Name: activate to sort column ascending"
-                                       style={{width: 111}}
-                                   >
-                                       Administrador
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Contact: activate to sort column ascending"
-                                       style={{width: 79}}
-                                   >
-                                       Fecha Registro
-                                   </th>
-                                   <th
-                                       className="sorting"
-                                       tabIndex={0}
-                                       aria-controls="example5"
-                                       rowSpan={1}
-                                       colSpan={1}
-                                       aria-label="Status: activate to sort column ascending"
-                                       style={{width: 98}}
-                                   >
-                                       Estado
-                                   </th>
-                               </tr>
-                               </thead>
-                               <tbody>
-                               {offices.map((office, index) => (
-                                   <tr role="row" className="odd">
-                                       <td className="doctor_checkbox">
-                                           <div className="d-flex align-items-center">
-                                               <div className="checkbox text-right align-self-center">
-                                                   <div className="form-check custom-checkbox ">
+                           {loading && (
+                               <div className="text-center my-5">
+                                   <div className="spinner-grow text-success" role="status">
+                                       <span className="visually-hidden">Cargando...</span>
+                                   </div>
+                                   <p className="mt-2">Cargando consultorios...</p>
+                               </div>
+                           )}
+                           {!loading && offices.length > 0 && (
+                               <table id="doctor_list"
+                                      className="table shadow-hover  mb-4 table-responsive-xl dataTablesCard fs-14 dataTable no-footer">
+                                   <thead>
+                                   <tr role="row">
+                                       <th
+                                           className="doctor_strg"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-sort="ascending"
+                                           style={{width: 91}}
+                                       >
+                                           <div className="checkbox align-self-center">
+                                               <div className="form-check custom-checkbox ms-1">
                                                    <input
-                                                           type="checkbox"
-                                                           onClick={() => chackboxFun(office.id)}
-                                                           className="form-check-input"
-                                                           id="customCheckBox2"
-                                                           required
-                                                       />
-                                                       <label
-                                                           className="form-check-label"
-                                                           htmlFor="customCheckBox2"
-                                                       />
-                                                   </div>
+                                                       type="checkbox"
+                                                       onClick={() => chackboxFun("all")}
+                                                       className="form-check-input"
+                                                       id="checkAll"
+                                                       required
+                                                   />
+                                                   <label
+                                                       className="form-check-label"
+                                                       htmlFor="checkAll"
+                                                   />
                                                </div>
-                                               <img
-                                                   alt=""
-                                                   src={doctors9}
-                                                   height={43}
-                                                   width={43}
-                                                   className="rounded-circle ms-4"
-                                               />
                                            </div>
-                                       </td>
-                                       <td>
-                                           {`#O-${office.id.toString().padStart(4, '0')}`}
-                                       </td>
-                                       <td>{office.name}</td>
-                                       <td>{office.address}</td>
-                                       <td>
-                                           <Link
-                                               to="/doctor-list"
-                                               className="btn btn-primary light btn-rounded btn-sm text-nowrap"
-                                           >
-                                               {office.phoneNumber}
-                                           </Link>
-                                       </td>
-                                       <td>{office.managerName}</td>
-                                       <td>
-                                        <span className="font-w500">
-                                            {formatDate(office.createdAt) || 'N/A'}
-                                        </span>
-                                       </td>
-                                       <td>
-                                           <div className="d-flex align-items-center">
-                                    <span className={`${office.active ? 'text-primary' : 'text-danger'} font-w600`}>
-                                          {(office.active ? 'ACTIVO' : 'INACTIVO')}
-                                    </span>
-                                               <Dropdown className="dropdown ms-auto text-right">
-                                                   <Dropdown.Toggle
-                                                       variant=""
-                                                       className="btn-link i-false"
-                                                   >
-                                                       <svg
-                                                           width={24}
-                                                           height={24}
-                                                           viewBox="0 0 24 24"
-                                                           fill="none"
-                                                           xmlns="http://www.w3.org/2000/svg"
-                                                       >
-                                                           <path
-                                                               d="M12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11Z"
-                                                               stroke="#3E4954"
-                                                               strokeWidth={2}
-                                                               strokeLinecap="round"
-                                                               strokeLinejoin="round"
-                                                           />
-                                                           <path
-                                                               d="M12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18Z"
-                                                               stroke="#3E4954"
-                                                               strokeWidth={2}
-                                                               strokeLinecap="round"
-                                                               strokeLinejoin="round"
-                                                           />
-                                                           <path
-                                                               d="M12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4Z"
-                                                               stroke="#3E4954"
-                                                               strokeWidth={2}
-                                                               strokeLinecap="round"
-                                                               strokeLinejoin="round"
-                                                           />
-                                                       </svg>
-                                                   </Dropdown.Toggle>
-                                                   <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
-                                                       <Dropdown.Item
-                                                           to="/doctor-list"
-                                                       >
-                                                           View Detail
-                                                       </Dropdown.Item>
-                                                       <Dropdown.Item
-                                                           to="/doctor-list"
-                                                       >
-                                                           Edit
-                                                       </Dropdown.Item>
-                                                       <Dropdown.Item
-                                                           to="/doctor-list"
-                                                       >
-                                                           Delete
-                                                       </Dropdown.Item>
-                                                   </Dropdown.Menu>
-                                               </Dropdown>
-                                           </div>
-                                       </td>
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="ID: activate to sort column ascending"
+                                           style={{width: 61}}
+                                       >
+                                           Office Id
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Date Join: activate to sort column ascending"
+                                           style={{width: 123}}
+                                       >
+                                           Nombre del Consultorio
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Specialist: activate to sort column ascending"
+                                           style={{width: 95}}
+                                       >
+                                           Dirección
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Schedule: activate to sort column ascending"
+                                           style={{width: 124}}
+                                       >
+                                           Teléfono
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Doctor Name: activate to sort column ascending"
+                                           style={{width: 111}}
+                                       >
+                                           Administrador
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Contact: activate to sort column ascending"
+                                           style={{width: 79}}
+                                       >
+                                           Fecha Registro
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
+                                           aria-label="Status: activate to sort column ascending"
+                                           style={{width: 98}}
+                                       >
+                                           Estado
+                                       </th>
                                    </tr>
-                               ))}
-                               </tbody>
-                           </table>
+                                   </thead>
+                                   <tbody>
+                                   {offices.map((office, index) => (
+                                       <tr role="row" className="odd">
+                                           <td className="doctor_checkbox">
+                                               <div className="d-flex align-items-center">
+                                                   <div className="checkbox text-right align-self-center">
+                                                       <div className="form-check custom-checkbox ">
+                                                       <input
+                                                               type="checkbox"
+                                                               onClick={() => chackboxFun(office.id)}
+                                                               className="form-check-input"
+                                                               id="customCheckBox2"
+                                                               required
+                                                           />
+                                                           <label
+                                                               className="form-check-label"
+                                                               htmlFor="customCheckBox2"
+                                                           />
+                                                       </div>
+                                                   </div>
+                                                   <img
+                                                       alt=""
+                                                       src={doctors9}
+                                                       height={43}
+                                                       width={43}
+                                                       className="rounded-circle ms-4"
+                                                   />
+                                               </div>
+                                           </td>
+                                           <td>
+                                               {`#O-${office.id.toString().padStart(4, '0')}`}
+                                           </td>
+                                           <td>{office.name}</td>
+                                           <td>{office.address}</td>
+                                           <td>
+                                               <Link
+                                                   to="/doctor-list"
+                                                   className="btn btn-primary light btn-rounded btn-sm text-nowrap"
+                                               >
+                                                   {office.phoneNumber}
+                                               </Link>
+                                           </td>
+                                           <td>{office.managerName}</td>
+                                           <td>
+                                            <span className="font-w500">
+                                                {formatDateTimeUtils(office.createdAt) || 'N/A'}
+                                            </span>
+                                           </td>
+                                           <td>
+                                               <div className="d-flex align-items-center">
+                                        <span className={`${office.active ? 'text-primary' : 'text-danger'} font-w600`}>
+                                              {(office.active ? 'ACTIVO' : 'INACTIVO')}
+                                        </span>
+                                                   <Dropdown className="dropdown ms-auto text-right">
+                                                       <Dropdown.Toggle
+                                                           variant=""
+                                                           className="btn-link i-false"
+                                                       >
+                                                           <svg
+                                                               width={24}
+                                                               height={24}
+                                                               viewBox="0 0 24 24"
+                                                               fill="none"
+                                                               xmlns="http://www.w3.org/2000/svg"
+                                                           >
+                                                               <path
+                                                                   d="M12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11Z"
+                                                                   stroke="#3E4954"
+                                                                   strokeWidth={2}
+                                                                   strokeLinecap="round"
+                                                                   strokeLinejoin="round"
+                                                               />
+                                                               <path
+                                                                   d="M12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18Z"
+                                                                   stroke="#3E4954"
+                                                                   strokeWidth={2}
+                                                                   strokeLinecap="round"
+                                                                   strokeLinejoin="round"
+                                                               />
+                                                               <path
+                                                                   d="M12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4Z"
+                                                                   stroke="#3E4954"
+                                                                   strokeWidth={2}
+                                                                   strokeLinecap="round"
+                                                                   strokeLinejoin="round"
+                                                               />
+                                                           </svg>
+                                                       </Dropdown.Toggle>
+                                                       <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
+                                                           <Dropdown.Item
+                                                               to="/doctor-list"
+                                                           >
+                                                               View Detail
+                                                           </Dropdown.Item>
+                                                           <Dropdown.Item
+                                                               to="/doctor-list"
+                                                           >
+                                                               Edit
+                                                           </Dropdown.Item>
+                                                           <Dropdown.Item
+                                                               to="/doctor-list"
+                                                           >
+                                                               Delete
+                                                           </Dropdown.Item>
+                                                       </Dropdown.Menu>
+                                                   </Dropdown>
+                                               </div>
+                                           </td>
+                                       </tr>
+                                   ))}
+                                   </tbody>
+                               </table>
+
+                           )}
+                           {!loading && offices.length === 0 && !error && (
+                               <p className="text-center">No se encontraron Consultorios</p>
+                           )}
+                           {error && (
+                               <div className="alert alert-danger">{error}</div>
+                           )}
                            <div className="d-sm-flex text-center justify-content-between align-items-center">
                                <div
                                    className="dataTables_info"
