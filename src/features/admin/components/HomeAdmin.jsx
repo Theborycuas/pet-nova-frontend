@@ -175,7 +175,7 @@ const HomeAdmin = () => {
                        to="/add-tenants"
                        className="btn btn-primary btn-rounded"
                    >
-                       + Add New
+                       + Agregar nuevo Tenant
                    </Link>
                </div>
                <div className="input-group search-area ms-auto d-inline-flex">

@@ -28,6 +28,8 @@ import card8 from "../../../../assets/images/task/img8.jpg";
 import {nanoid} from "nanoid";
 import swal from "sweetalert";
 import {formatDateTimeUtils} from "../../../../utils/formatters.js";
+import Select from "react-select";
+import CustomClearIndicator from "../../../../jsx/components/PluginsMenu/Select2/MultiSelect.jsx";
 
 const CardListBlog = [
    {
@@ -677,21 +679,30 @@ const TenantDetail = () => {
 
              <div className="mb-sm-5 mb-3 d-flex flex-wrap align-items-center text-head">
                {/* <!-- Modal --> */}
-                <Modal className="modal fade" show={postModal} onHide={setPostModal}>
+                <Modal className="modal fade" show={postModal} onHide={setPostModal} size={'lg'}>
                    <div className="">
                       <div className="">
                          <form>
                             <div className="modal-header">
-                               <h4 className="modal-title fs-20">Add Task</h4>
+                               <h4 className="modal-title fs-20">Agregar Consultorio</h4>
                                <button type="button" className="btn close lineheight1"
                                        onClick={() => setPostModal(false)}>
                                   <span>×</span>
                                </button>
                             </div>
                             <div className="modal-body">
-                               <i className="flaticon-cancel-12 close"></i>
-                               <div className="add-contact-box">
-                                  <div className="add-contact-content">
+                               <form>
+                                  <div className="row">
+                                     {/*<div className="col-xl-12">
+                                        <div className="form-group">
+                                           <label htmlFor="recipient-name" className="col-form-label">Title:</label>
+                                           <select className="form-control">
+                                              <option>Miss</option>
+                                              <option>Mr.</option>
+                                              <option>Mrs.</option>
+                                           </select>
+                                        </div>
+                                     </div>*/}
                                      <div className="image-placeholder">
                                         <div className="avatar-edit">
                                            <input type="file" onChange={fileHandler} id="imageUpload"
@@ -707,54 +718,170 @@ const TenantDetail = () => {
                                            </div>
                                         </div>
                                      </div>
-                                     <div className="form-group mb-3">
-                                        <label className="text-black font-w500">Customer Id </label><span
-                                         className='required'>*</span>
-                                        <div className="contact-name">
-                                           <input type="text" className="form-control" autoComplete="off"
-                                                  name="Cust_Id" required="required"
-                                                  onChange={handleAddFormChange}
-                                                  placeholder="write Id"
-                                           />
-                                           <span className="validation-text"></span>
+                                     <div className="col-xl-0">
+
+                                     </div>
+                                     <div className="col-xl-6">
+                                        <div className="form-group">
+                                           <label className="text-label">Nombre del Consultorio <span
+                                               className="required">*</span></label>
+                                           <input type="text" className="form-control" id=""
+                                                  placeholder="Veterinaria Pet Lovers"/>
                                         </div>
                                      </div>
-                                     <div className="form-group mb-3">
-                                        <label className="text-black font-w500">Deadline Date</label><span
-                                         className='required'>*</span>
-                                        <div className="contact-name">
-                                           <input type="text" className="form-control" autoComplete="off"
-                                                  name="Date_Join" required="required"
-                                                  onChange={handleAddFormChange}
-                                                  placeholder="date"
-                                           />
-                                           <span className="validation-text"></span>
-                                        </div>
-                                     </div>
-                                     <div className="form-group mb-3">
-                                        <label className="text-black font-w500">Client</label><span
-                                         className='required'>*</span>
-                                        <div className="contact-occupation">
-                                           <input type="text" autoComplete="off"
-                                                  onChange={handleAddFormChange}
-                                                  name="Cust_Name" required="required"
-                                                  className="form-control" placeholder="name"
+                                     <div className="col-xl-6">
+                                        <div className="form-group">
+                                           <label className="text-label">Ruc <span
+                                               className="required">*</span></label>
+                                           <input
+                                               type="number"
+                                               name="taxId"
+                                               className="form-control"
+                                               placeholder="1711251482001"
+                                               /*value={formData.taxId}
+                                               onChange={handleChange}*/
+                                               required
                                            />
                                         </div>
                                      </div>
-                                     <div className="form-group mb-3">
-                                        <label className="text-black font-w500">Location</label><span
-                                         className='required'>*</span>
-                                        <div className="contact-occupation">
-                                           <input type="text" autoComplete="off"
-                                                  name="Location" required="required"
-                                                  onChange={handleAddFormChange}
-                                                  className="form-control" placeholder="Location"
+                                     <div className="col-xl-6">
+                                        <div className="form-group">
+                                           <label className="text-label">Teléfono <span
+                                               className="required">*</span></label>
+                                           <input
+                                               type="number"
+                                               name="phoneNumber"
+                                               className="form-control"
+                                               placeholder="0996588446"
+                                               /*value={formData.phoneNumber}
+                                               onChange={handleChange}*/
+                                               required
                                            />
+                                        </div>
+                                     </div>
+                                     <div className="col-xl-6">
+                                        <div className="form-group">
+                                           <label className="text-label">Email <span
+                                               className="required">*</span></label>
+                                           <input
+                                               type="email"
+                                               name="contactEmail"
+                                               className="form-control"
+                                               id="inputGroupPrepend2"
+                                               aria-describedby="inputGroupPrepend2"
+                                               placeholder="example@example.com"
+                                               /*value={formData.contactEmail}
+                                               onChange={handleChange}*/
+                                               required
+                                           />
+                                        </div>
+                                     </div>
+                                     <div className="col-xl-12">
+                                        <div className="form-group">
+                                           <label className="text-label">Dirección <span
+                                               className="required">*</span></label>
+                                           <textarea className="form-control" id="exampleFormControlTextarea1"
+                                                     placeholder="6 de Diciembre 125 y Patria"
+                                                     rows="3"></textarea>
+                                        </div>
+                                     </div>
+                                     <div className="col-xl-12">
+                                        <div className="form-group">
+                                           <label className="text-label">Administrador <span
+                                               className="required">*</span></label>
+                                           <input type="text" className="form-control" id=""
+                                                  placeholder="Veterinaria Pet Lovers"/>
+                                        </div>
+                                     </div>
+                                     <div className="col-xl-6">
+                                        <div className="form-group">
+                                           <label className="text-label">Teléfono Administrador <span
+                                               className="required">*</span></label>
+                                           <input
+                                               type="number"
+                                               name="phoneNumber"
+                                               className="form-control"
+                                               placeholder="0996588446"
+                                               /*value={formData.phoneNumber}
+                                               onChange={handleChange}*/
+                                               required
+                                           />
+                                        </div>
+                                     </div>
+                                     <div className="col-xl-6">
+                                        <div className="form-group">
+                                           <label className="text-label">Email Administrador <span
+                                               className="required">*</span></label>
+                                           <input
+                                               type="email"
+                                               name="contactEmail"
+                                               className="form-control"
+                                               id="inputGroupPrepend2"
+                                               aria-describedby="inputGroupPrepend2"
+                                               placeholder="example@example.com"
+                                               /*value={formData.contactEmail}
+                                               onChange={handleChange}*/
+                                               required
+                                           />
+                                        </div>
+                                     </div>
+                                     <div className="col-xl-6">
+                                        <div className="form-group mb-3">
+                                           <label className="text-label">Plan Actual <span className="required">*</span></label>
+                                           <Select
+                                               name="currentPlan"
+                                               /* options={planOptions}
+                                                value={
+                                                    planOptions.find(opt => opt.value === formData.currentPlan)
+                                                    || null
+                                                }
+                                                onChange={handlePlanChange}*/
+                                               isClearable
+                                               placeholder="Selecciona un plan"
+                                               styles={{
+                                                  control: base => ({
+                                                     ...base,
+                                                     lineHeight: '40px',
+                                                     color: '#7e7e7e',
+                                                     paddingLeft: '15px'
+                                                  })
+                                               }}
+                                           />
+                                        </div>
+                                     </div>
+                                     <div className="col-xl-6">
+                                        <div className="form-group mb-3">
+                                           <label className="text-label">Moneda <span
+                                               className="required">*</span></label>
+                                           <Select
+                                               name="currency"
+                                               /*options={currencyOptions}
+                                               value={
+                                                   currencyOptions.find(opt => opt.value === formData.currency)
+                                                   || null
+                                               }
+                                               onChange={handleCurrencyChange}*/
+                                               isClearable
+                                               placeholder="Selecciona una moneda"
+                                               styles={{
+                                                  control: base => ({
+                                                     ...base,
+                                                     lineHeight: '40px',
+                                                     color: '#7e7e7e',
+                                                     paddingLeft: '15px'
+                                                  })
+                                               }}
+                                           />
+                                        </div>
+                                     </div>
+                                     <div className="col-xl-12">
+                                        <div className="form-group">
+                                           <label htmlFor="message-text" className="col-form-label">Categorias: </label>
+                                           <CustomClearIndicator></CustomClearIndicator>
                                         </div>
                                      </div>
                                   </div>
-                               </div>
+                               </form>
                             </div>
                             <div className="modal-footer">
                                <button type="submit" className="btn btn-primary" onClick={handleAddFormSubmit}>Add
