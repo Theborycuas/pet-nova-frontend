@@ -44,10 +44,10 @@ const StepThree = ({ formData, setFormData}) => {
                         <label className="text-label">Teléfono <span className="required">*</span></label>
                         <input
                             type="number"
-                            name="phoneNumber"
+                            name="contactPhone"
                             className="form-control"
                             placeholder="0996588446"
-                            value={formData.phoneNumber}
+                            value={formData.contactPhone}
                             onChange={handleChange}
                             required
                         />
@@ -115,7 +115,7 @@ const StepThree = ({ formData, setFormData}) => {
 StepThree.propTypes = {
     formData: PropTypes.shape({
         contactEmail: PropTypes.string.isRequired,
-        phoneNumber: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+        contactPhone: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
         managerName: PropTypes.string.isRequired,
         managerPhone: PropTypes.string.isRequired,
         managerEmail: PropTypes.string.isRequired

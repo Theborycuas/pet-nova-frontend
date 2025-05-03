@@ -22,7 +22,7 @@ const AddOffices = () => {
 
 		//StepTwo
 		contactEmail: '',
-		phoneNumber: '',
+		contactPhone: '',
 		managerName: '',
 		managerPhone: '',
 		managerEmail: '',
