@@ -54,9 +54,36 @@ export const Alerts = {
     },
 
 
-    closeAlerts: () => {
-        Swal.close();
+    /**
+     * Muestra una confirmación de borrado. Si el usuario confirma,
+     * ejecuta el callback `onConfirm`.
+     *
+     * @param {string} entity  — nombre de la entidad (p.ej. 'tenant', 'office')
+     * @param {Function} onConfirm — función a ejecutar si confirma
+     */
+    confirmDelete: (entity, onConfirm) => {
+        Swal.fire({
+            title: `¿Realmente desea eliminar el ${entity}?`,
+            text: `Esta acción eliminará permanentemente el ${entity}.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            focusCancel: true,
+            customClass: {
+                popup: 'rounded-2xl shadow-lg',    // ejemplo de styling Tailwind
+                confirmButton: 'btn btn-danger',    // si usas clases CSS propias
+                cancelButton: 'btn btn-secondary'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                onConfirm();
+            } else {
+                // opcional: podrías notificar que se canceló
+                // Swal.fire('Operación cancelada', '', 'info');
+            }
+        });
     }
-
 
 };

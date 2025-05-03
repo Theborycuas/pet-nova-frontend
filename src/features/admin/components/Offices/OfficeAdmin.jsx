@@ -18,8 +18,11 @@ import widget03 from "../../../../assets/images/widget/3.jpg";
 import widget05 from "../../../../assets/images/widget/5.jpg";
 import doctors9 from "../../../../assets/images/doctors/9.jpg";
 import {Dropdown} from "react-bootstrap";
-import {getAllOffices} from "../../api/officeEndpoints.js";
+import {deleteOfficeById, getAllOffices} from "../../api/officeEndpoints.js";
 import {formatDateTimeUtils} from "../../../../utils/formatters.js";
+import alerts from "../../../../jsx/components/chatBox/Alerts.jsx";
+import {Alerts} from "../../../../utils/alerts.js";
+import Swal from "sweetalert2";
 
 const HomeAdmin = () => {
     const [offices, setOffices] = useState([]);
@@ -43,28 +46,44 @@ const HomeAdmin = () => {
             }
         }
     };
+
+    // Carga todos los offices
+    const loadOffices = async () => {
+        setLoading(true);
+        setError(null);
+        const startTime = Date.now();
+        try {
+            const { data } = await getAllOffices();
+            // Espera al menos 500ms para evitar parpadeos
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+            setOffices(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // use effect
     useEffect(() => {
-        const loadOffices = async () => {
-            const startTime = Date.now();
-            setLoading(true);
-            setError(null);
-            try {
-                const response = await getAllOffices();
-                // Espera al menos 500ms para evitar parpadeos
-                const elapsed = Date.now() - startTime;
-                if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-
-                setOffices(response.data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        }
         loadOffices();
         setData(document.querySelectorAll("#doctor_list tbody tr"));
-    }, [test]);
+    }, []);
+
+    function handleDeleteOffice(officeId) {
+        Alerts.confirmDelete('consultorio', () => {
+            deleteOfficeById(officeId)
+                .then(() => {
+                    setOffices(current => current.filter(o => o.id !== officeId));
+                    Swal.fire('¡Eliminado!', 'El consultorio ha sido borrado.', 'success');
+                })
+                .catch(err => {
+                    Swal.fire('Error', 'No se pudo eliminar el tenant.', 'error');
+                    console.log(err);
+                });
+        });
+    }
 
     // Active pagginarion
     activePag.current === 0 && chageData(0, sort);
@@ -365,7 +384,7 @@ const HomeAdmin = () => {
                                                                Edit
                                                            </Dropdown.Item>
                                                            <Dropdown.Item
-                                                               to="/doctor-list"
+                                                               onClick={() => handleDeleteOffice(office.id)}
                                                            >
                                                                Delete
                                                            </Dropdown.Item>
