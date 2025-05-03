@@ -15,7 +15,7 @@ import avater1 from "../../../../assets/images/avatar/1.jpg";
 import map from "../../../../assets/images/svg/map.svg";
 
 /// Scroll
-import {getTenantById} from "../../api/tenantEndpoints.js";
+import {deleteTenantById, getTenantById} from "../../api/tenantEndpoints.js";
 import user from "../../../../assets/images/task/user.jpg";
 import card1 from "../../../../assets/images/task/img1.jpg";
 import card2 from "../../../../assets/images/task/img2.jpg";
@@ -30,8 +30,9 @@ import swal from "sweetalert";
 import {formatDateTimeUtils, formatDateUtils} from "../../../../utils/formatters.js";
 import Select from "react-select";
 import CustomClearIndicator from "../../../../jsx/components/PluginsMenu/Select2/MultiSelect.jsx";
-import {createOffice, getOfficesByTenantId} from "../../api/officeEndpoints.js";
+import {createOffice, deleteOfficeById, getOfficesByTenantId} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
+import Swal from "sweetalert2";
 
 
 const initialFormData = {
@@ -60,34 +61,47 @@ const TenantDetails = () => {
    const [formData, setFormData] = useState(initialFormData);
 
    const navigate = useNavigate();
+
+   // Carga el office details
+   const loadTenant = async () => {
+      setLoading(true);
+      setError(null);
+      const startTime = Date.now();
+      try {
+         const [t, o] = await Promise.all([
+            getTenantById(tenantId),
+            getOfficesByTenantId(tenantId)
+         ]);
+         // Espera al menos 500ms para evitar parpadeos
+         const elapsed = Date.now() - startTime;
+         if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+         setTenant(t);
+         setOffices(o);
+      } catch (err) {
+         setError(err.message);
+      } finally {
+         setLoading(false);
+      }
+   };
+
+
    useEffect(() => {
-      const fetchTenant = async () => {
-         try {
-            const startTime = Date.now();
-            setLoading(true);
-            setError(null);
-
-            const [t, o] = await Promise.all([
-                getTenantById(tenantId),
-                getOfficesByTenantId(tenantId)
-            ]);
-
-            // Espera al menos 500ms para evitar parpadeos
-            const elapsed = Date.now() - startTime;
-            if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-            setTenant(t);
-            setOffices(o);
-         } catch (error){
-            setError(error.message);
-            console.log('Error al obtener el tenant: ', error.message);
-         } finally {
-               setLoading(false);
-         }
-      };
-      fetchTenant();
+      loadTenant();
    }, [tenantId])
 
-
+   function handleDeleteTenant(tenantId) {
+      Alerts.confirmDelete('tenant', () => {
+         deleteTenantById(tenantId)
+             .then(() => {
+                Swal.fire('¡Eliminado!', 'El tenant ha sido borrado.', 'success');
+                navigate('/home-admin');
+             })
+             .catch(err => {
+                Swal.fire('Error', 'No se pudo eliminar el tenant.', 'error');
+                console.log(err);
+             });
+      });
+   }
 
    const handleSubmitSaveOffice = async (e) => {
       e.preventDefault();
@@ -261,13 +275,15 @@ const TenantDetails = () => {
                    </Dropdown.Toggle>
                    <Dropdown.Menu className="dropdown-menu">
                       <Dropdown.Item className="dropdown-item" to="/doctor-details">
-                         Daily
+                         Editar
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                          className="dropdown-item"
+                          onClick={() => handleDeleteTenant(tenant.id)}>
+                         Eliminar
                       </Dropdown.Item>
                       <Dropdown.Item className="dropdown-item" to="/doctor-details">
-                         Weekly
-                      </Dropdown.Item>
-                      <Dropdown.Item className="dropdown-item" to="/doctor-details">
-                         Monthly
+                         Otros
                       </Dropdown.Item>
                    </Dropdown.Menu>
                 </Dropdown>

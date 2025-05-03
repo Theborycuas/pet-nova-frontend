@@ -79,7 +79,7 @@ const HomeAdmin = () => {
                     Swal.fire('¡Eliminado!', 'El consultorio ha sido borrado.', 'success');
                 })
                 .catch(err => {
-                    Swal.fire('Error', 'No se pudo eliminar el tenant.', 'error');
+                    Swal.fire('Error', 'No se pudo eliminar el consultorio.', 'error');
                     console.log(err);
                 });
         });
@@ -381,12 +381,12 @@ const HomeAdmin = () => {
                                                            <Dropdown.Item
                                                                to="/doctor-list"
                                                            >
-                                                               Edit
+                                                               Editar
                                                            </Dropdown.Item>
                                                            <Dropdown.Item
                                                                onClick={() => handleDeleteOffice(office.id)}
                                                            >
-                                                               Delete
+                                                               Eliminar
                                                            </Dropdown.Item>
                                                        </Dropdown.Menu>
                                                    </Dropdown>

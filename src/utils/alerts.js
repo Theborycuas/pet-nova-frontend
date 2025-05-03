@@ -62,9 +62,13 @@ export const Alerts = {
      * @param {Function} onConfirm — función a ejecutar si confirma
      */
     confirmDelete: (entity, onConfirm) => {
+        const extraMsg = entity === 'tenant'
+            ? ' Además, se eliminarán todos los consultorios asociados.'
+            : '';
+
         Swal.fire({
             title: `¿Realmente desea eliminar el ${entity}?`,
-            text: `Esta acción eliminará permanentemente el ${entity}.`,
+            text: `Esta acción eliminará permanentemente el ${entity}.${extraMsg}`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sí, eliminar',

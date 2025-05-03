@@ -6,10 +6,11 @@ const adminAPI = axios.create({
     baseURL: `${baseAPI.defaults.baseURL}/tenants`
 })
 
-export const officeEndpoints = {
+export const tenantEndpoints = {
     createTenant: "/createTenant",
     getAllTenants: "/getAllTenants",
-    getTenantById: (tenantId) => `/getTenantById/${tenantId}`
+    getTenantById: (tenantId) => `/getTenantById/${tenantId}`,
+    deleteTenantById: (tenantId) => `/deleteTenantById/${tenantId}`
 }
 
 
@@ -28,7 +29,7 @@ adminAPI.interceptors.request.use((config) => {
 
 export const createTenant = async (tenantData) => {
     try {
-        const response = await adminAPI.post(officeEndpoints.createTenant, tenantData);
+        const response = await adminAPI.post(tenantEndpoints.createTenant, tenantData);
         return response.data;
     } catch (error) {
         throw error.response.data;
@@ -37,7 +38,7 @@ export const createTenant = async (tenantData) => {
 
 export const getAllTenants = async () =>{
     try {
-        const response = await adminAPI.get(officeEndpoints.getAllTenants, {
+        const response = await adminAPI.get(tenantEndpoints.getAllTenants, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -58,12 +59,30 @@ export const getAllTenants = async () =>{
 };
 export const getTenantById = async (tenantId) =>{
     try {
-        const response = await adminAPI.get(officeEndpoints.getTenantById(tenantId), {
+        const response = await adminAPI.get(tenantEndpoints.getTenantById(tenantId), {
             headers: {
                 'Content-Type': 'application/json',
             }
         });
 
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const deleteTenantById = async (tenantId) => {
+    try {
+        const response = await adminAPI.post(tenantEndpoints.deleteTenantById(tenantId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
         return response.data;
     } catch (error) {
         if (!error.response) {
