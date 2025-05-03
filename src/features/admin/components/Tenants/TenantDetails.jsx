@@ -33,40 +33,6 @@ import CustomClearIndicator from "../../../../jsx/components/PluginsMenu/Select2
 import {createOffice, getOfficesByTenantId} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 
-const CardListBlog = [
-   {
-      id:1, image: card1, Cust_Id:"01234",  Date_Join:"19/02/2024",
-      Cust_Name: "Munaroh Steffani", Location:"India"
-   },
-   {
-      id:2, image: card2, Cust_Id:"01235", Date_Join:"20/03/2024",
-      Cust_Name: "Geovanny Anderson", 	Location:"London "
-   },
-   {
-      id:3, image: card3, Cust_Id:"01236", Date_Join:"21/04/2024",
-      Cust_Name: "Louis Ali", Location:"Afghanistan"
-   },
-   {
-      id:4, image: card4, Cust_Id:"01237", Date_Join:"22/05/2024",
-      Cust_Name: "Marquezz", Location:"Belgium"
-   },
-   {
-      id:5, image: card5, Cust_Id:"01238", Date_Join:"23/06/2024",
-      Cust_Name: "Richard ", Location:"Colombia"
-   },
-   {
-      id:6, image: card6, Cust_Id:"01239", Date_Join:"24/07/2024",
-      Cust_Name: "Andrew Stevano",  	Location:"Czechia"
-   },
-   {
-      id:7, image: card7, Cust_Id:"01240", Date_Join:"25/08/2024",
-      Cust_Name: "Cathenna ",  Location:"El Salvador"
-   },
-   {
-      id:8, image: card8, Cust_Id:"01241", Date_Join:"26/09/2024",
-      Cust_Name: "Hrisovalantis ",  	Location:"Guatemala"
-   }
-];
 
 const initialFormData = {
    name: '',
@@ -74,7 +40,7 @@ const initialFormData = {
    taxId: '',
    logoUrl: '',
    contactEmail: '',
-   phoneNumber: '',
+   contactPhone: '',
    managerName: '',
    managerPhone: '',
    managerEmail: '',
@@ -82,7 +48,7 @@ const initialFormData = {
    currency: '',
 };
 
-const TenantDetail = () => {
+const TenantDetails = () => {
 
    const [offices, setOffices] = useState([]);
    const [tenant, setTenant] = useState(null);
@@ -159,7 +125,7 @@ const TenantDetail = () => {
       const { name, value } = e.target;
       setFormData(prev => ({ ...prev, [name]: value }));
    };
-   const handleSelectChange = (option) => {
+   const handleSelectManagerChange = (option) => {
       setFormData(prev => ({
          ...prev,
          managerName: option ? option.value : ''
@@ -196,7 +162,6 @@ const TenantDetail = () => {
 
    const [postModal, setPostModal] = useState(false);
 
-   const [contacts, setContacts] = useState(CardListBlog);
 
 
    const [editModal, setEditModal] = useState(false);
@@ -206,25 +171,12 @@ const TenantDetail = () => {
 
    // Edit function button click to edit
    const handleEditClick = ( event, contact) => {
-      event.preventDefault();
-      setEditContactId(contact.id);
-      const formValues = {
-         Cust_Id: contact.Cust_Id,
-         Date_Join: contact.Date_Join,
-         Cust_Name: contact.Cust_Name,
-         Location: contact.Location,
-         image: contact.image,
-      }
-      setEditFormData(formValues);
-      setEditModal(true);
+
    };
 
    // delete data
    const handleDeleteClick = (contactId) => {
-      const newContacts = [...contacts];
-      const index = contacts.findIndex((contact)=> contact.id === contactId);
-      newContacts.splice(index, 1);
-      setContacts(newContacts);
+
    }
 
 
@@ -249,21 +201,7 @@ const TenantDetail = () => {
 
    // edit form data submit
    const handleEditFormSubmit = (event) => {
-      event.preventDefault();
-      const editedContact = {
-         id: editContactId,
-         Cust_Id: editFormData.Cust_Id,
-         Date_Join: editFormData.Date_Join,
-         Cust_Name: editFormData.Cust_Name,
-         Location: editFormData.Location,
-         image: editFormData.image,
-      }
-      const newContacts = [...contacts];
-      const index = contacts.findIndex((contact)=> contact.id === editContactId);
-      newContacts[index] = editedContact;
-      setContacts(newContacts);
-      setEditContactId(null);
-      setEditModal(false);
+
    }
 
    //For Image upload in ListBlog
@@ -292,45 +230,49 @@ const TenantDetail = () => {
                 <h3 className="text-black font-w600">Detalles del Tenant</h3>
              </div>
           </div>
-          <div className="d-block d-sm-flex mb-3 mb-md-4">
-             <Link className="btn btn-primary font-w600 mb-2 me-auto"
-                   onClick={() => {
-                      setFormData(initialFormData);
-                      setFile(null);
-                      setPostModal(true)
-                   }}
-             >+ Agregar Consultorios </Link>
 
-             <Dropdown className="dropdown ms-auto me-1 d-inline-block  ">
-                <Dropdown.Toggle
-                    variant=""
-                    type="button"
-                    className="btn btn-primary btn-rounded dropdown-toggle light font-w600  mb-2"
-                    data-toggle="dropdown"
-                    aria-expanded="false"
-                >
-                   <i className="las la-check-circle scale5 me-3"/>
-                   Available
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="dropdown-menu">
-                   <Dropdown.Item className="dropdown-item" to="/doctor-details">
-                      Daily
-                   </Dropdown.Item>
-                   <Dropdown.Item className="dropdown-item" to="/doctor-details">
-                      Weekly
-                   </Dropdown.Item>
-                   <Dropdown.Item className="dropdown-item" to="/doctor-details">
-                      Monthly
-                   </Dropdown.Item>
-                </Dropdown.Menu>
-             </Dropdown>
-             <Link
-                 to="/doctor-details"
-                 className="btn btn-primary btn-rounded mb-2"
-             >
-                <i className="las scale5 la-pencil-alt me-2"/> Edit
-             </Link>
-          </div>
+          {!loading && (
+             <div className="d-block d-sm-flex mb-3 mb-md-4">
+                <Link className="btn btn-primary font-w600 mb-2 me-auto"
+                      onClick={() => {
+                         setFormData(initialFormData);
+                         setFile(null);
+                         setPostModal(true)
+                      }}
+                >+ Agregar Consultorios </Link>
+
+                <Button variant={`${tenant.active ? 'success' : 'danger'} btn-rounded mb-2 d-inline-block`}>
+                                          <span
+                                              className={`btn-icon-start ${tenant.active ? 'text-success' : 'text-danger'}`}>
+                                            <i className={`fa ${tenant.active ? 'fa-check color-success' : 'fa-cancel color-danger'}`}/>
+                                          </span>
+                   {(tenant.active ? 'ACTIVO' : 'INACTIVO')}
+                </Button>
+                <Dropdown className="dropdown ms-auto me-1 d-inline-block">
+                   <Dropdown.Toggle
+                       variant=""
+                       type="button"
+                       className="btn btn-primary btn-rounded dropdown-toggle light font-w600  mb-2"
+                       data-toggle="dropdown"
+                       aria-expanded="false"
+                   >
+                      <i className="las scale5 la-pencil-alt me-2"/>
+                      Acciones
+                   </Dropdown.Toggle>
+                   <Dropdown.Menu className="dropdown-menu">
+                      <Dropdown.Item className="dropdown-item" to="/doctor-details">
+                         Daily
+                      </Dropdown.Item>
+                      <Dropdown.Item className="dropdown-item" to="/doctor-details">
+                         Weekly
+                      </Dropdown.Item>
+                      <Dropdown.Item className="dropdown-item" to="/doctor-details">
+                         Monthly
+                      </Dropdown.Item>
+                   </Dropdown.Menu>
+                </Dropdown>
+             </div>
+          )}
           <div className="row">
 
              {loading && (
@@ -758,10 +700,10 @@ const TenantDetail = () => {
                                                className="required">*</span></label>
                                            <input
                                                type="number"
-                                               name="phoneNumber"
+                                               name="contactPhone"
                                                className="form-control"
                                                placeholder="0996588446"
-                                               value={formData.phoneNumber}
+                                               value={formData.contactPhone}
                                                onChange={handleChange}
                                                required
                                            />
@@ -811,7 +753,7 @@ const TenantDetail = () => {
                                                    managerOptions.find(opt => opt.value === formData.managerName)
                                                    || null
                                                }
-                                               onChange={handleSelectChange}
+                                               onChange={handleSelectManagerChange}
                                                isClearable
                                                placeholder="Selecciona un administrador"
                                                style={{
@@ -1078,7 +1020,7 @@ const TenantDetail = () => {
                                    </li>
                                    <li className="list-group-item">
                                       <span className="mb-0 title">Teléfono</span> :
-                                      <span className="text-black ms-2">{office.phoneNumber}</span>
+                                      <span className="text-black ms-2">{office.contactPhone}</span>
                                    </li>
                                    <li className="list-group-item">
                                       <span className="mb-0 title">Administrador</span> :
@@ -1110,4 +1052,4 @@ const TenantDetail = () => {
    );
 };
 
-export default TenantDetail;
+export default TenantDetails;

@@ -433,7 +433,7 @@ const HomeAdmin = () => {
                                                                as={Link}
                                                                to={`/tenant-details/${tenant.id}`}
                                                            >
-                                                               View Detail
+                                                               Ver Detalles
                                                            </Dropdown.Item>
                                                            <Dropdown.Item
                                                                as={Link}

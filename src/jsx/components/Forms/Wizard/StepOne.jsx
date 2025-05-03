@@ -46,7 +46,7 @@ const StepOne = () => {
                   <label className="text-label">Phone Number <span className="required">*</span></label>
                   <input
                      type="number"
-                     name="phoneNumber"
+                     name="contactPhone"
                      className="form-control"
                      placeholder="(+1)408-657-9007"
                      required

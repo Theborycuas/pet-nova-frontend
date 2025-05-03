@@ -9,7 +9,7 @@ const adminAPI = axios.create({
 export const officeEndpoints = {
     resgisterOffice: "/resgisterOffice",
     listAllOffices: "/listAllOffice",
-    getOfficeById: "/getOfficeById",
+    getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
     getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`
 }
 
@@ -68,6 +68,24 @@ export const getOfficesByTenantId = async (tenantId) => {
         return response.data;
     } catch (error){
         if(!error.response){
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const getOfficeById = async (officeId) =>{
+    try {
+        const response = await adminAPI.get(officeEndpoints.getOfficeById(officeId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return response.data;
+    } catch (error){
+        if (!error.response) {
+            // Error de red (no llegó al backend)
             throw new Error('Error de conexión con el servidor');
         }
         handleAdminError(error);

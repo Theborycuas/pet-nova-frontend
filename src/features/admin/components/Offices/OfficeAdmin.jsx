@@ -303,7 +303,7 @@ const HomeAdmin = () => {
                                                    to="/doctor-list"
                                                    className="btn btn-primary light btn-rounded btn-sm text-nowrap"
                                                >
-                                                   {office.phoneNumber}
+                                                   {office.contactPhone}
                                                </Link>
                                            </td>
                                            <td>{office.managerName}</td>
@@ -354,7 +354,8 @@ const HomeAdmin = () => {
                                                        </Dropdown.Toggle>
                                                        <Dropdown.Menu className="dropdown-menu dropdown-menu-right">
                                                            <Dropdown.Item
-                                                               to="/doctor-list"
+                                                               as={Link}
+                                                               to={`/office-details/${office.id}`}
                                                            >
                                                                View Detail
                                                            </Dropdown.Item>

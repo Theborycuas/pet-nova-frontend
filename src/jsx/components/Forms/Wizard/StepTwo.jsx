@@ -33,7 +33,7 @@ const StepTwo = () => {
                   <label className="text-label">Company Phone Number </label>
                   <input
                      type="number"
-                     name="phoneNumber"
+                     name="contactPhone"
                      className="form-control"
                      placeholder="(+1)408-657-9007"
                      required
