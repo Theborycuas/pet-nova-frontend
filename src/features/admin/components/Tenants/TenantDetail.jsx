@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import Slider from "react-slick";
-import {Dropdown, Modal} from "react-bootstrap";
+import {Button, Dropdown, Modal} from "react-bootstrap";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
@@ -27,10 +27,10 @@ import card7 from "../../../../assets/images/task/img7.jpg";
 import card8 from "../../../../assets/images/task/img8.jpg";
 import {nanoid} from "nanoid";
 import swal from "sweetalert";
-import {formatDateTimeUtils} from "../../../../utils/formatters.js";
+import {formatDateTimeUtils, formatDateUtils} from "../../../../utils/formatters.js";
 import Select from "react-select";
 import CustomClearIndicator from "../../../../jsx/components/PluginsMenu/Select2/MultiSelect.jsx";
-import {createOffice} from "../../api/officeEndpoints.js";
+import {createOffice, getOfficesByTenantId} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 
 const CardListBlog = [
@@ -84,6 +84,7 @@ const initialFormData = {
 
 const TenantDetail = () => {
 
+   const [offices, setOffices] = useState([]);
    const [tenant, setTenant] = useState(null);
    const {tenantId} = useParams();
 
@@ -98,11 +99,18 @@ const TenantDetail = () => {
          try {
             const startTime = Date.now();
             setLoading(true);
-            const data = await getTenantById(tenantId);
+            setError(null);
+
+            const [t, o] = await Promise.all([
+                getTenantById(tenantId),
+                getOfficesByTenantId(tenantId)
+            ]);
+
             // Espera al menos 500ms para evitar parpadeos
             const elapsed = Date.now() - startTime;
             if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-            setTenant(data);
+            setTenant(t);
+            setOffices(o);
          } catch (error){
             setError(error.message);
             console.log('Error al obtener el tenant: ', error.message);
@@ -125,7 +133,7 @@ const TenantDetail = () => {
             ...formData,
             tenantId: tenant.id
          };
-         const response = await createOffice(dataToSend);
+         await createOffice(dataToSend);
          const elapsed = Date.now() - startTime;
          if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
 
@@ -186,128 +194,9 @@ const TenantDetail = () => {
       { value: 3, label: 'MXN' },
    ]
 
-
-
-   function SampleNextArrow(props) {
-      const { onClick } = props;
-      return (
-         <div className="owl-next" onClick={onClick} style={{ zIndex: 99 }}>
-            <i className="fa fa-caret-right" />
-         </div>
-      );
-   }
-
-   function SamplePrevArrow(props) {
-      const { onClick } = props;
-      return (
-         <div
-            className="owl-prev disabled"
-            onClick={onClick}
-            style={{ zIndex: 99 }}
-         >
-            <i className="fa fa-caret-left" />
-         </div>
-      );
-   }
-
-   const settings = {
-      focusOnSelect: true,
-      infinite: true,
-      slidesToShow: 2,
-      slidesToScroll: 1,
-      speed: 500,
-      nextArrow: <SampleNextArrow />,
-      prevArrow: <SamplePrevArrow />,
-      responsive: [
-         
-         {
-            breakpoint: 1025,
-            settings: {
-               slidesToShow: 1,
-               slidesToScroll: 1,
-            },
-         },
-      ],
-   };
-
-  /* useEffect(() => {
-      const fetchTenant = async () => {
-         try {
-            const data = await getTenantById(tenantId); // Envía el ID
-            setTenant(data);
-         } catch (error) {
-            console.error('Error al obtener el tenant:', error.message);
-         }
-      };
-
-      fetchTenant();
-   }, [tenantId]);*/
-
    const [postModal, setPostModal] = useState(false);
 
    const [contacts, setContacts] = useState(CardListBlog);
-   // delete data
-   const handleDeleteClick = (contactId) => {
-      const newContacts = [...contacts];
-      const index = contacts.findIndex((contact)=> contact.id === contactId);
-      newContacts.splice(index, 1);
-      setContacts(newContacts);
-   }
-
-   //Add data
-   const [addFormData, setAddFormData ] = useState({
-      Cust_Id:'',
-      Date_Join:'',
-      Cust_Name:'',
-      Location:'',
-      image:'',
-   });
-
-   // Add contact function
-   const handleAddFormChange = (event) => {
-      event.preventDefault();
-      const fieldName = event.target.getAttribute('name');
-      const fieldValue = event.target.value;
-      const newFormData = {...addFormData};
-      newFormData[fieldName] = fieldValue;
-      setAddFormData(newFormData);
-   };
-
-   //Add Submit data
-   const handleAddFormSubmit = (event)=> {
-      event.preventDefault();
-      var error = false;
-      var errorMsg = '';
-      if(addFormData.Date_Join === ""){
-         error = true;
-         errorMsg = 'Please fill date';
-      }else if(addFormData.Cust_Name === ""){
-         error = true;
-         errorMsg = 'Please fill name.';
-      }
-      else if(addFormData.Location === ""){
-         error = true;
-         errorMsg = 'Please fill location';
-      }
-      if(!error){
-         const newContact = {
-            id: nanoid(),
-            Cust_Id: addFormData.Cust_Id,
-            Date_Join:  addFormData.Date_Join,
-            Cust_Name:  addFormData.Cust_Name ,
-            Location:  addFormData.Location,
-            image: addFormData.image,
-         };
-         const newContacts = [...contacts, newContact];
-         setContacts(newContacts);
-         setPostModal(false);
-         swal('Good job!', 'Successfully Added', "success");
-         addFormData.Cust_Name = addFormData.Location = addFormData.Date_Join = '';
-
-      }else{
-         swal('Oops', errorMsg, "error");
-      }
-   };
 
 
    const [editModal, setEditModal] = useState(false);
@@ -329,6 +218,14 @@ const TenantDetail = () => {
       setEditFormData(formValues);
       setEditModal(true);
    };
+
+   // delete data
+   const handleDeleteClick = (contactId) => {
+      const newContacts = [...contacts];
+      const index = contacts.findIndex((contact)=> contact.id === contactId);
+      newContacts.splice(index, 1);
+      setContacts(newContacts);
+   }
 
 
    // edit  data
@@ -375,7 +272,6 @@ const TenantDetail = () => {
       setFile(e.target.files[0]);
       setTimeout(function(){
          var src = document.getElementById("saveImageFile").getAttribute("src");
-         addFormData.image = src;
       }, 200);
    }
 
@@ -638,145 +534,150 @@ const TenantDetail = () => {
              {error && (
                  <div className="alert alert-danger">{error}</div>
              )}
-             <div className=" col-lg-12 col-xl-4 col-xxl-6">
-                <div className="card">
-                   <div className="card-header border-0 pb-0">
-                      <h4 className="fs-20 font-w600 mb-0">
-                         Appointment Schdule
-                      </h4>
-                   </div>
-                   <div className="card-body pt-2 p-0">
-                      <div
-                          id="DZ_W_Todo2"
-                          className="widget-media dz-scroll height370 my-4 px-4"
-                      >
-                         <ul className="timeline">
-                            <li>
-                               <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                  <div className="media bg-transparent me-2">
-                                     <img
-                                         className="rounded-circle"
-                                         alt="widget"
-                                         width={48}
-                                         src={widget6}
-                                     />
+
+             {!loading && (
+                <div className=" col-lg-12 col-xl-4 col-xxl-6">
+                   <div className="card">
+                      <div className="card-header border-0 pb-0">
+                         <h4 className="fs-20 font-w600 mb-0">
+                            Appointment Schdule
+                         </h4>
+                      </div>
+                      <div className="card-body pt-2 p-0">
+                         <div
+                             id="DZ_W_Todo2"
+                             className="widget-media dz-scroll height370 my-4 px-4"
+                         >
+                            <ul className="timeline">
+                               <li>
+                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
+                                     <div className="media bg-transparent me-2">
+                                        <img
+                                            className="rounded-circle"
+                                            alt="widget"
+                                            width={48}
+                                            src={widget6}
+                                        />
+                                     </div>
+                                     <div className="media-body">
+                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
+                                        <span>Physical Therapy</span>
+                                     </div>
+                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
+                                        <li className="me-2">Sat, 23/08/2020</li>
+                                        <li>08:00 - 09:30 AM</li>
+                                     </ul>
                                   </div>
-                                  <div className="media-body">
-                                     <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                     <span>Physical Therapy</span>
+                               </li>
+                               <li>
+                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
+                                     <div className="media bg-transparent me-2">
+                                        <img
+                                            className="rounded-circle"
+                                            alt="widget"
+                                            width={48}
+                                            src={widget7}
+                                        />
+                                     </div>
+                                     <div className="media-body">
+                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
+                                        <span>Physical Therapy</span>
+                                     </div>
+                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
+                                        <li className="me-2">Sat, 23/08/2020</li>
+                                        <li>08:00 - 09:30 AM</li>
+                                     </ul>
                                   </div>
-                                  <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                     <li className="me-2">Sat, 23/08/2020</li>
-                                     <li>08:00 - 09:30 AM</li>
-                                  </ul>
-                               </div>
-                            </li>
-                            <li>
-                               <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                  <div className="media bg-transparent me-2">
-                                     <img
-                                         className="rounded-circle"
-                                         alt="widget"
-                                         width={48}
-                                         src={widget7}
-                                     />
+                               </li>
+                               <li>
+                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
+                                     <div className="media bg-transparent me-2">
+                                        <img
+                                            className="rounded-circle"
+                                            alt="widget"
+                                            width={48}
+                                            src={widget8}
+                                        />
+                                     </div>
+                                     <div className="media-body">
+                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
+                                        <span>Physical Therapy</span>
+                                     </div>
+                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
+                                        <li className="me-2">Sat, 23/08/2020</li>
+                                        <li>08:00 - 09:30 AM</li>
+                                     </ul>
                                   </div>
-                                  <div className="media-body">
-                                     <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                     <span>Physical Therapy</span>
+                               </li>
+                               <li>
+                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
+                                     <div className="media bg-transparent me-2">
+                                        <img
+                                            className="rounded-circle"
+                                            alt="widget"
+                                            width={48}
+                                            src={widget5}
+                                        />
+                                     </div>
+                                     <div className="media-body">
+                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
+                                        <span>Physical Therapy</span>
+                                     </div>
+                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
+                                        <li className="me-2">Sat, 23/08/2020</li>
+                                        <li>08:00 - 09:30 AM</li>
+                                     </ul>
                                   </div>
-                                  <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                     <li className="me-2">Sat, 23/08/2020</li>
-                                     <li>08:00 - 09:30 AM</li>
-                                  </ul>
-                               </div>
-                            </li>
-                            <li>
-                               <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                  <div className="media bg-transparent me-2">
-                                     <img
-                                         className="rounded-circle"
-                                         alt="widget"
-                                         width={48}
-                                         src={widget8}
-                                     />
+                               </li>
+                               <li>
+                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
+                                     <div className="media bg-transparent me-2">
+                                        <img
+                                            className="rounded-circle"
+                                            alt="widget"
+                                            width={48}
+                                            src={widget1}
+                                        />
+                                     </div>
+                                     <div className="media-body">
+                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
+                                        <span>Physical Therapy</span>
+                                     </div>
+                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
+                                        <li className="me-2">Sat, 23/08/2020</li>
+                                        <li>08:00 - 09:30 AM</li>
+                                     </ul>
                                   </div>
-                                  <div className="media-body">
-                                     <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                     <span>Physical Therapy</span>
+                               </li>
+                               <li>
+                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
+                                     <div className="media bg-transparent me-2">
+                                        <img
+                                            className="rounded-circle"
+                                            alt="widget"
+                                            width={48}
+                                            src={widget6}
+                                        />
+                                     </div>
+                                     <div className="media-body">
+                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
+                                        <span>Physical Therapy</span>
+                                     </div>
+                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
+                                        <li className="me-2">Sat, 23/08/2020</li>
+                                        <li>08:00 - 09:30 AM</li>
+                                     </ul>
                                   </div>
-                                  <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                     <li className="me-2">Sat, 23/08/2020</li>
-                                     <li>08:00 - 09:30 AM</li>
-                                  </ul>
-                               </div>
-                            </li>
-                            <li>
-                               <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                  <div className="media bg-transparent me-2">
-                                     <img
-                                         className="rounded-circle"
-                                         alt="widget"
-                                         width={48}
-                                         src={widget5}
-                                     />
-                                  </div>
-                                  <div className="media-body">
-                                     <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                     <span>Physical Therapy</span>
-                                  </div>
-                                  <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                     <li className="me-2">Sat, 23/08/2020</li>
-                                     <li>08:00 - 09:30 AM</li>
-                                  </ul>
-                               </div>
-                            </li>
-                            <li>
-                               <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                  <div className="media bg-transparent me-2">
-                                     <img
-                                         className="rounded-circle"
-                                         alt="widget"
-                                         width={48}
-                                         src={widget1}
-                                     />
-                                  </div>
-                                  <div className="media-body">
-                                     <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                     <span>Physical Therapy</span>
-                                  </div>
-                                  <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                     <li className="me-2">Sat, 23/08/2020</li>
-                                     <li>08:00 - 09:30 AM</li>
-                                  </ul>
-                               </div>
-                            </li>
-                            <li>
-                               <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                  <div className="media bg-transparent me-2">
-                                     <img
-                                         className="rounded-circle"
-                                         alt="widget"
-                                         width={48}
-                                         src={widget6}
-                                     />
-                                  </div>
-                                  <div className="media-body">
-                                     <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                     <span>Physical Therapy</span>
-                                  </div>
-                                  <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                     <li className="me-2">Sat, 23/08/2020</li>
-                                     <li>08:00 - 09:30 AM</li>
-                                  </ul>
-                               </div>
-                            </li>
-                         </ul>
+                               </li>
+                            </ul>
+                         </div>
                       </div>
                    </div>
                 </div>
-             </div>
-
+             )}
+             {error && (
+                 <div className="alert alert-danger">{error}</div>
+             )}
              <div className="mb-sm-5 mb-3 d-flex flex-wrap align-items-center text-head">
                {/* <!-- Modal --> */}
                 <Modal className="modal fade" show={postModal} onHide={setPostModal} size={'lg'}>
@@ -1106,76 +1007,103 @@ const TenantDetail = () => {
                    </div>
                 </Modal>
              </div>
-             <div className="row">
-                <div className="me-auto d-lg-block">
-                   <h3 className="text-black font-w600">Lista de Consultorios</h3>
-                </div>
-                {contacts.map((contact, index) => (
-                    <div className="col-xl-3 col-xxl-4 col-lg-6 col-md-6 col-sm-6" key={index}>
-                       <div className="card project-boxed">
-                          <div className="img-bx">
-                             <img src={contact.image} alt="" className=" me-3 card-list-img w-100" width="130"/>
-                          </div>
-                          <div className="card-header align-items-start">
-                             <div>
-                                <p className="fs-14 mb-2 text-primary">#{contact.Cust_Id}</p>
-                                <h6 className="fs-18 font-w500 mb-3"><Link to={"#"} className="text-black user-name">Build
-                                   Branding Persona for Etza</Link></h6>
-                                <div className="text-dark fs-14 text-nowrap"><i className="fas fa-calendar me-3"></i>Created
-                                   on Sep 8th, 2023
-                                </div>
-                             </div>
-                             <Dropdown className="">
-                                <Dropdown.Toggle variant="" as="div" className="btn-link i-false">
-                                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                      <path
-                                          d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
-                                          stroke="#342E59" strokeWidth="2" strokeLinecap="round"
-                                          strokeLinejoin="round"/>
-                                      <path
-                                          d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z"
-                                          stroke="#342E59" strokeWidth="2" strokeLinecap="round"
-                                          strokeLinejoin="round"/>
-                                      <path
-                                          d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z"
-                                          stroke="#342E59" strokeWidth="2" strokeLinecap="round"
-                                          strokeLinejoin="round"/>
-                                   </svg>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu align={'end'}>
-                                   <Dropdown.Item
-                                       onClick={(event) => handleEditClick(event, contact)}
-                                   >Edit
-                                   </Dropdown.Item>
-                                   <Dropdown.Item className="text-danger"
-                                                  onClick={() => handleDeleteClick(contact.id)}
-                                   >Delete
-                                   </Dropdown.Item>
-                                </Dropdown.Menu>
-                             </Dropdown>
-                          </div>
-                          <div className="card-body p-0 pb-3">
-                             <ul className="list-group list-group-flush">
-                                <li className="list-group-item">
-                                   <span className="mb-0 title">Deadline Date</span> :
-                                   <span className="text-black ms-2">{contact.Date_Join}</span>
-                                </li>
-                                <li className="list-group-item">
-                                   <span className="mb-0 title">Client Name</span> :
-                                   <span className="text-black ms-2">{contact.Cust_Name}</span>
-                                </li>
-                                <li className="list-group-item">
-                                   <span className="mb-0 title">Location</span> :
-                                   <span className="text-black desc-text ms-2">{contact.Location}</span>
-                                </li>
-                             </ul>
-                          </div>
 
-                       </div>
+             {loading && (
+                 <div className="text-center my-5">
+                    <div className="spinner-grow text-success" role="status">
+                       <span className="visually-hidden">Cargando...</span>
                     </div>
-                ))}
-             </div>
+                    <p className="mt-2">Cargando información del tenant...</p>
+                 </div>
+             )}
+             {!loading && (
+                <div className="row">
+
+                   <div className="me-auto d-lg-block">
+                      <h3 className="text-black font-w600">Lista de Consultorios</h3>
+                   </div>
+                   {offices.map((office, index) => (
+                       <div className="col-xl-3 col-xxl-4 col-lg-6 col-md-6 col-sm-6" key={index}>
+                          <div className="card project-boxed d-flex flex-column">
+                             <div className="img-bx">
+                                <img src={office.logoUrl || card1}
+                                     alt=""
+                                     className=" me-3 card-list-img w-100"
+                                     width="130"/>
+                             </div>
+                             <div className="card-header align-items-start">
+                                <div>
+                                   <p className="fs-14 mb-2 text-primary"> {`#O-${office.id.toString().padStart(4, '0')}`}</p>
+                                   <h6 className="fs-18 font-w500 mb-3"><Link to={"#"}
+                                                                              className="text-black user-name">{office.name}</Link>
+                                   </h6>
+                                   <div className="text-dark fs-14 text-nowrap"><i className="fas fa-calendar me-3"></i>Creado
+                                      el {formatDateUtils(office.createdAt)}</div>
+                                </div>
+                                <Dropdown className="">
+                                   <Dropdown.Toggle variant="" as="div" className="btn-link i-false">
+                                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                           xmlns="http://www.w3.org/2000/svg">
+                                         <path
+                                             d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z"
+                                             stroke="#342E59" strokeWidth="2" strokeLinecap="round"
+                                             strokeLinejoin="round"/>
+                                         <path
+                                             d="M12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6Z"
+                                             stroke="#342E59" strokeWidth="2" strokeLinecap="round"
+                                             strokeLinejoin="round"/>
+                                         <path
+                                             d="M12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20Z"
+                                             stroke="#342E59" strokeWidth="2" strokeLinecap="round"
+                                             strokeLinejoin="round"/>
+                                      </svg>
+                                   </Dropdown.Toggle>
+                                   <Dropdown.Menu align={'end'}>
+                                      <Dropdown.Item
+                                          /*onClick={(event) => handleEditClick(event, contact)}*/
+                                      >Edit
+                                      </Dropdown.Item>
+                                      <Dropdown.Item className="text-danger"
+                                          /*onClick={() => handleDeleteClick(contact.id)}*/
+                                      >Delete
+                                      </Dropdown.Item>
+                                   </Dropdown.Menu>
+                                </Dropdown>
+                             </div>
+                             <div className="card-body p-0 pb-3">
+                                <ul className="list-group list-group-flush">
+                                   <li className="list-group-item">
+                                      <span className="mb-0 title">Dirección</span> :
+                                      <span className="text-black ms-2">{office.address}</span>
+                                   </li>
+                                   <li className="list-group-item">
+                                      <span className="mb-0 title">Teléfono</span> :
+                                      <span className="text-black ms-2">{office.phoneNumber}</span>
+                                   </li>
+                                   <li className="list-group-item">
+                                      <span className="mb-0 title">Administrador</span> :
+                                      <span className="text-black desc-text ms-2">{office.managerName}</span>
+                                   </li>
+                                   <div className="card-body d-flex justify-content-center align-items-center pb-3">
+                                      <Button variant={`${office.active ? 'success' : 'danger'} btn-rounded`}>
+                                       <span
+                                           className={`btn-icon-start ${office.active ? 'text-success' : 'text-danger'}`}>
+                                         <i className={`fa ${office.active ? 'fa-check color-success' : 'fa-cancel color-danger'}`}/>
+                                       </span>
+                                         {(office.active ? 'ACTIVO' : 'INACTIVO')}
+                                      </Button>
+                                   </div>
+                                </ul>
+                             </div>
+
+                          </div>
+                       </div>
+                   ))}
+                </div>
+             )}
+             {error && (
+                 <div className="alert alert-danger">{error}</div>
+             )}
 
           </div>
        </>
