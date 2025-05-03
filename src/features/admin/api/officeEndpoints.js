@@ -10,7 +10,8 @@ export const officeEndpoints = {
     resgisterOffice: "/resgisterOffice",
     listAllOffices: "/listAllOffice",
     getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
-    getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`
+    getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
+    deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`
 }
 
 
@@ -78,6 +79,24 @@ export const getOfficesByTenantId = async (tenantId) => {
 export const getOfficeById = async (officeId) =>{
     try {
         const response = await adminAPI.get(officeEndpoints.getOfficeById(officeId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return response.data;
+    } catch (error){
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const deleteOfficeById = async (officeId) => {
+    try {
+        const response = await adminAPI.post(officeEndpoints.deleteOfficeById(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }

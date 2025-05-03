@@ -18,10 +18,11 @@ import widget03 from "../../../assets/images/widget/3.jpg";
 import widget05 from "../../../assets/images/widget/5.jpg";
 import doctors9 from "../../../assets/images/doctors/9.jpg";
 import {Dropdown} from "react-bootstrap";
-import {getAllOffices} from "../api/officeEndpoints.js";
-import {getAllTenants} from "../api/tenantEndpoints.js";
+import {deleteOfficeById, getAllOffices} from "../api/officeEndpoints.js";
+import {deleteTenantById, getAllTenants} from "../api/tenantEndpoints.js";
 import {formatDateUtils} from "../../../utils/formatters.js";
 import {Alerts} from "../../../utils/alerts.js";
+import Swal from "sweetalert2";
 
 const HomeAdmin = () => {
     const [tenants, setTenants] = useState([]);
@@ -45,32 +46,47 @@ const HomeAdmin = () => {
             }
         }
     };
+
+    // Carga todos los tenants
+    const loadTenants = async () => {
+        setLoading(true);
+        setError(null);
+        const startTime = Date.now();
+        try {
+            const { data } = await getAllTenants();
+            // Espera al menos 500ms para evitar parpadeos
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+            setTenants(data);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
     // use effect
     useEffect(() => {
-        const loadTenants = async () => {
-            const startTime = Date.now();
-            setLoading(true);
-            setError(null);
-            try {
-                const response = await getAllTenants();
-                // Espera al menos 500ms para evitar parpadeos
-                const elapsed = Date.now() - startTime;
-                if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-
-                setTenants(response.data);
-            } catch (err) {
-                if (!error.response) {
-                    setError("Error de Conexión");
-                } else {
-                    err.message
-                }
-            } finally {
-                setLoading(false);
-            }
-        }
         loadTenants();
         setData(document.querySelectorAll("#doctor_list tbody tr"));
     }, [test]);
+
+
+    function handleDeleteTenant(tenantId) {
+        Alerts.confirmDelete('tenant', () => {
+            deleteTenantById(tenantId)
+                .then(() => {
+                    setTenants(current => current.filter(o => o.id !== tenantId));
+                    Swal.fire('¡Eliminado!', 'El tenant ha sido borrado.', 'success');
+                })
+                .catch(err => {
+                    Swal.fire('Error', 'No se pudo eliminar el tenant.', 'error');
+                    console.log(err);
+                });
+        });
+    }
+
 
     // Active pagginarion
     activePag.current === 0 && chageData(0, sort);
@@ -439,13 +455,12 @@ const HomeAdmin = () => {
                                                                as={Link}
                                                                to={`/tenant-details/${tenant.id}`}
                                                            >
-                                                               Edit
+                                                               Editar
                                                            </Dropdown.Item>
                                                            <Dropdown.Item
-                                                               as={Link}
-                                                               to={`/tenant-details/${tenant.id}`}
+                                                               onClick={() => handleDeleteTenant(tenant.id)}
                                                            >
-                                                               Delete
+                                                               Eliminar
                                                            </Dropdown.Item>
                                                        </Dropdown.Menu>
                                                    </Dropdown>

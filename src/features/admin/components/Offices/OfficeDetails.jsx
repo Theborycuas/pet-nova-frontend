@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {Button, Dropdown} from "react-bootstrap";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -14,7 +14,9 @@ import map from "../../../../assets/images/svg/map.svg";
 
 /// Scroll
 import {formatDateTimeUtils} from "../../../../utils/formatters.js";
-import {getOfficeById} from "../../api/officeEndpoints.js";
+import {deleteOfficeById, getAllOffices, getOfficeById} from "../../api/officeEndpoints.js";
+import {Alerts} from "../../../../utils/alerts.js";
+import Swal from "sweetalert2";
 
 /*
 const initialFormData = {
@@ -40,32 +42,47 @@ const OfficeDetails = () => {
    const [error, setError] = useState(null);
 
 /*   const [formData, setFormData] = useState(initialFormData);
-   const navigate = useNavigate();*/
+   */
+    const navigate = useNavigate();
 
-   useEffect(() => {
-      const fetchOffice = async () => {
-         try {
-            const startTime = Date.now();
-            setLoading(true);
-            setError(null);
-
-            const [t, o] = await Promise.all([
+    // Carga el office details
+    const loadOffice = async () => {
+        setLoading(true);
+        setError(null);
+        const startTime = Date.now();
+        try {
+            const [o] = await Promise.all([
                 getOfficeById(officeId),
             ]);
-
             // Espera al menos 500ms para evitar parpadeos
             const elapsed = Date.now() - startTime;
             if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-            setOffice(t);
-         } catch (error){
-            setError(error.message);
-            console.log('Error al obtener el office: ', error.message);
-         } finally {
-               setLoading(false);
-         }
-      };
-      fetchOffice();
+            setOffice(o);
+        } catch (err) {
+            setError(err.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+   useEffect(() => {
+       loadOffice();
    }, [officeId])
+
+
+    function handleDeleteOffice(officeId) {
+        Alerts.confirmDelete('consultorio', () => {
+            deleteOfficeById(officeId)
+                .then(() => {
+                    Swal.fire('¡Eliminado!', 'El consultorio ha sido borrado.', 'success');
+                    navigate('/office-admin');
+                })
+                .catch(err => {
+                    Swal.fire('Error', 'No se pudo eliminar el tenant.', 'error');
+                    console.log(err);
+                });
+        });
+    }
 
 
 /*
@@ -222,13 +239,15 @@ const OfficeDetails = () => {
                    </Dropdown.Toggle>
                    <Dropdown.Menu className="dropdown-menu">
                       <Dropdown.Item className="dropdown-item" to="/doctor-details">
-                         Daily
+                         Editar
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                          className="dropdown-item"
+                          onClick={() => handleDeleteOffice(office.id)}>
+                         Borrar
                       </Dropdown.Item>
                       <Dropdown.Item className="dropdown-item" to="/doctor-details">
-                         Weekly
-                      </Dropdown.Item>
-                      <Dropdown.Item className="dropdown-item" to="/doctor-details">
-                         Monthly
+                         Otros
                       </Dropdown.Item>
                    </Dropdown.Menu>
                 </Dropdown>
