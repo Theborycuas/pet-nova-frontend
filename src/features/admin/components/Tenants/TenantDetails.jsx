@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from "react";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import Slider from "react-slick";
 import {Button, Dropdown, Modal} from "react-bootstrap";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -11,26 +10,16 @@ import widget5 from "../../../../assets/images/widget/5.jpg";
 import widget6 from "../../../../assets/images/widget/6.jpg";
 import widget7 from "../../../../assets/images/widget/7.jpg";
 import widget8 from "../../../../assets/images/widget/8.jpg";
-import avater1 from "../../../../assets/images/avatar/1.jpg";
 import map from "../../../../assets/images/svg/map.svg";
 
 /// Scroll
 import {deleteTenantById, getTenantById} from "../../api/tenantEndpoints.js";
 import user from "../../../../assets/images/task/user.jpg";
 import card1 from "../../../../assets/images/task/img1.jpg";
-import card2 from "../../../../assets/images/task/img2.jpg";
-import card3 from "../../../../assets/images/task/img3.jpg";
-import card4 from "../../../../assets/images/task/img4.jpg";
-import card5 from "../../../../assets/images/task/img5.jpg";
-import card6 from "../../../../assets/images/task/img6.jpg";
-import card7 from "../../../../assets/images/task/img7.jpg";
-import card8 from "../../../../assets/images/task/img8.jpg";
-import {nanoid} from "nanoid";
-import swal from "sweetalert";
 import {formatDateTimeUtils, formatDateUtils} from "../../../../utils/formatters.js";
 import Select from "react-select";
 import CustomClearIndicator from "../../../../jsx/components/PluginsMenu/Select2/MultiSelect.jsx";
-import {createOffice, deleteOfficeById, getOfficesByTenantId} from "../../api/officeEndpoints.js";
+import {createOffice, getOfficesByTenantId} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 import Swal from "sweetalert2";
 
@@ -176,33 +165,6 @@ const TenantDetails = () => {
 
    const [postModal, setPostModal] = useState(false);
 
-
-
-   const [editModal, setEditModal] = useState(false);
-
-   // edit  data
-   const [editFormData, setEditFormData] = useState({
-      Cust_Id:'',
-      Date_Join:'',
-      Cust_Name:'',
-      Location:'',
-      image:'',
-   })
-
-   //update data function
-   const handleEditFormChange = (event) => {
-      event.preventDefault();
-      const fieldName = event.target.getAttribute('name');
-      const fieldValue = event.target.value;
-      const newFormData = {...editFormData};
-      newFormData[fieldName] = fieldValue;
-      setEditFormData(newFormData);
-   };
-
-   // edit form data submit
-   const handleEditFormSubmit = (event) => {
-
-   }
 
    //For Image upload in ListBlog
    const [file, setFile] = React.useState(null)
@@ -865,84 +827,6 @@ const TenantDetails = () => {
                                </button>*/}
                                <button type="button" onClick={() => setPostModal(false)} className="btn btn-danger"><i
                                    className="flaticon-delete-1"></i> Cancelar
-                               </button>
-                            </div>
-                         </form>
-
-                      </div>
-                   </div>
-                </Modal>
-                <Modal className="modal fade" show={editModal} onHide={setEditModal}>
-                   <div className="" role="document">
-                      <div className="">
-                         <form>
-                            <div className="modal-header">
-                               <h4 className="modal-title fs-20">Edit Task</h4>
-                               <button type="button" className="btn close lineheight1"
-                                       onClick={() => setEditModal(false)}>
-                                  <span>×</span>
-                               </button>
-                            </div>
-                            <div className="modal-body">
-                               <i className="flaticon-cancel-12 close" data-dismiss="modal"></i>
-                               <div className="add-contact-box">
-                                  <div className="add-contact-content">
-                                     <div className="form-group mb-3">
-                                        <label className="text-black font-w500">Customer Id</label><span
-                                         className='required'>*</span>
-                                        <div className="contact-name">
-                                           <input type="text" className="form-control" autoComplete="off"
-                                                  name="Cust_Id" required="required"
-                                                  value={editFormData.Cust_Id}
-                                                  onChange={handleEditFormChange}
-                                           />
-                                           <span className="validation-text"></span>
-                                        </div>
-                                     </div>
-                                     <div className="form-group mb-3">
-                                        <label className="text-black font-w500">Deadline Date</label><span
-                                         className='required'>*</span>
-                                        <div className="contact-name">
-                                           <input type="text" className="form-control" autoComplete="off"
-                                                  name="Date_Join" required="required"
-                                                  value={editFormData.Date_Join}
-                                                  onChange={handleEditFormChange}
-                                           />
-                                           <span className="validation-text"></span>
-                                        </div>
-                                     </div>
-                                     <div className="form-group mb-3">
-                                        <label className="text-black font-w500">Client</label><span
-                                         className='required'>*</span>
-                                        <div className="contact-occupation">
-                                           <input type="text" autoComplete="off"
-                                                  value={editFormData.Cust_Name}
-                                                  onChange={handleEditFormChange}
-                                                  name="Cust_Name" required="required"
-                                                  className="form-control" placeholder="name"
-                                           />
-                                        </div>
-                                     </div>
-                                     <div className="form-group mb-3">
-                                        <label className="text-black font-w500">Location</label><span
-                                         className='required'>*</span>
-                                        <div className="contact-occupation">
-                                           <input type="text" autoComplete="off"
-                                                  name="Location" required="required"
-                                                  value={editFormData.Location}
-                                                  onChange={handleEditFormChange}
-                                                  className="form-control" placeholder="Location"
-                                           />
-                                        </div>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                            <div className="modal-footer">
-                               <button type="submit" className="btn btn-primary" onClick={handleEditFormSubmit}>Save
-                               </button>
-                               <button type="button" onClick={() => setEditModal(false)} className="btn btn-danger"><i
-                                   className="flaticon-delete-1"></i> Discard
                                </button>
                             </div>
                          </form>

@@ -6,7 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 import {ThemeContext} from "../../../../context/ThemeContext.jsx"
 
 // Images
-import {createSubscripPlan, getAllSubscripPlan} from "../../api/subscriptionEndpoints.js";
+import {createSubscripPlan, getAllSubscripPlan, updateSubscripPlan} from "../../api/subscriptionEndpoints.js";
 import {Modal} from "react-bootstrap";
 import Select from "react-select";
 import {Alerts} from "../../../../utils/alerts.js";
@@ -56,6 +56,7 @@ const SubscriptionAdmin = () => {
     const [editModal, setEditModal] = useState(false);
     const [formData, setFormData] = useState(initialFormData);
     const [selectedPlan, setSelectedPlan] = useState(null);
+    const [isEditing, setIsEditing] = useState(false);
 
     // edit  data
     const [editFormData, setEditFormData] = useState({
@@ -103,6 +104,38 @@ const SubscriptionAdmin = () => {
         }
     }
 
+    const handleSubmitUpdateSubscripPlan = async (e) => {
+        e.preventDefault();
+        const startTime = Date.now();
+        try {
+            Alerts.showLoading('Actualizando Plan', 'Guardando información...');
+
+            const dataToSend = {
+                ...formData
+            };
+            await updateSubscripPlan(dataToSend.id, dataToSend);
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+
+            Alerts.closeAlerts();
+            await Alerts.showSuccess('Plan Actualizado!', 'El registro se completó exitosamente');
+            await loadSubscripPlan();
+            setPostModal(false);
+        }catch (error) {
+            Alerts.closeAlerts();
+            if (!error.response) {
+                // Error de conexión (no hay respuesta del backend)
+                console.error('Error de red:', error.message);
+                await Alerts.showConnectionError();
+            } else {
+                // Error del servidor (4xx/5xx)
+                const errorMessage = error.response.data?.message || 'Error desconocido';
+                await Alerts.showError('Error en el servidor', errorMessage);
+            }
+            console.error('Error creando Plan: ', error)
+        }
+    }
+
     const intervalOptions = [
         { value: 1, label: 'MONTHLY' },
         { value: 2, label: 'ANNUAL' },
@@ -115,29 +148,16 @@ const SubscriptionAdmin = () => {
     };
 
 
-    //update data function
-    const handleEditFormChange = (event) => {
-        event.preventDefault();
-        const fieldName = event.target.getAttribute('name');
-        const fieldValue = event.target.value;
-        const newFormData = {...editFormData};
-        newFormData[fieldName] = fieldValue;
-        setEditFormData(newFormData);
-    };
-
-    // edit form data submit
-    const handleEditFormSubmit = (event) => {
-
-    }
-
     const handleEditClick = (plan) => {
         setFormData({
+            id: plan.id,
             name: plan.name,
             priceUsd: plan.priceUsd,
             features: plan.features,
             interval: plan.interval,
         });
 
+        setIsEditing(true);
         setSelectedPlan(plan);
         setPostModal(true);
     };
@@ -251,14 +271,14 @@ const SubscriptionAdmin = () => {
                        <div className="">
                            <form>
                                <div className="modal-header">
-                                   <h4 className="modal-title fs-20">Agregar Plan</h4>
+                                   <h4 className="modal-title fs-20">{isEditing ? "Editar Plan" : "Agregar Plan"}</h4>
                                    <button type="button" className="btn close lineheight1"
                                            onClick={() => setPostModal(false)}>
                                        <span>×</span>
                                    </button>
                                </div>
                                <div className="modal-body">
-                                   <form onSubmit={handleSubmitSaveSubscripPlan}>
+                                   <form onSubmit={isEditing ? handleSubmitUpdateSubscripPlan : handleSubmitSaveSubscripPlan}>
                                        <div className="row">
                                            {/*<div className="col-xl-12">
                                         <div className="form-group">
@@ -294,7 +314,7 @@ const SubscriptionAdmin = () => {
                                                        name="interval"
                                                        options={intervalOptions}
                                                        value={
-                                                           intervalOptions.find(opt => opt.value === formData.interval)
+                                                           intervalOptions.find(opt => opt.label === formData.interval)
                                                            || null
                                                        }
                                                        onChange={handleIntervalChange}
@@ -346,8 +366,7 @@ const SubscriptionAdmin = () => {
                                </div>
                                <div className="modal-footer">
                                    <button type="submit" className="btn btn-primary"
-                                           onClick={handleSubmitSaveSubscripPlan}>Crear
-                                       Plan
+                                           onClick={isEditing ? handleSubmitUpdateSubscripPlan : handleSubmitSaveSubscripPlan}>{isEditing ? "Editar Plan" : "Crear Plan"}
                                    </button>
                                    <button type="button" onClick={() => setPostModal(false)} className="btn btn-danger">
                                        <i
@@ -359,85 +378,7 @@ const SubscriptionAdmin = () => {
                        </div>
                    </div>
                </Modal>
-               <Modal className="modal fade" show={editModal} onHide={setEditModal}>
-                   <div className="" role="document">
-                       <div className="">
-                           <form>
-                               <div className="modal-header">
-                                   <h4 className="modal-title fs-20">Edit Task</h4>
-                                   <button type="button" className="btn close lineheight1"
-                                           onClick={() => setEditModal(false)}>
-                                       <span>×</span>
-                                   </button>
-                               </div>
-                               <div className="modal-body">
-                                   <i className="flaticon-cancel-12 close" data-dismiss="modal"></i>
-                                   <div className="add-contact-box">
-                                       <div className="add-contact-content">
-                                           <div className="form-group mb-3">
-                                               <label className="text-black font-w500">Customer Id</label><span
-                                               className='required'>*</span>
-                                               <div className="contact-name">
-                                                   <input type="text" className="form-control" autoComplete="off"
-                                                          name="Cust_Id" required="required"
-                                                          value={editFormData.Cust_Id}
-                                                          onChange={handleEditFormChange}
-                                                   />
-                                                   <span className="validation-text"></span>
-                                               </div>
-                                           </div>
-                                           <div className="form-group mb-3">
-                                               <label className="text-black font-w500">Deadline Date</label><span
-                                               className='required'>*</span>
-                                               <div className="contact-name">
-                                                   <input type="text" className="form-control" autoComplete="off"
-                                                          name="Date_Join" required="required"
-                                                          value={editFormData.Date_Join}
-                                                          onChange={handleEditFormChange}
-                                                   />
-                                                   <span className="validation-text"></span>
-                                               </div>
-                                           </div>
-                                           <div className="form-group mb-3">
-                                               <label className="text-black font-w500">Client</label><span
-                                               className='required'>*</span>
-                                               <div className="contact-occupation">
-                                                   <input type="text" autoComplete="off"
-                                                          value={editFormData.Cust_Name}
-                                                          onChange={handleEditFormChange}
-                                                          name="Cust_Name" required="required"
-                                                          className="form-control" placeholder="name"
-                                                   />
-                                               </div>
-                                           </div>
-                                           <div className="form-group mb-3">
-                                               <label className="text-black font-w500">Location</label><span
-                                               className='required'>*</span>
-                                               <div className="contact-occupation">
-                                                   <input type="text" autoComplete="off"
-                                                          name="Location" required="required"
-                                                          value={editFormData.Location}
-                                                          onChange={handleEditFormChange}
-                                                          className="form-control" placeholder="Location"
-                                                   />
-                                               </div>
-                                           </div>
-                                       </div>
-                                   </div>
-                               </div>
-                               <div className="modal-footer">
-                                   <button type="submit" className="btn btn-primary" onClick={handleEditFormSubmit}>Save
-                                   </button>
-                                   <button type="button" onClick={() => setEditModal(false)} className="btn btn-danger">
-                                       <i
-                                           className="flaticon-delete-1"></i> Discard
-                                   </button>
-                               </div>
-                           </form>
 
-                       </div>
-                   </div>
-               </Modal>
            </div>
        </div>
    );

@@ -9,6 +9,7 @@ const adminAPI = axios.create({
 export const subscripPlanEndpoints = {
     resgisterSubscripPlan: "/createSubscripPlan",
     listAllSubscripPlan: "/getAllSubscripPlan",
+    updateSubscripPlanById: (planId) => `/updateSubscripPlan/${planId}`,
     /*getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
     getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
     deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`*/
@@ -58,6 +59,15 @@ export const getAllSubscripPlan = async () =>{
         throw error;
     }
 };
+
+export const updateSubscripPlan = async (planId, subscripPlanData) => {
+    try {
+        const response = await adminAPI.put(subscripPlanEndpoints.updateSubscripPlanById(planId), subscripPlanData);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}
 
 /*export const getOfficesByTenantId = async (tenantId) => {
     try {
