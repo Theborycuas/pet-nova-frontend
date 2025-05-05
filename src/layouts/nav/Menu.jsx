@@ -22,6 +22,25 @@ export const MenuList = [
             }
         ],
     },
+    {
+        title: 'Subscriptions',
+        classsChange: 'mm-collapse',
+        iconStyle: <i className="flaticon-381-television"></i>,
+        content: [
+            {
+                title: 'Subscription Plans',
+                to: 'subscription-admin',
+            },
+            {
+                title: 'Subscriptions List',
+                to: 'subscription-admin',
+            },
+            {
+                title: 'Invoice List',
+                to: 'subscription-admin',
+            }
+        ],
+    },
     //Dashboard
     {
         title: 'Dashboard',	

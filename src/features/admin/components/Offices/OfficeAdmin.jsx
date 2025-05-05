@@ -1,30 +1,19 @@
 import React, {useContext, useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
-import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import {ThemeContext} from "../../../../context/ThemeContext.jsx"
 
 // Images
-import DrAlexandro from "../../../../assets/images/doctors/5.jpg";
-import DrSamantha from "../../../../assets/images/doctors/1.jpg";
-import DrAliandro from "../../../../assets/images/doctors/2.jpg";
-import DrSamuel from "../../../../assets/images/doctors/4.jpg";
-import DrMelinda from "../../../../assets/images/doctors/3.jpg";
-import widget01 from "../../../../assets/images/widget/1.jpg";
-import widget02 from "../../../../assets/images/widget/2.jpg";
-import widget03 from "../../../../assets/images/widget/3.jpg";
-import widget05 from "../../../../assets/images/widget/5.jpg";
 import doctors9 from "../../../../assets/images/doctors/9.jpg";
 import {Dropdown} from "react-bootstrap";
 import {deleteOfficeById, getAllOffices} from "../../api/officeEndpoints.js";
 import {formatDateTimeUtils} from "../../../../utils/formatters.js";
-import alerts from "../../../../jsx/components/chatBox/Alerts.jsx";
 import {Alerts} from "../../../../utils/alerts.js";
 import Swal from "sweetalert2";
 
-const HomeAdmin = () => {
+const OfficeAdmin = () => {
     const [offices, setOffices] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -463,4 +452,4 @@ const HomeAdmin = () => {
    );
 };
 
-export default HomeAdmin;
+export default OfficeAdmin;
