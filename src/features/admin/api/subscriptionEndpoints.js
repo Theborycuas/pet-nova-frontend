@@ -3,15 +3,16 @@ import axios from "axios";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,
-    baseURL: `${baseAPI.defaults.baseURL}/offices`
+    baseURL: `${baseAPI.defaults.baseURL}/subscription-plans`
 })
 
-export const officeEndpoints = {
-    resgisterOffice: "/resgisterOffice",
-    listAllOffices: "/listAllOffice",
-    getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
+export const subscripPlanEndpoints = {
+    resgisterSubscripPlan: "/createSubscripPlan",
+    listAllSubscripPlan: "/getAllSubscripPlan",
+    updateSubscripPlanById: (planId) => `/updateSubscripPlan/${planId}`,
+    /*getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
     getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
-    deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`
+    deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`*/
 }
 
 
@@ -28,18 +29,18 @@ adminAPI.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-export const createOffice = async (officeData) => {
+export const createSubscripPlan = async (subscripPlanData) => {
     try {
-        const response = await adminAPI.post(officeEndpoints.resgisterOffice, officeData);
+        const response = await adminAPI.post(subscripPlanEndpoints.resgisterSubscripPlan, subscripPlanData);
         return response.data;
     } catch (error) {
         throw error.response.data;
     }
 }
 
-export const getAllOffices = async () =>{
+export const getAllSubscripPlan = async () =>{
     try {
-        const response = await adminAPI.get(officeEndpoints.listAllOffices, {
+        const response = await adminAPI.get(subscripPlanEndpoints.listAllSubscripPlan, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -59,9 +60,18 @@ export const getAllOffices = async () =>{
     }
 };
 
-export const getOfficesByTenantId = async (tenantId) => {
+export const updateSubscripPlan = async (planId, subscripPlanData) => {
     try {
-        const response = await adminAPI.get(officeEndpoints.getOfficesByTenantId(tenantId), {
+        const response = await adminAPI.put(subscripPlanEndpoints.updateSubscripPlanById(planId), subscripPlanData);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}
+
+/*export const getOfficesByTenantId = async (tenantId) => {
+    try {
+        const response = await adminAPI.get(subscripPlanEndpoints.getOfficesByTenantId(tenantId), {
             headers:{
                 'Content-Type': 'application/json',
             }
@@ -78,7 +88,7 @@ export const getOfficesByTenantId = async (tenantId) => {
 
 export const getOfficeById = async (officeId) =>{
     try {
-        const response = await adminAPI.get(officeEndpoints.getOfficeById(officeId), {
+        const response = await adminAPI.get(subscripPlanEndpoints.getOfficeById(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -96,7 +106,7 @@ export const getOfficeById = async (officeId) =>{
 
 export const deleteOfficeById = async (officeId) => {
     try {
-        const response = await adminAPI.post(officeEndpoints.deleteOfficeById(officeId), {
+        const response = await adminAPI.post(subscripPlanEndpoints.deleteOfficeById(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -110,7 +120,7 @@ export const deleteOfficeById = async (officeId) => {
         handleAdminError(error);
         throw error;
     }
-}
+}*/
 
 const handleAdminError = (error) =>{
     const errorMessages = {

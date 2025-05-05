@@ -88,6 +88,10 @@ export const Alerts = {
                 // Swal.fire('Operación cancelada', '', 'info');
             }
         });
-    }
+    },
+
+    closeAlerts: () => {
+        Swal.close();
+    },
 
 };
