@@ -5227,6 +5227,9 @@ a.close.disabled {
 .bg-primary {
   background-color: #36C95F !important; }
 
+.bg-gold {
+    background-color: #FFD700 !important; }
+
 a.bg-primary:hover, a.bg-primary:focus,
 button.bg-primary:hover,
 button.bg-primary:focus {

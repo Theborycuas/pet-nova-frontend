@@ -6,7 +6,17 @@ import "slick-carousel/slick/slick-theme.css";
 import {ThemeContext} from "../../../../context/ThemeContext.jsx"
 
 // Images
-import {getAllSubscripPlan} from "../../api/subscriptionEndpoints.js";
+import {createSubscripPlan, getAllSubscripPlan} from "../../api/subscriptionEndpoints.js";
+import {Modal} from "react-bootstrap";
+import Select from "react-select";
+import {Alerts} from "../../../../utils/alerts.js";
+
+const initialFormData = {
+    name: '',
+    features: '',
+    interval: '',
+    priceUsd: ''
+};
 
 const SubscriptionAdmin = () => {
     const [subscripPlans, setSubscripPlans] = useState([]);
@@ -42,24 +52,113 @@ const SubscriptionAdmin = () => {
        changeBackground({ value: "light", label: "Light" });
    }, []);
 
+    const [postModal, setPostModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
+    const [formData, setFormData] = useState(initialFormData);
+    const [selectedPlan, setSelectedPlan] = useState(null);
+
+    // edit  data
+    const [editFormData, setEditFormData] = useState({
+        Cust_Id:'',
+        Date_Join:'',
+        Cust_Name:'',
+        Location:'',
+        image:'',
+    })
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSubmitSaveSubscripPlan = async (e) => {
+        e.preventDefault();
+        const startTime = Date.now();
+        try {
+            Alerts.showLoading('Registrando Plan', 'Guardando información...');
+
+            const dataToSend = {
+                ...formData
+            };
+            await createSubscripPlan(dataToSend);
+            const elapsed = Date.now() - startTime;
+            if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
+
+            Alerts.closeAlerts();
+            await Alerts.showSuccess('Plan creado!', 'El registro se completó exitosamente');
+            await loadSubscripPlan();
+            setPostModal(false);
+        }catch (error) {
+            Alerts.closeAlerts();
+            if (!error.response) {
+                // Error de conexión (no hay respuesta del backend)
+                console.error('Error de red:', error.message);
+                await Alerts.showConnectionError();
+            } else {
+                // Error del servidor (4xx/5xx)
+                const errorMessage = error.response.data?.message || 'Error desconocido';
+                await Alerts.showError('Error en el servidor', errorMessage);
+            }
+            console.error('Error creando Plan: ', error)
+        }
+    }
+
+    const intervalOptions = [
+        { value: 1, label: 'MONTHLY' },
+        { value: 2, label: 'ANNUAL' },
+    ]
+    const handleIntervalChange = (option) => {
+        setFormData(prev => ({
+            ...prev,
+            interval: option ? option.label : ''
+        }));
+    };
+
+
+    //update data function
+    const handleEditFormChange = (event) => {
+        event.preventDefault();
+        const fieldName = event.target.getAttribute('name');
+        const fieldValue = event.target.value;
+        const newFormData = {...editFormData};
+        newFormData[fieldName] = fieldValue;
+        setEditFormData(newFormData);
+    };
+
+    // edit form data submit
+    const handleEditFormSubmit = (event) => {
+
+    }
+
+    const handleEditClick = (plan) => {
+        setFormData({
+            name: plan.name,
+            priceUsd: plan.priceUsd,
+            features: plan.features,
+            interval: plan.interval,
+        });
+
+        setSelectedPlan(plan);
+        setPostModal(true);
+    };
+
    return (
        <div>
            <div className="form-head d-flex mb-3 mb-md-4 align-items-start">
                <div className="me-auto d-lg-block">
                    <h3 className="text-black font-w600">Bienvenido!</h3>
-                   <p className="mb-0 fs-18">Desde este espacio podrás administrar los planes de PetNova</p>
+                   <p className="mb-0 fs-18">Desde este espacio podrás administrar los Planes de PetNova</p>
                </div>
            </div>
 
            <div className="form-head d-flex mb-3 mb-md-4 align-items-start">
 
                <div className="me-auto d-lg-block">
-                   <Link
-                       to="/add-offices"
-                       className="btn btn-primary btn-rounded"
-                   >
-                       + Add New
-                   </Link>
+                   <Link className="btn btn-primary font-w600 mb-2 me-auto"
+                         onClick={()=> {
+                             setPostModal(true);
+                             setFormData(initialFormData);
+                         }}>+ Nuevo Plan</Link>
                </div>
                <div className="input-group search-area ms-auto d-inline-flex">
                    <input
@@ -78,38 +177,41 @@ const SubscriptionAdmin = () => {
                </Link>
            </div>
 
-           {/* Table Offices*/}
+           {/* Table Subscription Plan*/}
            {loading && (
                <div className="text-center my-5">
                    <div className="spinner-grow text-success" role="status">
                        <span className="visually-hidden">Cargando...</span>
                    </div>
-                   <p className="mt-2">Cargando consultorios...</p>
+                   <p className="mt-2">Cargando planes...</p>
                </div>
            )}
            {!loading && subscripPlans.length > 0 && (
                <div className="row">
                    {
                        subscripPlans.map((subscripPlan, index) => (
-                           <div className="col-xl-3 col-xxl-6 col-sm-6">
+                           <div
+                               className="col-xl-3 col-xxl-6 col-sm-6"
+                               onClick={() => handleEditClick(subscripPlan)}
+                           >
                                <div className={`card gradient-bx text-white rounded 
-                               ${subscripPlan.name === "PLAN FREE" 
-                                   ? "bg-danger" 
-                                   : subscripPlan.name === "PLAN PRO" 
-                                   ? "bg-primary" 
-                                   : "bg-secondary"}`}>
+                               ${subscripPlan.name === "PLAN FREE"
+                                   ? "bg-danger"
+                                   : subscripPlan.name === "PLAN PRO"
+                                       ? "bg-primary"
+                                       : "bg-blue"}`}>
                                    <div className="card-body">
                                        <div className="media align-items-center">
                                            <div className="media-body">
-                                               <h3 className="fs-40 font-w600 text-white mb-0 me-3">
+                                               <h4 className="fs-40 font-w600 text-white mb-0 me-3">
                                                    {subscripPlan.name}
-                                               </h3>
+                                               </h4>
                                                <div className="d-flex flex-wrap">
                                                    <h2 className="fs-40 font-w600 text-white mb-0 me-3">
                                                        ${subscripPlan.priceUsd}
                                                    </h2>
                                                    <div>
-                                                       <p className="mb-1">Suscriptores <br/> 5000</p>
+                                                       <p className="mb-1">Suscriptores <br/>{subscripPlan.subscribers}</p>
 
                                                    </div>
                                                </div>
@@ -137,11 +239,206 @@ const SubscriptionAdmin = () => {
                </div>
            )}
            {!loading && subscripPlans.length === 0 && !error && (
-               <p className="text-center">No se encontraron Consultorios</p>
+               <p className="text-center">No se encontraron Planes</p>
            )}
            {error && (
                <div className="alert alert-danger">{error}</div>
            )}
+           <div className="mb-sm-5 mb-3 d-flex flex-wrap align-items-center text-head">
+               {/* <!-- Modal --> */}
+               <Modal className="modal fade" show={postModal} onHide={setPostModal} size={'lg'}>
+                   <div className="">
+                       <div className="">
+                           <form>
+                               <div className="modal-header">
+                                   <h4 className="modal-title fs-20">Agregar Plan</h4>
+                                   <button type="button" className="btn close lineheight1"
+                                           onClick={() => setPostModal(false)}>
+                                       <span>×</span>
+                                   </button>
+                               </div>
+                               <div className="modal-body">
+                                   <form onSubmit={handleSubmitSaveSubscripPlan}>
+                                       <div className="row">
+                                           {/*<div className="col-xl-12">
+                                        <div className="form-group">
+                                           <label htmlFor="recipient-name" className="col-form-label">Title:</label>
+                                           <select className="form-control">
+                                              <option>Miss</option>
+                                              <option>Mr.</option>
+                                              <option>Mrs.</option>
+                                           </select>
+                                        </div>
+                                     </div>*/}
+                                           <div className="form-group mb-3">
+                                               <div className="form-group">
+                                                   <label className="text-label">Nombre del Plan <span
+                                                       className="required">*</span></label>
+                                                   <input
+                                                       type="text"
+                                                       name="name"
+                                                       className="form-control"
+                                                       placeholder="PLAN PREMIUM+"
+                                                       value={formData.name}
+                                                       onChange={handleChange}
+                                                       required
+                                                       style={{ textTransform: 'uppercase' }}
+                                                   />
+                                               </div>
+                                           </div>
+                                           <div className="form-group mb-3">
+                                               <div className="form-group mb-3">
+                                                   <label className="text-label">Intervalo <span
+                                                       className="required">*</span></label>
+                                                   <Select
+                                                       name="interval"
+                                                       options={intervalOptions}
+                                                       value={
+                                                           intervalOptions.find(opt => opt.value === formData.interval)
+                                                           || null
+                                                       }
+                                                       onChange={handleIntervalChange}
+                                                       isClearable
+                                                       placeholder="Selecciona un intervalo"
+                                                       styles={{
+                                                           control: base => ({
+                                                               ...base,
+                                                               lineHeight: '40px',
+                                                               color: '#7e7e7e',
+                                                               paddingLeft: '15px'
+                                                           })
+                                                       }}
+                                                   />
+                                               </div>
+                                           </div>
+                                           <div className="form-group mb-3">
+                                               <div className="form-group">
+                                                   <label className="text-label">Precio <span
+                                                       className="required">*</span></label>
+                                                   <input
+                                                       type="number"
+                                                       name="priceUsd"
+                                                       className="form-control"
+                                                       placeholder="10"
+                                                       value={formData.priceUsd}
+                                                       onChange={handleChange}
+                                                       required
+                                                   />
+                                               </div>
+                                           </div>
+                                           <div className="form-group mb-3">
+                                               <div className="form-group">
+                                                   <label className="text-label">Características <span
+                                                       className="required">*</span></label>
+                                                   <textarea className="form-control"
+                                                             name="features"
+                                                             placeholder="60 días de servicio gratis"
+                                                             value={formData.features}
+                                                             onChange={handleChange}
+                                                             required
+                                                             rows="3">
+
+                                           </textarea>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </form>
+                               </div>
+                               <div className="modal-footer">
+                                   <button type="submit" className="btn btn-primary"
+                                           onClick={handleSubmitSaveSubscripPlan}>Crear
+                                       Plan
+                                   </button>
+                                   <button type="button" onClick={() => setPostModal(false)} className="btn btn-danger">
+                                       <i
+                                           className="flaticon-delete-1"></i> Cancelar
+                                   </button>
+                               </div>
+                           </form>
+
+                       </div>
+                   </div>
+               </Modal>
+               <Modal className="modal fade" show={editModal} onHide={setEditModal}>
+                   <div className="" role="document">
+                       <div className="">
+                           <form>
+                               <div className="modal-header">
+                                   <h4 className="modal-title fs-20">Edit Task</h4>
+                                   <button type="button" className="btn close lineheight1"
+                                           onClick={() => setEditModal(false)}>
+                                       <span>×</span>
+                                   </button>
+                               </div>
+                               <div className="modal-body">
+                                   <i className="flaticon-cancel-12 close" data-dismiss="modal"></i>
+                                   <div className="add-contact-box">
+                                       <div className="add-contact-content">
+                                           <div className="form-group mb-3">
+                                               <label className="text-black font-w500">Customer Id</label><span
+                                               className='required'>*</span>
+                                               <div className="contact-name">
+                                                   <input type="text" className="form-control" autoComplete="off"
+                                                          name="Cust_Id" required="required"
+                                                          value={editFormData.Cust_Id}
+                                                          onChange={handleEditFormChange}
+                                                   />
+                                                   <span className="validation-text"></span>
+                                               </div>
+                                           </div>
+                                           <div className="form-group mb-3">
+                                               <label className="text-black font-w500">Deadline Date</label><span
+                                               className='required'>*</span>
+                                               <div className="contact-name">
+                                                   <input type="text" className="form-control" autoComplete="off"
+                                                          name="Date_Join" required="required"
+                                                          value={editFormData.Date_Join}
+                                                          onChange={handleEditFormChange}
+                                                   />
+                                                   <span className="validation-text"></span>
+                                               </div>
+                                           </div>
+                                           <div className="form-group mb-3">
+                                               <label className="text-black font-w500">Client</label><span
+                                               className='required'>*</span>
+                                               <div className="contact-occupation">
+                                                   <input type="text" autoComplete="off"
+                                                          value={editFormData.Cust_Name}
+                                                          onChange={handleEditFormChange}
+                                                          name="Cust_Name" required="required"
+                                                          className="form-control" placeholder="name"
+                                                   />
+                                               </div>
+                                           </div>
+                                           <div className="form-group mb-3">
+                                               <label className="text-black font-w500">Location</label><span
+                                               className='required'>*</span>
+                                               <div className="contact-occupation">
+                                                   <input type="text" autoComplete="off"
+                                                          name="Location" required="required"
+                                                          value={editFormData.Location}
+                                                          onChange={handleEditFormChange}
+                                                          className="form-control" placeholder="Location"
+                                                   />
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                               <div className="modal-footer">
+                                   <button type="submit" className="btn btn-primary" onClick={handleEditFormSubmit}>Save
+                                   </button>
+                                   <button type="button" onClick={() => setEditModal(false)} className="btn btn-danger">
+                                       <i
+                                           className="flaticon-delete-1"></i> Discard
+                                   </button>
+                               </div>
+                           </form>
+
+                       </div>
+                   </div>
+               </Modal>
+           </div>
        </div>
    );
 };

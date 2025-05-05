@@ -14,7 +14,7 @@ export const MenuList = [
     {
         title: 'Office Admin',
         classsChange: 'mm-collapse',
-        iconStyle: <i className="flaticon-381-television"></i>,
+        iconStyle: <i className="fas fa-building"></i>,
         content: [
             {
                 title: 'Office List',
@@ -25,19 +25,19 @@ export const MenuList = [
     {
         title: 'Subscriptions',
         classsChange: 'mm-collapse',
-        iconStyle: <i className="flaticon-381-television"></i>,
+        iconStyle: <i className="fas fa-dollar-sign"></i>,
         content: [
             {
                 title: 'Subscription Plans',
-                to: 'subscription-admin',
+                to: 'subscription-plan-admin',
             },
             {
                 title: 'Subscriptions List',
-                to: 'subscription-admin',
+                to: 'subscription-plan-admin',
             },
             {
                 title: 'Invoice List',
-                to: 'subscription-admin',
+                to: 'subscription-plan-admin',
             }
         ],
     },

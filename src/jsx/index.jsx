@@ -123,7 +123,7 @@ const Markup = () => {
     { url: 'office-admin', component: <OfficeAdmin/> },
     { url: 'add-offices', component: <AddOffices/> },
     { url: 'office-details/:officeId', component: <OfficeDetail/>},
-    { url: 'subscription-admin', component: <SubscriptionAdmin/> },
+    { url: 'subscription-plan-admin', component: <SubscriptionAdmin/> },
     { url: "dashboard", component: <Home/> },
     { url: 'dashboard-dark', component: <DashboardDark/> },
     { url: "patient-list", component: <PatientList/> },

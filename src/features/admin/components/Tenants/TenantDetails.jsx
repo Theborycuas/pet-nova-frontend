@@ -180,20 +180,6 @@ const TenantDetails = () => {
 
    const [editModal, setEditModal] = useState(false);
 
-   // Edit function editable page loop
-   const [editContactId, setEditContactId] = useState(null);
-
-   // Edit function button click to edit
-   const handleEditClick = ( event, contact) => {
-
-   };
-
-   // delete data
-   const handleDeleteClick = (contactId) => {
-
-   }
-
-
    // edit  data
    const [editFormData, setEditFormData] = useState({
       Cust_Id:'',
