@@ -23,6 +23,16 @@ export const MenuList = [
         ],
     },
     {
+        title:'Users',
+        iconStyle: <i className="flaticon-381-id-card-4"></i>,
+        content : [
+            {
+                title:'Users List',
+                to:'user-admin'
+            }
+        ],
+    },
+    {
         title: 'Subscriptions',
         classsChange: 'mm-collapse',
         iconStyle: <i className="fas fa-dollar-sign"></i>,

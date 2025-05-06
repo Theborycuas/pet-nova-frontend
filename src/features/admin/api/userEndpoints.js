@@ -3,13 +3,12 @@ import axios from "axios";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,
-    baseURL: `${baseAPI.defaults.baseURL}/subscription-plans`
+    baseURL: `${baseAPI.defaults.baseURL}/users`
 })
 
-export const subscripPlanEndpoints = {
-    resgisterSubscripPlan: "/createSubscripPlan",
-    listAllSubscripPlan: "/getAllSubscripPlan",
-    updateSubscripPlanById: (planId) => `/updateSubscripPlan/${planId}`,
+export const userEndpoints = {
+    resgisterUser: "/createUser",
+    listAllUsers: "/getAllUsers",
     /*getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
     getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
     deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`*/
@@ -29,18 +28,18 @@ adminAPI.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-export const createSubscripPlan = async (subscripPlanData) => {
+export const createUser = async (userData) => {
     try {
-        const response = await adminAPI.post(subscripPlanEndpoints.resgisterSubscripPlan, subscripPlanData);
+        const response = await adminAPI.post(userEndpoints.resgisterUser, userData);
         return response.data;
     } catch (error) {
         throw error.response.data;
     }
 }
 
-export const getAllSubscripPlan = async () =>{
+export const getAllUsers = async () =>{
     try {
-        const response = await adminAPI.get(subscripPlanEndpoints.listAllSubscripPlan, {
+        const response = await adminAPI.get(userEndpoints.listAllUsers, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -60,16 +59,17 @@ export const getAllSubscripPlan = async () =>{
     }
 };
 
+/*
 export const updateSubscripPlan = async (planId, subscripPlanData) => {
     try {
-        const response = await adminAPI.put(subscripPlanEndpoints.updateSubscripPlanById(planId), subscripPlanData);
+        const response = await adminAPI.put(userEndpoints.updateSubscripPlanById(planId), subscripPlanData);
         return response.data;
     } catch (error) {
         throw error.response.data;
     }
 }
 
-/*export const getOfficesByTenantId = async (tenantId) => {
+export const getOfficesByTenantId = async (tenantId) => {
     try {
         const response = await adminAPI.get(userEndpoints.getOfficesByTenantId(tenantId), {
             headers:{
