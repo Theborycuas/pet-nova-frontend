@@ -65,17 +65,17 @@ const UserAdmin = () => {
     useEffect(() => {
         loadUsers();
         setData(document.querySelectorAll("#doctor_list tbody tr"));
-    }, []);
+    }, [users]);
 
-    function handleDeleteOffice(officeId) {
-        Alerts.confirmDelete('consultorio', () => {
+    function handleDeleteUser(officeId) {
+        Alerts.confirmDelete('usuario', () => {
             deleteOfficeById(officeId)
                 .then(() => {
                     setUsers(current => current.filter(o => o.id !== officeId));
-                    Swal.fire('¡Eliminado!', 'El consultorio ha sido borrado.', 'success');
+                    Swal.fire('¡Eliminado!', 'El usuario ha sido borrado.', 'success');
                 })
                 .catch(err => {
-                    Swal.fire('Error', 'No se pudo eliminar el consultorio.', 'error');
+                    Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
                     console.log(err);
                 });
         });
@@ -136,7 +136,7 @@ const UserAdmin = () => {
 
                <div className="me-auto d-lg-block">
                    <Link
-                       to="/add-offices"
+                       to="/add-users"
                        className="btn btn-primary btn-rounded"
                    >
                        + Agregar Usuario

@@ -8,8 +8,9 @@ import {useNavigate} from "react-router-dom";
 import {Alerts} from "../../../../utils/alerts.js";
 import {createUser} from "../../api/userEndpoints.js";
 import StepTwo from "./StepTwo.jsx";
+import StepOne from "./StepOne.jsx";
 
-const AddUser = () => {
+const AddUsers = () => {
 	const [goSteps, setGoSteps] = useState(0);
 	const [formData, setFormData] = useState({
 		//StepOne
@@ -41,7 +42,7 @@ const AddUser = () => {
 			Alerts.closeAlerts();
 			await Alerts.showSuccess('Usuario creado!', 'El registro se completó exitosamente');
 
-			navigate('/office-admin');
+			navigate('/user-admin');
 		}catch (error) {
 			Alerts.closeAlerts();
 			if (!error.response) {
@@ -59,7 +60,7 @@ const AddUser = () => {
 
 	return (
 		<Fragment>
-			<PageTitle activeMenu="Add Office" motherMenu="Home" />
+			<PageTitle activeMenu="Add User" motherMenu="Home" />
 
 			<div className="row">
 				<div className="col-xl-12 col-xxl-12">
@@ -73,7 +74,6 @@ const AddUser = () => {
 								<Stepper className="nav-wizard" activeStep={goSteps} label={false}>
 									<Step className="nav-link" onClick={() => setGoSteps(0)} />
 									<Step className="nav-link" onClick={() => setGoSteps(1)} />
-									<Step className="nav-link" onClick={() => setGoSteps(2)} />
 								</Stepper>
 							  {goSteps === 0 && (
 								<>
@@ -87,19 +87,12 @@ const AddUser = () => {
 								<>
 									<StepTwo formData={formData} setFormData={setFormData} />
 									<div className="text-end toolbar toolbar-bottom p-2">
-										<button  className="btn btn-secondary sw-btn-prev me-1" onClick={() => setGoSteps(0)}>Anterior</button>
-										<button className="btn btn-primary sw-btn-next ms-1" onClick={() => setGoSteps(2)}>Siguiente</button>
-									</div>	
-								</>
-							  )}
-							  {goSteps === 2 && (
-								<>
-									<StepThree formData={formData} setFormData={setFormData} />
-									<div className="text-end toolbar toolbar-bottom p-2">
 										<button className="btn btn-secondary sw-btn-prev me-1"
-												onClick={() => setGoSteps(1)}>Anterior
+												onClick={() => setGoSteps(0)}>Anterior
 										</button>
-										<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar Usuario</button>
+										<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar
+											Usuario
+										</button>
 									</div>
 								</>
 							  )}
@@ -113,4 +106,4 @@ const AddUser = () => {
 	);
 };
 
-export default AddUser;
+export default AddUsers;

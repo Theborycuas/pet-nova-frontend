@@ -111,6 +111,7 @@ import TenantDetails from "../features/admin/components/Tenants/TenantDetails.js
 import OfficeDetail from "../features/admin/components/Offices/OfficeDetails.jsx";
 import SubscriptionAdmin from "../features/admin/components/Subscriptions/SubscriptionAdmin.jsx";
 import UserAdmin from "../features/admin/components/Users/UserAdmin.jsx";
+import AddUsers from "../features/admin/components/Users/AddUsers.jsx";
 
 
 const Markup = () => {
@@ -126,6 +127,7 @@ const Markup = () => {
     { url: 'office-details/:officeId', component: <OfficeDetail/>},
     { url: 'subscription-plan-admin', component: <SubscriptionAdmin/> },
     { url: 'user-admin', component: <UserAdmin/> },
+    { url: 'add-users', component: <AddUsers/> },
     { url: "dashboard", component: <Home/> },
     { url: 'dashboard-dark', component: <DashboardDark/> },
     { url: "patient-list", component: <PatientList/> },

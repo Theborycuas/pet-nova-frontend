@@ -77,7 +77,7 @@ export const updateSubscripPlan = async (planId, subscripPlanData) => {
 
 /*export const getOfficesByTenantId = async (tenantId) => {
     try {
-        const response = await adminAPI.get(userEndpoints.getOfficesByTenantId(tenantId), {
+        const response = await adminAPI.get(roleEndpoints.getOfficesByTenantId(tenantId), {
             headers:{
                 'Content-Type': 'application/json',
             }
@@ -94,7 +94,7 @@ export const updateSubscripPlan = async (planId, subscripPlanData) => {
 
 export const getOfficeById = async (officeId) =>{
     try {
-        const response = await adminAPI.get(userEndpoints.getOfficeById(officeId), {
+        const response = await adminAPI.get(roleEndpoints.getOfficeById(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -112,7 +112,7 @@ export const getOfficeById = async (officeId) =>{
 
 export const deleteOfficeById = async (officeId) => {
     try {
-        const response = await adminAPI.post(userEndpoints.deleteOfficeById(officeId), {
+        const response = await adminAPI.post(roleEndpoints.deleteOfficeById(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }
