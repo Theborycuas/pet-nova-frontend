@@ -2,14 +2,12 @@ import React, {Fragment, useState} from "react";
 //import Multistep from "react-multistep";
 import {Step, Stepper} from 'react-form-stepper';
 
-import StepOne from "./StepOne";
-import StepTwo from "./StepTwo";
-import StepThree from "./StepThree";
 import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {createOffice} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
+import {createUser} from "../../api/userEndpoints.js";
+import StepTwo from "./StepTwo.jsx";
 
 const AddUser = () => {
 	const [goSteps, setGoSteps] = useState(0);
@@ -17,19 +15,14 @@ const AddUser = () => {
 		//StepOne
 		name: '',
 		address: '',
-		taxId: '',
-		logoUrl: '',
+		email: '',
+		phoneNumber: '',
+		avatarUrl: '',
 
 		//StepTwo
-		contactEmail: '',
-		contactPhone: '',
-		managerName: '',
-		managerPhone: '',
-		managerEmail: '',
-
-		//Steap Three
-		currentPlan: '',
-		currency: ''
+		roleId: '',
+		officeId: '',
+		tenantId: ''
 	})
 
 	const dispatch = useDispatch();
@@ -40,13 +33,13 @@ const AddUser = () => {
 		try {
 			Alerts.showLoading('Registrando Consultorio', 'Guardando información...');
 
-			const response = await createOffice(formData);
+			const response = await createUser(formData);
 
 			const elapsed = Date.now() - startTime;
 			if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
 
 			Alerts.closeAlerts();
-			await Alerts.showSuccess('Consultorio creado!', 'El registro se completó exitosamente');
+			await Alerts.showSuccess('Usuario creado!', 'El registro se completó exitosamente');
 
 			navigate('/office-admin');
 		}catch (error) {
@@ -60,7 +53,7 @@ const AddUser = () => {
 				const errorMessage = error.response.data?.message || 'Error desconocido';
 				Alerts.showError('Error en el servidor', errorMessage);
 			}
-			console.error('Error creando Office: ', error)
+			console.error('Error creando el Usuario: ', error)
 		}
 	}
 
@@ -72,7 +65,7 @@ const AddUser = () => {
 				<div className="col-xl-12 col-xxl-12">
 					<div className="card">
 						<div className="card-header">
-							<h4 className="card-title">Crear Consultorio</h4>
+							<h4 className="card-title">Crear Usuario</h4>
 						</div>
 						<div className="card-body">
 						
@@ -106,7 +99,7 @@ const AddUser = () => {
 										<button className="btn btn-secondary sw-btn-prev me-1"
 												onClick={() => setGoSteps(1)}>Anterior
 										</button>
-										<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar Tenant</button>
+										<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar Usuario</button>
 									</div>
 								</>
 							  )}

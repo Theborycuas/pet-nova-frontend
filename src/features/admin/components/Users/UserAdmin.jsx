@@ -122,15 +122,6 @@ const UserAdmin = () => {
        changeBackground({ value: "light", label: "Light" });
    }, []);
 
-    const tableData = [
-        { title:'JOHN D RANDOLPH', image: avat2},
-        { title:'Matthew', image: avat1},
-        { title:'David Anthony', image: avat6},
-        { title:'Anthony David', image: avat3},
-        { title:'Asher Anthony', image: avat4},
-        { title:'Carter Anthony', image: avat5},
-        { title:'JOHN D RANDOLPH', image: avat3},
-    ]
 
    return (
        <div>
@@ -242,7 +233,7 @@ const UserAdmin = () => {
                                                    </td>
                                                    <td className="patient-info ps-0">
                                                         <span>
-                                                            <img src={user.linkPerfilPhoto} alt=""/>
+                                                            <img src={user.avatarUrl} alt=""/>
                                                         </span>
                                                        <span className="text-nowrap ms-2">{user.name}</span>
                                                    </td>

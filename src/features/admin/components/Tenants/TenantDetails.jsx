@@ -51,21 +51,33 @@ const TenantDetails = () => {
 
    const navigate = useNavigate();
 
-   // Carga el office details
+   // Carga el tenant details y sus lista de offices
    const loadTenant = async () => {
       setLoading(true);
       setError(null);
       const startTime = Date.now();
       try {
-         const [t, o] = await Promise.all([
+         const [t, o] = await Promise.allSettled([
             getTenantById(tenantId),
             getOfficesByTenantId(tenantId)
          ]);
+
+         // Verificar la promesa de tenant
+         if (t.status === "fulfilled") {
+            setTenant(t.value); // Acceder a la propiedad `value` de la promesa resuelta
+         } else {
+            setError("Error en la carga de tenants");
+         }
+
+         // Verificar la promesa de offices
+         if (o.status === "fulfilled") {
+            setOffices(o.value); // Acceder a la propiedad `value` de la promesa resuelta
+         } else {
+            setError("Error en la carga de Consultorios");
+         }
          // Espera al menos 500ms para evitar parpadeos
          const elapsed = Date.now() - startTime;
          if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-         setTenant(t);
-         setOffices(o);
       } catch (err) {
          setError(err.message);
       } finally {
@@ -193,7 +205,7 @@ const TenantDetails = () => {
              </div>
           </div>
 
-          {!loading && (
+          {!loading && tenant && (
              <div className="d-block d-sm-flex mb-3 mb-md-4">
                 <Link className="btn btn-primary font-w600 mb-2 me-auto"
                       onClick={() => {
@@ -239,7 +251,7 @@ const TenantDetails = () => {
           )}
           <div className="row">
 
-             {loading && (
+             {loading && tenant && (
                  <div className="text-center my-5">
                     <div className="spinner-grow text-success" role="status">
                        <span className="visually-hidden">Cargando...</span>
@@ -247,7 +259,7 @@ const TenantDetails = () => {
                     <p className="mt-2">Cargando información del tenant...</p>
                  </div>
              )}
-             {!loading && (
+             {!loading && tenant && (
                 <div className="col-xl-8 col-xxl-10 col-lg-12">
                    <div className="card">
                       <div className="card-body">
@@ -263,7 +275,7 @@ const TenantDetails = () => {
                                         Creado el {formatDateTimeUtils(tenant.createdAt) || 'S/N'}
                                      </p>
                                   </div>
-                                  <span>{`#T-${tenant.id.toString().padStart(4, '0')}`}</span>
+                                  <span>{tenant && tenant.id ? `#T-${tenant.id.toString().padStart(4, '0')}` : '#T-0000'}</span>
                                </div>
                                <Link
                                    to="/doctor-details"
@@ -437,11 +449,11 @@ const TenantDetails = () => {
                    </div>
                 </div>
              )}
-             {error && (
+             {error && !tenant && (
                  <div className="alert alert-danger">{error}</div>
              )}
 
-             {!loading && (
+             {!loading && tenant && (
                 <div className=" col-lg-12 col-xl-4 col-xxl-6">
                    <div className="card">
                       <div className="card-header border-0 pb-0">
@@ -581,7 +593,7 @@ const TenantDetails = () => {
                    </div>
                 </div>
              )}
-             {error && (
+             {error && !tenant && (
                  <div className="alert alert-danger">{error}</div>
              )}
              <div className="mb-sm-5 mb-3 d-flex flex-wrap align-items-center text-head">
@@ -836,7 +848,7 @@ const TenantDetails = () => {
                 </Modal>
              </div>
 
-             {loading && (
+             {loading && offices && offices.length > 0 && (
                  <div className="text-center my-5">
                     <div className="spinner-grow text-success" role="status">
                        <span className="visually-hidden">Cargando...</span>
@@ -844,7 +856,7 @@ const TenantDetails = () => {
                     <p className="mt-2">Cargando información del tenant...</p>
                  </div>
              )}
-             {!loading && (
+             {!loading && offices && offices.length > 0 && (
                 <div className="row">
 
                    <div className="me-auto d-lg-block">

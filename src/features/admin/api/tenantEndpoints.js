@@ -1,5 +1,6 @@
 import {baseAPI} from "../../../api/config/axiosConfig.js";
 import axios from "axios";
+import {handleAdminError} from "../../../utils/errorHandler.js";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,
@@ -31,8 +32,13 @@ export const createTenant = async (tenantData) => {
     try {
         const response = await adminAPI.post(tenantEndpoints.createTenant, tenantData);
         return response.data;
-    } catch (error) {
-        throw error.response.data;
+    }catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
     }
 }
 
@@ -94,13 +100,6 @@ export const deleteTenantById = async (tenantId) => {
     }
 }
 
-const handleAdminError = (error) =>{
-    const errorMessages = {
-        403: "Usuario o contraseña incorrectos",
-        500: "Error en el servidor de autenticación"
-    };
-    throw new Error(errorMessages[error.response?.status] || "Error de Autenticación");
-}
 
 function getToken() {
     try {

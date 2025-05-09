@@ -1,5 +1,6 @@
 import {baseAPI} from "../../../api/config/axiosConfig.js";
 import axios from "axios";
+import {handleAdminError} from "../../../utils/errorHandler.js";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,
@@ -9,9 +10,11 @@ const adminAPI = axios.create({
 export const userEndpoints = {
     resgisterUser: "/createUser",
     listAllUsers: "/getAllUsers",
-    /*getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
-    getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
-    deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`*/
+    /*getUserById: (officeId) => `/getUserById/${officeId}`,
+    getUsersByTenantId: (tenantId) => `/getUsersByTenantId/${tenantId}`,
+    getUsersByOfficeId: (officeId) => `/getUsersByOfficeId/${officeId}`,
+    getUsersByRoleId: (roleId) => `/getUsersByRoleId/${roleId}`,
+    deleteUsersById: (officeId) => `/deleteUsersById/${officeId}`*/
 }
 
 
@@ -32,8 +35,13 @@ export const createUser = async (userData) => {
     try {
         const response = await adminAPI.post(userEndpoints.resgisterUser, userData);
         return response.data;
-    } catch (error) {
-        throw error.response.data;
+    }catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
     }
 }
 
@@ -122,13 +130,6 @@ export const deleteOfficeById = async (officeId) => {
     }
 }*/
 
-const handleAdminError = (error) =>{
-    const errorMessages = {
-        403: "Usuario o contraseña incorrectos",
-        500: "Error en el servidor de autenticación"
-    };
-    throw new Error(errorMessages[error.response?.status] || "Error de Autenticación");
-}
 
 function getToken() {
     try {
