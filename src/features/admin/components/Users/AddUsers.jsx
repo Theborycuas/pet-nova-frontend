@@ -21,7 +21,7 @@ const AddUsers = () => {
 		avatarUrl: '',
 
 		//StepTwo
-		roleId: '',
+		role: null,
 		officeId: '',
 		tenantId: ''
 	})
@@ -32,7 +32,7 @@ const AddUsers = () => {
 	const handleSubmit = async () => {
 		const startTime = Date.now();
 		try {
-			Alerts.showLoading('Registrando Consultorio', 'Guardando información...');
+			Alerts.showLoading('Registrando Usuario', 'Guardando información...');
 
 			const response = await createUser(formData);
 

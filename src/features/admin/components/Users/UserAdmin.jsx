@@ -6,19 +6,11 @@ import "slick-carousel/slick/slick-theme.css";
 import {ThemeContext} from "../../../../context/ThemeContext.jsx"
 
 // Images
-import doctors9 from "../../../../assets/images/doctors/9.jpg";
-import {Dropdown} from "react-bootstrap";
-import {deleteOfficeById, getAllOffices} from "../../api/officeEndpoints.js";
-import {formatDateTimeUtils} from "../../../../utils/formatters.js";
+import {deleteOfficeById} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 import Swal from "sweetalert2";
 import {getAllUsers} from "../../api/userEndpoints.js";
-import avat2 from "../../../../assets/images/avatar/2.jpg";
-import avat1 from "../../../../assets/images/avatar/1.jpg";
-import avat6 from "../../../../assets/images/avatar/6.jpg";
-import avat3 from "../../../../assets/images/avatar/3.jpg";
-import avat4 from "../../../../assets/images/avatar/4.jpg";
-import avat5 from "../../../../assets/images/avatar/5.jpg";
+import defaultAvatar from "../../../../assets/images/avatar/1.jpg"
 
 const UserAdmin = () => {
     const [users, setUsers] = useState([]);
@@ -65,7 +57,7 @@ const UserAdmin = () => {
     useEffect(() => {
         loadUsers();
         setData(document.querySelectorAll("#doctor_list tbody tr"));
-    }, [users]);
+    }, []);
 
     function handleDeleteUser(officeId) {
         Alerts.confirmDelete('usuario', () => {
@@ -233,7 +225,7 @@ const UserAdmin = () => {
                                                    </td>
                                                    <td className="patient-info ps-0">
                                                         <span>
-                                                            <img src={user.avatarUrl} alt=""/>
+                                                            <img src={user.avatarUrl || defaultAvatar} alt=""/>
                                                         </span>
                                                        <span className="text-nowrap ms-2">{user.name}</span>
                                                    </td>
