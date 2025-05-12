@@ -10,6 +10,7 @@ const adminAPI = axios.create({
 export const userEndpoints = {
     resgisterUser: "/createUser",
     listAllUsers: "/getAllUsers",
+    getUserById: (userId) => `/getUserDetailById/${userId}`
     /*getUserById: (officeId) => `/getUserById/${officeId}`,
     getUsersByTenantId: (tenantId) => `/getUsersByTenantId/${tenantId}`,
     getUsersByOfficeId: (officeId) => `/getUsersByOfficeId/${officeId}`,
@@ -66,6 +67,24 @@ export const getAllUsers = async () =>{
         throw error;
     }
 };
+
+export const getUserById = async (userId) => {
+    try {
+        const response = await adminAPI.get(userEndpoints.getUserById(userId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
 
 /*
 export const updateSubscripPlan = async (planId, subscripPlanData) => {

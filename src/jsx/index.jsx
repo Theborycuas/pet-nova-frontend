@@ -112,6 +112,7 @@ import OfficeDetail from "../features/admin/components/Offices/OfficeDetails.jsx
 import SubscriptionAdmin from "../features/admin/components/Subscriptions/SubscriptionAdmin.jsx";
 import UserAdmin from "../features/admin/components/Users/UserAdmin.jsx";
 import AddUsers from "../features/admin/components/Users/AddUsers.jsx";
+import UserDetails from "../features/admin/components/Users/UserDetails.jsx";
 
 
 const Markup = () => {
@@ -128,6 +129,7 @@ const Markup = () => {
     { url: 'subscription-plan-admin', component: <SubscriptionAdmin/> },
     { url: 'user-admin', component: <UserAdmin/> },
     { url: 'add-users', component: <AddUsers/> },
+    { url: 'user-details/:userId', component: <UserDetails/>},
     { url: "dashboard", component: <Home/> },
     { url: 'dashboard-dark', component: <DashboardDark/> },
     { url: "patient-list", component: <PatientList/> },

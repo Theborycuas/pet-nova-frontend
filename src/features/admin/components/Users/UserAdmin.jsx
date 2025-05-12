@@ -200,7 +200,7 @@ const UserAdmin = () => {
                                                <th>Teléfono</th>
                                                <th>Cédula</th>
                                                <th>Dirección</th>
-                                               <th>Action</th>
+                                               <th>Acción</th>
                                            </tr>
                                            </thead>
                                            <tbody>
@@ -240,7 +240,9 @@ const UserAdmin = () => {
                                                    <td>{user.address}</td>
                                                    <td>
                                                         <span className="me-3">
-                                                            <Link to={"/staff-profile"}><i className="fa fa-eye fs-18"></i></Link>
+                                                            <Link
+                                                                to={`/user-details/${user.id}`}
+                                                            ><i className="fa fa-eye fs-18"></i></Link>
                                                         </span>
                                                        <span className="me-3">
                                                             <Link to={"#"} className="edit-staff"><i

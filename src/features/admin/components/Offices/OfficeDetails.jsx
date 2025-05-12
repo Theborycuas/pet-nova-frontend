@@ -14,7 +14,7 @@ import map from "../../../../assets/images/svg/map.svg";
 
 /// Scroll
 import {formatDateTimeUtils} from "../../../../utils/formatters.js";
-import {deleteOfficeById, getAllOffices, getOfficeById} from "../../api/officeEndpoints.js";
+import {deleteOfficeById, getOfficeById} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 import Swal from "sweetalert2";
 
