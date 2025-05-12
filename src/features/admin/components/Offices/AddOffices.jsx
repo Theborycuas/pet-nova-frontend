@@ -7,7 +7,7 @@ import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {createOffice} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 
@@ -66,7 +66,12 @@ const AddOffices = () => {
 
 	return (
 		<Fragment>
-			<PageTitle activeMenu="Add Office" motherMenu="Home" />
+			<div className="page-titles">
+				<ol className="breadcrumb">
+					<li className="breadcrumb-item"><Link to={"/user-admin"}>Office Admin</Link></li>
+					<li className="breadcrumb-item active"><Link to={"#"}>Add Office</Link></li>
+				</ol>
+			</div>
 
 			<div className="row">
 				<div className="col-xl-12 col-xxl-12">
@@ -75,7 +80,7 @@ const AddOffices = () => {
 							<h4 className="card-title">Crear Consultorio</h4>
 						</div>
 						<div className="card-body">
-						
+
 							<div className="form-wizard ">
 								<Stepper className="nav-wizard" activeStep={goSteps} label={false}>
 									<Step className="nav-link" onClick={() => setGoSteps(0)} />

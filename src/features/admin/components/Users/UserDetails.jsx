@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom';
 
-import nurse from '../../../../assets/images/nurse.jpg';
 import {getUserById} from "../../api/userEndpoints.js";
 import {Button, Dropdown} from "react-bootstrap";
 import defaultAvatar from "../../../../assets/images/avatar/1.jpg";
+
 
 
 const StaffProfile = () => {

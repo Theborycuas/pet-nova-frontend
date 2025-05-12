@@ -11,6 +11,7 @@ import {Alerts} from "../../../../utils/alerts.js";
 import Swal from "sweetalert2";
 import {getAllUsers} from "../../api/userEndpoints.js";
 import defaultAvatar from "../../../../assets/images/avatar/1.jpg"
+import {Button, Dropdown} from "react-bootstrap";
 
 const UserAdmin = () => {
     const [users, setUsers] = useState([]);
@@ -195,12 +196,13 @@ const UserAdmin = () => {
                                                    </div>
                                                </th>
                                                <th>Nombre</th>
+                                               <th>Estado</th>
                                                <th>Rol</th>
                                                <th>Email</th>
                                                <th>Teléfono</th>
                                                <th>Cédula</th>
-                                               <th>Dirección</th>
-                                               <th>Acción</th>
+                                               <th>Ciudad</th>
+                                               <th>Acciones</th>
                                            </tr>
                                            </thead>
                                            <tbody>
@@ -230,27 +232,81 @@ const UserAdmin = () => {
                                                        <span className="text-nowrap ms-2">{user.name}</span>
                                                    </td>
                                                    <td>
+                                                       <Button
+                                                           variant={`${user.active ? 'success' : 'danger'} btn-sm btn-rounded mb-1`}
+                                                           className="d-inline-flex align-items-center"
+                                                       >
+                                                           <i className={`fa ${user.active ? 'fa-check text-white' : 'fa-times text-white'} me-1`}/>
+                                                           {user.active ? 'ACTIVO' : 'INACTIVO'}
+                                                       </Button>
+                                                   </td>
+                                                   <td>
                                                        <span>{user.role.roleName}</span>
                                                    </td>
-
                                                    <td className="text-primary">{user.email}</td>
                                                    <td className="text-primary">{user.phoneNumber}</td>
                                                    <td>{user.idNumber}</td>
 
-                                                   <td>{user.address}</td>
+                                                   <td>{user.city}</td>
                                                    <td>
-                                                        <span className="me-3">
-                                                            <Link
-                                                                to={`/user-details/${user.id}`}
-                                                            ><i className="fa fa-eye fs-18"></i></Link>
-                                                        </span>
-                                                       <span className="me-3">
-                                                            <Link to={"#"} className="edit-staff"><i
-                                                                className="fa fa-pencil fs-18 text-success"></i></Link>
-                                                        </span>
-                                                       <span>
-                                                            <i className="fa fa-trash-o fs-18 text-danger"></i>
-                                                        </span>
+                                                       <div className="d-flex align-items-center">
+                                                           <Dropdown className="dropdown ms-auto text-right">
+                                                               <Dropdown.Toggle
+                                                                   variant=""
+                                                                   className="btn-link i-false"
+                                                               >
+                                                                   <svg
+                                                                       width={24}
+                                                                       height={24}
+                                                                       viewBox="0 0 24 24"
+                                                                       fill="none"
+                                                                       xmlns="http://www.w3.org/2000/svg"
+                                                                   >
+                                                                       <path
+                                                                           d="M12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11Z"
+                                                                           stroke="#3E4954"
+                                                                           strokeWidth={2}
+                                                                           strokeLinecap="round"
+                                                                           strokeLinejoin="round"
+                                                                       />
+                                                                       <path
+                                                                           d="M12 18C11.4477 18 11 18.4477 11 19C11 19.5523 11.4477 20 12 20C12.5523 20 13 19.5523 13 19C13 18.4477 12.5523 18 12 18Z"
+                                                                           stroke="#3E4954"
+                                                                           strokeWidth={2}
+                                                                           strokeLinecap="round"
+                                                                           strokeLinejoin="round"
+                                                                       />
+                                                                       <path
+                                                                           d="M12 4C11.4477 4 11 4.44772 11 5C11 5.55228 11.4477 6 12 6C12.5523 6 13 5.55228 13 5C13 4.44772 12.5523 4 12 4Z"
+                                                                           stroke="#3E4954"
+                                                                           strokeWidth={2}
+                                                                           strokeLinecap="round"
+                                                                           strokeLinejoin="round"
+                                                                       />
+                                                                   </svg>
+                                                               </Dropdown.Toggle>
+                                                               <Dropdown.Menu
+                                                                   className="dropdown-menu dropdown-menu-right">
+                                                                   <Dropdown.Item
+                                                                       as={Link}
+                                                                       to={`/user-details/${user.id}`}
+                                                                   >
+                                                                       Ver Detalles
+                                                                   </Dropdown.Item>
+                                                                   <Dropdown.Item
+                                                                       as={Link}
+                                                                       to={`/user-details/${user.id}`}
+                                                                   >
+                                                                       Editar
+                                                                   </Dropdown.Item>
+                                                                   <Dropdown.Item
+                                                                       //onClick={() => handleDeleteTenant(tenant.id)}
+                                                                   >
+                                                                       Eliminar
+                                                                   </Dropdown.Item>
+                                                               </Dropdown.Menu>
+                                                           </Dropdown>
+                                                       </div>
                                                    </td>
                                                </tr>
                                            ))}

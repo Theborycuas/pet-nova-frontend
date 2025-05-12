@@ -4,7 +4,7 @@ import {Step, Stepper} from 'react-form-stepper';
 
 import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Alerts} from "../../../../utils/alerts.js";
 import {createUser} from "../../api/userEndpoints.js";
 import StepTwo from "./StepTwo.jsx";
@@ -15,6 +15,8 @@ const AddUsers = () => {
 	const [formData, setFormData] = useState({
 		//StepOne
 		name: '',
+		idNumber: '',
+		city: '',
 		address: '',
 		email: '',
 		phoneNumber: '',
@@ -60,7 +62,12 @@ const AddUsers = () => {
 
 	return (
 		<Fragment>
-			<PageTitle activeMenu="Add User" motherMenu="Home" />
+			<div className="page-titles">
+				<ol className="breadcrumb">
+					<li className="breadcrumb-item"><Link to={"/user-admin"}>User Admin</Link></li>
+					<li className="breadcrumb-item active"><Link to={"#"}>Create User</Link></li>
+				</ol>
+			</div>
 
 			<div className="row">
 				<div className="col-xl-12 col-xxl-12">
@@ -69,7 +76,7 @@ const AddUsers = () => {
 							<h4 className="card-title">Crear Usuario</h4>
 						</div>
 						<div className="card-body">
-						
+
 							<div className="form-wizard ">
 								<Stepper className="nav-wizard" activeStep={goSteps} label={false}>
 									<Step className="nav-link" onClick={() => setGoSteps(0)} />

@@ -612,16 +612,6 @@ const TenantDetails = () => {
                             <div className="modal-body">
                                <form onSubmit={handleSubmitSaveOffice}>
                                   <div className="row">
-                                     {/*<div className="col-xl-12">
-                                        <div className="form-group">
-                                           <label htmlFor="recipient-name" className="col-form-label">Title:</label>
-                                           <select className="form-control">
-                                              <option>Miss</option>
-                                              <option>Mr.</option>
-                                              <option>Mrs.</option>
-                                           </select>
-                                        </div>
-                                     </div>*/}
                                      <div className="image-placeholder">
                                         <div className="avatar-edit">
                                            <input type="file" onChange={fileHandler} id="imageUpload"
