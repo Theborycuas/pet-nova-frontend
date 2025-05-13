@@ -4,8 +4,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import {ThemeContext} from "../../../context/ThemeContext.jsx"
-
+/*import {ThemeContext} from "../../../context/ThemeContext.jsx"*/
 // Images
 import DrAlexandro from "../../../assets/images/doctors/5.jpg";
 import DrSamantha from "../../../assets/images/doctors/1.jpg";
@@ -16,9 +15,7 @@ import widget01 from "../../../assets/images/widget/1.jpg";
 import widget02 from "../../../assets/images/widget/2.jpg";
 import widget03 from "../../../assets/images/widget/3.jpg";
 import widget05 from "../../../assets/images/widget/5.jpg";
-import doctors9 from "../../../assets/images/doctors/9.jpg";
-import {Dropdown} from "react-bootstrap";
-import {deleteOfficeById, getAllOffices} from "../api/officeEndpoints.js";
+import {Button, Dropdown} from "react-bootstrap";
 import {deleteTenantById, getAllTenants} from "../api/tenantEndpoints.js";
 import {formatDateUtils} from "../../../utils/formatters.js";
 import {Alerts} from "../../../utils/alerts.js";
@@ -169,10 +166,10 @@ const HomeAdmin = () => {
          },
       ],
    };
-   const { changeBackground } = useContext(ThemeContext);
+/*   const { changeBackground } = useContext(ThemeContext);
    useEffect(() => {
        changeBackground({ value: "light", label: "Light" });
-   }, []);
+   }, []);*/
 
 
    return (
@@ -271,6 +268,17 @@ const HomeAdmin = () => {
                                            aria-controls="example5"
                                            rowSpan={1}
                                            colSpan={1}
+                                           aria-label="Status: activate to sort column ascending"
+                                           style={{width: 98}}
+                                       >
+                                           Estado
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
                                            aria-label="Date Join: activate to sort column ascending"
                                            style={{width: 123}}
                                        >
@@ -307,7 +315,7 @@ const HomeAdmin = () => {
                                            aria-label="Schedule: activate to sort column ascending"
                                            style={{width: 150}}
                                        >
-                                           Dirección
+                                           Ciudad
                                        </th>
                                        <th
                                            className="sorting"
@@ -330,17 +338,6 @@ const HomeAdmin = () => {
                                            style={{width: 150}}
                                        >
                                            Fecha Fín
-                                       </th>
-                                       <th
-                                           className="sorting"
-                                           tabIndex={0}
-                                           aria-controls="example5"
-                                           rowSpan={1}
-                                           colSpan={1}
-                                           aria-label="Status: activate to sort column ascending"
-                                           style={{width: 98}}
-                                       >
-                                           Estado
                                        </th>
                                        <th
                                            className="sorting"
@@ -378,6 +375,15 @@ const HomeAdmin = () => {
                                                </div>
                                            </td>
                                            <td>{`#T-${tenant.id.toString().padStart(4, '0')}`}</td>
+                                           <td>
+                                               <Button
+                                                   variant={`${tenant.active ? 'success' : 'danger'} btn-sm btn-rounded mb-1`}
+                                                   className="d-inline-flex align-items-center"
+                                               >
+                                                   <i className={`fa ${tenant.active ? 'fa-check text-white' : 'fa-times text-white'} me-1`}/>
+                                                   {tenant.active ? 'ACTIVO' : 'INACTIVO'}
+                                               </Button>
+                                           </td>
                                            <td>{tenant.tenantName}</td>
                                            <td>{tenant.contactEmail}</td>
                                            <td>
@@ -388,7 +394,7 @@ const HomeAdmin = () => {
                                                    {tenant.contactPhone}
                                                </Link>
                                            </td>
-                                           <td>{tenant.address}</td>
+                                           <td>{tenant.city}</td>
                                            <td>
                                             <span className="font-w500">
                                                 {formatDateUtils(tenant.subscriptionStartDate) || 'N/A'}
@@ -398,14 +404,6 @@ const HomeAdmin = () => {
                                             <span className="font-w500">
                                                 {formatDateUtils(tenant.subscriptionEndDate) || 'N/A'}
                                             </span>
-                                           </td>
-                                           <td>
-                                               <div className="d-flex align-items-center">
-                                                <span
-                                                    className={`${tenant.active ? 'text-primary' : 'text-danger'} font-w600`}>
-                                                      {(tenant.active ? 'ACTIVO' : 'INACTIVO')}
-                                                </span>
-                                               </div>
                                            </td>
                                            <td>
                                                <div className="d-flex align-items-center">
@@ -453,7 +451,7 @@ const HomeAdmin = () => {
                                                            </Dropdown.Item>
                                                            <Dropdown.Item
                                                                as={Link}
-                                                               to={`/tenant-details/${tenant.id}`}
+                                                               to={`/edit-tenant/${tenant.id}`}
                                                            >
                                                                Editar
                                                            </Dropdown.Item>

@@ -19,10 +19,8 @@ const StepTwo = ({ formData, setFormData}) => {
    const [error, setError] = useState(null);
 
    useEffect(() => {
-      // Sincronizar role si viene en formData
       if (!formData || !formData.role) return;
 
-      // Asegúrate de que roles ya están cargados
       if (roles.length > 0 && !selectedRole) {
          const foundRole = roles.find(r => r.value === formData.role.value);
          if (foundRole) {

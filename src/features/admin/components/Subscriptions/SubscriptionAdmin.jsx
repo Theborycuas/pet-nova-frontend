@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import {ThemeContext} from "../../../../context/ThemeContext.jsx"
+/*import {ThemeContext} from "../../../../context/ThemeContext.jsx"*/
 
 // Images
 import {createSubscripPlan, getAllSubscripPlan, updateSubscripPlan} from "../../api/subscriptionEndpoints.js";
@@ -47,10 +47,10 @@ const SubscriptionAdmin = () => {
     }, []);
 
 
-   const { changeBackground } = useContext(ThemeContext);
+/*   const { changeBackground } = useContext(ThemeContext);
    useEffect(() => {
        changeBackground({ value: "light", label: "Light" });
-   }, []);
+   }, []);*/
 
     const [postModal, setPostModal] = useState(false);
     const [formData, setFormData] = useState(initialFormData);

@@ -16,9 +16,10 @@ const Header = ({ onNote, toggle, onProfile, onNotification, onBox }) => {
 
    const userDetails = JSON.parse(localStorage.getItem("userDetails"));
    const userName = userDetails?.displayName || "Usuario";
+   const urlPhoto = userDetails?.avatarUrl;
 
    function handleDarkMode (){
-      if(background.value=="light"){
+      if(background.value==="light"){
          changeBackground({ value: "dark", label: "Dark" });
       }else{
          changeBackground({ value: "light", label: "Light" });
@@ -347,7 +348,7 @@ const Header = ({ onNote, toggle, onProfile, onNotification, onBox }) => {
 							</li>
                      <Dropdown as="li" className={`nav-item header-profile `}>
                         <Dropdown.Toggle className="nav-link i-false" as="a" >
-                           <img src={profile} width={20} alt="" />
+                           <img src={urlPhoto || profile} width={20} alt="" />
                            <div className="header-info">
                               <span>
                                  Hello,<strong> {userName}</strong>

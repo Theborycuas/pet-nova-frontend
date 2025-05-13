@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import {ThemeContext} from "../../../../context/ThemeContext.jsx"
+/*import {ThemeContext} from "../../../../context/ThemeContext.jsx"*/
 
 // Images
 import {deleteOfficeById} from "../../api/officeEndpoints.js";
@@ -96,10 +96,10 @@ const UserAdmin = () => {
         }
     };
 
-   const { changeBackground } = useContext(ThemeContext);
+/*   const { changeBackground } = useContext(ThemeContext);
    useEffect(() => {
        changeBackground({ value: "light", label: "Light" });
-   }, []);
+   }, []);*/
 
    function handleDeleteUser(userId) {
        Alerts.confirmDelete('usuario', () => {

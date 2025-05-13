@@ -86,7 +86,7 @@ import FilteringTable from "./components/table/FilteringTable/FilteringTable";
 /// Form
 import Element from './components/Forms/Element/Element'
 import Wizard from './components/Forms/Wizard/Wizard'
-import AddTenants from "../features/admin/components/Tenants/AddTenants.jsx";
+import AddEditTenants from "../features/admin/components/Tenants/AddEditTenants.jsx";
 import CkEditor from './components/Forms/CkEditor/CkEditor'
 import Pickers from './components/Forms/Pickers/Pickers'
 import FormValidation from './components/Forms/FormValidation/FormValidation'
@@ -121,8 +121,9 @@ const Markup = () => {
     /// Dashboard
     { url: "", component: <HomeAdmin/> },
     { url: "home-admin", component: <HomeAdmin/> },
-    { url: 'add-tenants', component: <AddTenants/> },
+    { url: 'add-tenants', component: <AddEditTenants/> },
     { url: 'tenant-details/:tenantId', component: <TenantDetails/>},
+    { url: 'edit-tenant/:tenantId', component: <AddEditTenants/> },
 
     { url: 'office-admin', component: <OfficeAdmin/> },
     { url: 'add-offices', component: <AddOffices/> },

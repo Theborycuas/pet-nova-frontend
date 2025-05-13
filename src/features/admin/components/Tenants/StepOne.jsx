@@ -123,8 +123,14 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
    }
 
    useEffect(() => {
+      if(!formTenantData || !formTenantData.managerId) return;
 
-   }, [selectedUser]);
+      if(users.length > 0 && !selectedUser) {
+         const foundManageId = users.find(u => u.value === formTenantData.managerId);
+         if(foundManageId) setSelectedUser(foundManageId);
+      }
+
+   }, [formTenantData.managerId, users]);
 
 
    return (
@@ -153,30 +159,33 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
                  </div>
              )}
              {!loading && users && (
-                <div className="col-lg-6 mb-2">
-                   <div className="form-group mb-3">
-                      <label className="text-label">Administrador <span className="required">*</span></label>
-                      <Select
-                          name="managerId"
-                          options={userOptions}
-                          value={selectedUser}
-                          onChange = {(selected) => {
-                             if (selected?.value === "add-user") {
-                                handleCreateUser();
-                             } else {
-                                setSelectedUser(selected);
-                             }
-                          }}
-                          isClearable
-                          placeholder="Selecciona un administrador"
-                          style={{
-                             lineHeight: '40px',
-                             color: '#7e7e7e',
-                             paddingLeft: ' 15px',
-                          }}
-                      />
-                   </div>
-                </div>
+                 <div className="col-lg-6 mb-2">
+                    <div className="form-group mb-3">
+                       <label className="text-label">Administrador <span className="required">*</span></label>
+                       <Select
+                           name="managerId"
+                           options={userOptions}
+                           value={selectedUser}
+                           onChange={(selected) => {
+                              if (selected?.value === "add-user") {
+                                 handleCreateUser();
+                              } else {
+                                 setSelectedUser(selected);
+                              }
+                           }}
+                           isClearable
+                           placeholder="Selecciona un administrador"
+                           styles={{
+                              control: base => ({
+                                 ...base,
+                                 lineHeight: '40px',
+                                 color: '#7e7e7e',
+                                 paddingLeft: '15px'
+                              })
+                           }}
+                       />
+                    </div>
+                 </div>
              )}
              {error && !users && (
                  <div className="alert alert-danger">{error}</div>

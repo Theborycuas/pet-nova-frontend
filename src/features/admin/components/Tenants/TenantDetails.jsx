@@ -13,7 +13,7 @@ import widget8 from "../../../../assets/images/widget/8.jpg";
 import map from "../../../../assets/images/svg/map.svg";
 
 /// Scroll
-import {deleteTenantById, getTenantById} from "../../api/tenantEndpoints.js";
+import {deleteTenantById, getTenantDetailById} from "../../api/tenantEndpoints.js";
 import user from "../../../../assets/images/task/user.jpg";
 import card1 from "../../../../assets/images/task/img1.jpg";
 import {formatDateTimeUtils, formatDateUtils} from "../../../../utils/formatters.js";
@@ -58,7 +58,7 @@ const TenantDetails = () => {
       const startTime = Date.now();
       try {
          const [t, o] = await Promise.allSettled([
-            getTenantById(tenantId),
+            getTenantDetailById(tenantId),
             getOfficesByTenantId(tenantId)
          ]);
 
@@ -232,7 +232,10 @@ const TenantDetails = () => {
                       Acciones
                    </Dropdown.Toggle>
                    <Dropdown.Menu className="dropdown-menu">
-                      <Dropdown.Item className="dropdown-item" to="/doctor-details">
+                      <Dropdown.Item className="dropdown-item"
+                                     as={Link}
+                                     to={`/edit-tenant/${tenant.id}`}
+                      >
                          Editar
                       </Dropdown.Item>
                       <Dropdown.Item
@@ -313,7 +316,7 @@ const TenantDetails = () => {
                                      />
                                   </svg>
                                   {" "}
-                                  Diabetes
+                                  FREE PLAN
                                </Link>
                             </div>
                          </div>
@@ -456,7 +459,7 @@ const TenantDetails = () => {
                    <div className="card">
                       <div className="card-header border-0 pb-0">
                          <h4 className="fs-20 font-w600 mb-0">
-                            Appointment Schdule
+                            Administrador
                          </h4>
                       </div>
                       <div className="card-body pt-2 p-0">

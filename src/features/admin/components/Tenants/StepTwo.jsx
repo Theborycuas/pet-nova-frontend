@@ -31,7 +31,7 @@ const StepTwo = ({ formData: formTenantData, setFormData}) => {
    const handleCurrencyChange = (option) => {
       setFormData(prev => ({
          ...prev,
-         currency: option ? option.value : ''
+         currency: option ? option.label : ''
       }));
    };
    return (
@@ -68,7 +68,7 @@ const StepTwo = ({ formData: formTenantData, setFormData}) => {
                        name="currency"
                        options={currencyOptions}
                        value={
-                           currencyOptions.find(opt => opt.value === formTenantData.currency)
+                           currencyOptions.find(opt => opt.label === formTenantData.currency)
                            || null
                        }
                        onChange={handleCurrencyChange}
@@ -91,7 +91,7 @@ const StepTwo = ({ formData: formTenantData, setFormData}) => {
 };
 StepTwo.propTypes = {
    formData: PropTypes.shape({
-      planId: PropTypes.string.isRequired,
+      planId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       currency: PropTypes.string.isRequired
    }).isRequired,
    setFormData: PropTypes.func.isRequired
