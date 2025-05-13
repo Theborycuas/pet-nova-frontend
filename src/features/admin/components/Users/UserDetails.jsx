@@ -74,7 +74,10 @@ const StaffProfile = () => {
                             Acciones
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="dropdown-menu">
-                            <Dropdown.Item className="dropdown-item" to="#">
+                            <Dropdown.Item className="dropdown-item"
+                                           as={Link}
+                                           to={`/edit-user/${user.id}`}
+                            >
                                 Editar
                             </Dropdown.Item>
                             <Dropdown.Item

@@ -315,7 +315,7 @@ const UserAdmin = () => {
                                        </table>
                                    )}
                                    {!loading && users.length === 0 && !error && (
-                                       <p className="text-center">No se encontraron Consultorios</p>
+                                       <p className="text-center">No se encontraron Usuarios</p>
                                    )}
                                    {error && (
                                        <div className="alert alert-danger">{error}</div>
