@@ -53,19 +53,10 @@ const SubscriptionAdmin = () => {
    }, []);
 
     const [postModal, setPostModal] = useState(false);
-    const [editModal, setEditModal] = useState(false);
     const [formData, setFormData] = useState(initialFormData);
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
 
-    // edit  data
-    const [editFormData, setEditFormData] = useState({
-        Cust_Id:'',
-        Date_Join:'',
-        Cust_Name:'',
-        Location:'',
-        image:'',
-    })
 
     const handleChange = (e) => {
         const { name, value } = e.target;

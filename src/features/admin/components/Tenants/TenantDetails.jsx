@@ -106,7 +106,6 @@ const TenantDetails = () => {
 
    const handleSubmitSaveOffice = async (e) => {
       e.preventDefault();
-      const startTime = Date.now();
       try {
          Alerts.showLoading('Registrando Consultorio', 'Guardando información...');
 
@@ -114,9 +113,8 @@ const TenantDetails = () => {
             ...formData,
             tenantId: tenant.id
          };
+
          await createOffice(dataToSend);
-         const elapsed = Date.now() - startTime;
-         if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
 
          Alerts.closeAlerts();
          await Alerts.showSuccess('Consultorio creado!', 'El registro se completó exitosamente');
@@ -824,9 +822,6 @@ const TenantDetails = () => {
                                <button type="submit" className="btn btn-primary" onClick={handleSubmitSaveOffice}>Crear
                                   Consultorio
                                </button>
-                               {/*<button type="submit" className="btn btn-primary" onClick={handleAddFormSubmit}>Crear
-                                  Consultorio
-                               </button>*/}
                                <button type="button" onClick={() => setPostModal(false)} className="btn btn-danger"><i
                                    className="flaticon-delete-1"></i> Cancelar
                                </button>
