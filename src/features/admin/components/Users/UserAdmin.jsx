@@ -295,7 +295,7 @@ const UserAdmin = () => {
                                                                    </Dropdown.Item>
                                                                    <Dropdown.Item
                                                                        as={Link}
-                                                                       to={`/user-details/${user.id}`}
+                                                                       to={`/edit-user/${user.id}`}
                                                                    >
                                                                        Editar
                                                                    </Dropdown.Item>

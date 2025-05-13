@@ -10,7 +10,8 @@ const adminAPI = axios.create({
 export const userEndpoints = {
     resgisterUser: "/createUser",
     listAllUsers: "/getAllUsers",
-    getUserById: (userId) => `/getUserDetailById/${userId}`
+    getUserById: (userId) => `/getUserDetailById/${userId}`,
+    updateUserDetailById: (userId) => `/updateUserDetailById/${userId}`
     /*getUserById: (officeId) => `/getUserById/${officeId}`,
     getUsersByTenantId: (tenantId) => `/getUsersByTenantId/${tenantId}`,
     getUsersByOfficeId: (officeId) => `/getUsersByOfficeId/${officeId}`,
@@ -79,6 +80,20 @@ export const getUserById = async (userId) => {
         return response.data;
     } catch (error) {
         if (!error.response) {
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const updateUserDetailById = async (userId, userData) => {
+    try {
+        const response = await adminAPI.put(userEndpoints.updateUserDetailById(userId), userData);
+        return response.data;
+    }catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
             throw new Error('Error de conexión con el servidor');
         }
         handleAdminError(error);

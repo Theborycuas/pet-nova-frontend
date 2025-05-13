@@ -15,8 +15,47 @@ const StepTwo = ({ formData, setFormData}) => {
    const [selectedTenant, setSelectedTenant] = useState(null);
    const [showOfficeSelect, setShowOfficeSelect] = useState(false);
    const [showTenantSelect, setShowTenantSelect] = useState(false);
-   const [loading, setLoading] = useState(false);
+   const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
+
+   useEffect(() => {
+      // Sincronizar role si viene en formData
+      if (!formData || !formData.role) return;
+
+      // Asegúrate de que roles ya están cargados
+      if (roles.length > 0 && !selectedRole) {
+         const foundRole = roles.find(r => r.value === formData.role.value);
+         if (foundRole) {
+            setSelectedRole(foundRole);
+
+            // Cargar tenants u offices si corresponde
+            if (foundRole.value === 3) {
+               loadTenants();
+            } else if ([4, 5, 6].includes(foundRole.value)) {
+               loadOffices();
+            }
+         }
+      }
+
+      // Ahora sincroniza tenant/office solo si ya están cargados
+      if (tenants.length > 0 && formData.tenantId && !selectedTenant) {
+         const tenant = tenants.find(t => t.value === formData.tenantId);
+         if (tenant) setSelectedTenant(tenant);
+      }
+
+      if (offices.length > 0 && formData.officeId && !selectedOffice) {
+         const office = offices.find(o => o.value === formData.officeId);
+         if (office) setSelectedOffice(office);
+      }
+
+      if (
+          roles.length > 0 &&
+          (formData.role?.value || formData.role?.id) &&
+          (selectedRole || formData.role?.value)
+      ) {
+         setLoading(false);
+      }
+   }, [formData, roles, offices, tenants]);
 
    const loadRoles = async () => {
       setLoading(true);
@@ -91,7 +130,7 @@ const StepTwo = ({ formData, setFormData}) => {
       if (selectedOffice) {
          setFormData(prev => ({
             ...prev,
-            tenantId: selectedOffice.value
+            officeId: selectedOffice.value
          }));
       }
    }, [selectedOffice]);
@@ -106,117 +145,141 @@ const StepTwo = ({ formData, setFormData}) => {
    }, [selectedTenant]);
 
    useEffect(() => {
-      if (selectedRole?.value === 4 || selectedRole?.value === 5 || selectedRole?.value === 6) {
+      if (!selectedRole) return;
+      const roleValue = selectedRole.value;
+
+      if ([4, 5, 6].includes(roleValue)) {
          setShowOfficeSelect(true);
          setShowTenantSelect(false);
-         setSelectedTenant(null);
+         setSelectedTenant(null); // oculta visualmente el tenant
+
+         // Solo limpiamos tenantId si el rol no es TENANT_ADMIN
          setFormData(prev => ({
             ...prev,
-            tenantId: '',
+            tenantId: ''
          }));
+
          loadOffices();
-      } else if (selectedRole?.value === 3) {
+      } else if (roleValue === 3) {
          setShowTenantSelect(true);
          setShowOfficeSelect(false);
          setSelectedOffice(null);
+
+         // Solo limpiamos officeId si el rol no es OFFICE_ADMIN
          setFormData(prev => ({
             ...prev,
-            officeId: '',
+            officeId: ''
          }));
+
          loadTenants();
       } else {
+         // Otro rol → limpia ambos
          setShowOfficeSelect(false);
          setShowTenantSelect(false);
+         setSelectedOffice(null);
+         setSelectedTenant(null);
          setFormData(prev => ({
             ...prev,
             officeId: '',
             tenantId: ''
          }));
-         setSelectedOffice(null);
-         setSelectedTenant(null);
       }
    }, [selectedRole]);
 
+
    return (
        <section>
-          <div className="row">
-             <div className="col-lg-6 mb-2">
-                <div className="form-group mb-3">
-                   <label className="text-label">Rol del usuario <span className="required">*</span></label>
-                   <Select
-                       name="roleId"
-                       options={roles}
-                       value={selectedRole}
-                       onChange={setSelectedRole}
-                       isClearable
-                       placeholder="Selecciona un role"
-                       styles={{
-                          control: base => ({
-                             ...base,
-                             lineHeight: '40px',
-                             color: '#7e7e7e',
-                             paddingLeft: '15px'
-                          })
-                       }}
-                   />
+          {loading && (
+              <div className="text-center my-5">
+                 <div className="spinner-grow text-success" role="status">
+                    <span className="visually-hidden">Cargando...</span>
+                 </div>
+                 <p className="mt-2">Cargando usuarios...</p>
+              </div>
+          )}
+          {!loading && (
+             <div className="row">
+                <div className="col-lg-6 mb-2">
+                   <div className="form-group mb-3">
+                      <label className="text-label">Rol del usuario <span className="required">*</span></label>
+                      <Select
+                          name="roleId"
+                          options={roles}
+                          value={selectedRole}
+                          onChange={setSelectedRole}
+                          isClearable
+                          placeholder="Selecciona un role"
+                          styles={{
+                             control: base => ({
+                                ...base,
+                                lineHeight: '40px',
+                                color: '#7e7e7e',
+                                paddingLeft: '15px'
+                             })
+                          }}
+                      />
+                   </div>
                 </div>
-             </div>
-             {showOfficeSelect && (
-                 <div className="col-lg-6 mb-2">
-                    <div className="form-group mb-3">
-                       <label className="text-label">Consultorio asignado <span className="required">*</span></label>
-                       <Select
-                           name="officeId"
-                           options={offices}
-                           value={selectedOffice}
-                           onChange={setSelectedOffice}
-                           isClearable
-                           placeholder="Selecciona un consultorio"
-                           styles={{
-                              control: base => ({
-                                 ...base,
-                                 lineHeight: '40px',
-                                 color: '#7e7e7e',
-                                 paddingLeft: '15px'
-                              })
-                           }}
-                       />
+                {showOfficeSelect && (
+                    <div className="col-lg-6 mb-2">
+                       <div className="form-group mb-3">
+                          <label className="text-label">Consultorio asignado <span className="required">*</span></label>
+                          <Select
+                              name="officeId"
+                              options={offices}
+                              value={selectedOffice}
+                              onChange={setSelectedOffice}
+                              isClearable
+                              placeholder="Selecciona un consultorio"
+                              styles={{
+                                 control: base => ({
+                                    ...base,
+                                    lineHeight: '40px',
+                                    color: '#7e7e7e',
+                                    paddingLeft: '15px'
+                                 })
+                              }}
+                          />
+                       </div>
                     </div>
-                 </div>
-             )}
+                )}
 
-             {showTenantSelect && (
-                 <div className="col-lg-6 mb-2">
-                    <div className="form-group mb-3">
-                       <label className="text-label">Tenant asignado <span className="required">*</span></label>
-                       <Select
-                           name="tenantId"
-                           options={tenants}
-                           value={selectedTenant}
-                           onChange={setSelectedTenant}
-                           isClearable
-                           placeholder="Selecciona un tenant"
-                           styles={{
-                              control: base => ({
-                                 ...base,
-                                 lineHeight: '40px',
-                                 color: '#7e7e7e',
-                                 paddingLeft: '15px'
-                              })
-                           }}
-                       />
+                {showTenantSelect && (
+                    <div className="col-lg-6 mb-2">
+                       <div className="form-group mb-3">
+                          <label className="text-label">Tenant asignado <span className="required">*</span></label>
+                          <Select
+                              name="tenantId"
+                              options={tenants}
+                              value={selectedTenant}
+                              onChange={setSelectedTenant}
+                              isClearable
+                              placeholder="Selecciona un tenant"
+                              styles={{
+                                 control: base => ({
+                                    ...base,
+                                    lineHeight: '40px',
+                                    color: '#7e7e7e',
+                                    paddingLeft: '15px'
+                                 })
+                              }}
+                          />
+                       </div>
                     </div>
-                 </div>
-             )}
-          </div>
+                )}
+             </div>
+          )}
+          {error && (
+              <div className="alert alert-danger">{error}</div>
+          )}
        </section>
    );
 };
 StepTwo.propTypes = {
    formData: PropTypes.shape({
-      roleId: PropTypes.string.isRequired,
-      tenantId: PropTypes.string.isRequired,
-      officeId: PropTypes.string.isRequired,
+      role: PropTypes.object,
+      tenantId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      officeId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
    }).isRequired,
    setFormData: PropTypes.func.isRequired
 };

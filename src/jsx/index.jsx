@@ -111,7 +111,7 @@ import TenantDetails from "../features/admin/components/Tenants/TenantDetails.js
 import OfficeDetail from "../features/admin/components/Offices/OfficeDetails.jsx";
 import SubscriptionAdmin from "../features/admin/components/Subscriptions/SubscriptionAdmin.jsx";
 import UserAdmin from "../features/admin/components/Users/UserAdmin.jsx";
-import AddUsers from "../features/admin/components/Users/AddUsers.jsx";
+import AddEditUsers from "../features/admin/components/Users/AddEditUsers.jsx";
 import UserDetails from "../features/admin/components/Users/UserDetails.jsx";
 
 
@@ -123,13 +123,18 @@ const Markup = () => {
     { url: "home-admin", component: <HomeAdmin/> },
     { url: 'add-tenants', component: <AddTenants/> },
     { url: 'tenant-details/:tenantId', component: <TenantDetails/>},
+
     { url: 'office-admin', component: <OfficeAdmin/> },
     { url: 'add-offices', component: <AddOffices/> },
     { url: 'office-details/:officeId', component: <OfficeDetail/>},
+
     { url: 'subscription-plan-admin', component: <SubscriptionAdmin/> },
+
     { url: 'user-admin', component: <UserAdmin/> },
-    { url: 'add-users', component: <AddUsers/> },
+    { url: 'add-users', component: <AddEditUsers/> },
+    { url: 'edit-user/:userId', component: <AddEditUsers/> },
     { url: 'user-details/:userId', component: <UserDetails/>},
+
     { url: "dashboard", component: <Home/> },
     { url: 'dashboard-dark', component: <DashboardDark/> },
     { url: "patient-list", component: <PatientList/> },
