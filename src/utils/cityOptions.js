@@ -1,0 +1,22 @@
+export const cityOptions = [
+    { value: 1, label: 'Quito' },
+    { value: 2, label: 'Guayaquil' },
+    { value: 3, label: 'Cuenca' },
+    { value: 4, label: 'Santo Domingo' },
+    { value: 5, label: 'Machala' },
+    { value: 6, label: 'Durán' },
+    { value: 7, label: 'Manta' },
+    { value: 8, label: 'Portoviejo' },
+    { value: 9, label: 'Loja' },
+    { value: 10, label: 'Quevedo' },
+    { value: 11, label: 'Ambato' },
+    { value: 12, label: 'Riobamba' },
+    { value: 13, label: 'Ibarra' },
+    { value: 14, label: 'Esmeraldas' },
+    { value: 15, label: 'Latacunga' },
+    { value: 16, label: 'Babahoyo' },
+    { value: 17, label: 'Tulcán' },
+    { value: 18, label: 'Santa Elena' },
+    { value: 19, label: 'Nueva Loja' },
+    { value: 20, label: 'Zamora' }
+];

@@ -539,7 +539,7 @@ const HomeAdmin = () => {
                    <div className="card">
                        <div className="card-header border-0 pb-0">
                            <h3 className="fs-20 mb-0 text-black">
-                               Top Rated Doctors
+                               Usuarios Nuevos
                            </h3>
                            <Link to="/reviews" className="text-primary font-w500">
                                View more &gt;&gt;
@@ -804,7 +804,7 @@ const HomeAdmin = () => {
                <div className="col-xl-3 col-xxl-4 col-lg-12">
                    <div className="card border-0 pb-0">
                        <div className="card-header flex-wrap border-0 pb-0">
-                           <h3 className="fs-20 mb-0 text-black">Recent Patient</h3>
+                           <h3 className="fs-20 mb-0 text-black">Solicitudes de Usuarios</h3>
                            <Link
                                to="/patient-list"
                                className="text-primary font-w500"

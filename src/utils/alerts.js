@@ -42,7 +42,7 @@ export const Alerts = {
           <ul style="list-style-type: none; padding-left: 0">
             <li>✓ Verifica tu conexión a internet</li>
             <li>✓ Intenta recargar la página</li>
-            <li>✓ Si persiste el error, contacta al soporte</li>
+            <li>✓ Si persiste el error, <a href="/soporte" style="color: #0d6efd; text-decoration: underline;">contacta al soporte</a></li>
           </ul>
         </div>
       `,

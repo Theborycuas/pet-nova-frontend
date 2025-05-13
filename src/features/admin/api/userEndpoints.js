@@ -4,15 +4,20 @@ import {handleAdminError} from "../../../utils/errorHandler.js";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,
-    baseURL: `${baseAPI.defaults.baseURL}/offices`
+    baseURL: `${baseAPI.defaults.baseURL}/users`
 })
 
-export const officeEndpoints = {
-    resgisterOffice: "/resgisterOffice",
-    listAllOffices: "/listAllOffice",
-    getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
-    getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
-    deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`
+export const userEndpoints = {
+    resgisterUser: "/createUser",
+    listAllUsers: "/getAllUsers",
+    getUserById: (userId) => `/getUserDetailById/${userId}`,
+    updateUserDetailById: (userId) => `/updateUserDetailById/${userId}`,
+    deleteUserById: (userId) => `/deleteUserById/${userId}`
+    /*getUserById: (officeId) => `/getUserById/${officeId}`,
+    getUsersByTenantId: (tenantId) => `/getUsersByTenantId/${tenantId}`,
+    getUsersByOfficeId: (officeId) => `/getUsersByOfficeId/${officeId}`,
+    getUsersByRoleId: (roleId) => `/getUsersByRoleId/${roleId}`,
+    deleteUsersById: (officeId) => `/deleteUsersById/${officeId}`*/
 }
 
 
@@ -29,9 +34,9 @@ adminAPI.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-export const createOffice = async (officeData) => {
+export const createUser = async (userData) => {
     try {
-        const response = await adminAPI.post(officeEndpoints.resgisterOffice, officeData);
+        const response = await adminAPI.post(userEndpoints.resgisterUser, userData);
         return response.data;
     } catch (error) {
         if (!error.response) {
@@ -43,9 +48,9 @@ export const createOffice = async (officeData) => {
     }
 }
 
-export const getAllOffices = async () =>{
+export const getAllUsers = async () => {
     try {
-        const response = await adminAPI.get(officeEndpoints.listAllOffices, {
+        const response = await adminAPI.get(userEndpoints.listAllUsers, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -65,9 +70,69 @@ export const getAllOffices = async () =>{
     }
 };
 
+export const getUserById = async (userId) => {
+    try {
+        const response = await adminAPI.get(userEndpoints.getUserById(userId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const updateUserDetailById = async (userId, userData) => {
+    try {
+        const response = await adminAPI.put(userEndpoints.updateUserDetailById(userId), userData);
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const deleteUserById = async (userId) => {
+    try {
+        const response = await adminAPI.put(userEndpoints.deleteUserById(userId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+/*
+export const updateSubscripPlan = async (planId, subscripPlanData) => {
+    try {
+        const response = await adminAPI.put(roleEndpoints.updateSubscripPlanById(planId), subscripPlanData);
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}
+
 export const getOfficesByTenantId = async (tenantId) => {
     try {
-        const response = await adminAPI.get(officeEndpoints.getOfficesByTenantId(tenantId), {
+        const response = await adminAPI.get(roleEndpoints.getOfficesByTenantId(tenantId), {
             headers:{
                 'Content-Type': 'application/json',
             }
@@ -84,7 +149,7 @@ export const getOfficesByTenantId = async (tenantId) => {
 
 export const getOfficeById = async (officeId) =>{
     try {
-        const response = await adminAPI.get(officeEndpoints.getOfficeById(officeId), {
+        const response = await adminAPI.get(roleEndpoints.getOfficeById(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -102,7 +167,7 @@ export const getOfficeById = async (officeId) =>{
 
 export const deleteOfficeById = async (officeId) => {
     try {
-        const response = await adminAPI.post(officeEndpoints.deleteOfficeById(officeId), {
+        const response = await adminAPI.post(roleEndpoints.deleteOfficeById(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -116,7 +181,8 @@ export const deleteOfficeById = async (officeId) => {
         handleAdminError(error);
         throw error;
     }
-}
+}*/
+
 
 function getToken() {
     try {

@@ -4,13 +4,10 @@ import {Step, Stepper} from 'react-form-stepper';
 
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
-import StepThree from "./StepThree";
 import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
 import {useNavigate} from "react-router-dom";
-import {createOffice} from "../../api/officeEndpoints.js";
 import {createTenant} from "../../api/tenantEndpoints.js";
-import Swal from 'sweetalert2';
 import {Alerts} from "../../../../utils/alerts.js";
 
 const AddTenants = () => {
