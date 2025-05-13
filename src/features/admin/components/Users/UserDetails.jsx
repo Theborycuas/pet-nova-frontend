@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Link, useParams} from 'react-router-dom';
+import {Link, useNavigate, useParams} from 'react-router-dom';
 
-import {getUserById} from "../../api/userEndpoints.js";
+import {deleteUserById, getUserById} from "../../api/userEndpoints.js";
 import {Button, Dropdown} from "react-bootstrap";
 import defaultAvatar from "../../../../assets/images/avatar/1.jpg";
+import Alert from "sweetalert2";
+import Swal from "sweetalert2";
+import {Alerts} from "../../../../utils/alerts.js";
 
 
 
@@ -36,6 +39,21 @@ const StaffProfile = () => {
         loadUser();
     }, [userId]);
 
+    const navigate = useNavigate();
+
+    function handleDeleteUser(userId) {
+        Alerts.confirmDelete('usuario', () => {
+            deleteUserById(userId)
+                .then(() => {
+                    Swal.fire('¡Eliminado!', 'El Usuario ha sido borrado.', 'success');
+                    navigate('/user-admin');
+                })
+                .catch(err => {
+                    Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
+                    console.log(err);
+                });
+        });
+    }
 
     return (
         <>
@@ -82,7 +100,7 @@ const StaffProfile = () => {
                             </Dropdown.Item>
                             <Dropdown.Item
                                 className="dropdown-item"
-                                //onClick={() => handleDeleteOffice(office.id)}
+                                onClick={() => handleDeleteUser(user.id)}
                             >
                                 Borrar
                             </Dropdown.Item>

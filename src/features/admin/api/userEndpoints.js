@@ -11,7 +11,8 @@ export const userEndpoints = {
     resgisterUser: "/createUser",
     listAllUsers: "/getAllUsers",
     getUserById: (userId) => `/getUserDetailById/${userId}`,
-    updateUserDetailById: (userId) => `/updateUserDetailById/${userId}`
+    updateUserDetailById: (userId) => `/updateUserDetailById/${userId}`,
+    deleteUserById: (userId) => `/deleteUserById/${userId}`
     /*getUserById: (officeId) => `/getUserById/${officeId}`,
     getUsersByTenantId: (tenantId) => `/getUsersByTenantId/${tenantId}`,
     getUsersByOfficeId: (officeId) => `/getUsersByOfficeId/${officeId}`,
@@ -37,7 +38,7 @@ export const createUser = async (userData) => {
     try {
         const response = await adminAPI.post(userEndpoints.resgisterUser, userData);
         return response.data;
-    }catch (error) {
+    } catch (error) {
         if (!error.response) {
             // Error de red (no llegó al backend)
             throw new Error('Error de conexión con el servidor');
@@ -47,7 +48,7 @@ export const createUser = async (userData) => {
     }
 }
 
-export const getAllUsers = async () =>{
+export const getAllUsers = async () => {
     try {
         const response = await adminAPI.get(userEndpoints.listAllUsers, {
             headers: {
@@ -91,7 +92,25 @@ export const updateUserDetailById = async (userId, userData) => {
     try {
         const response = await adminAPI.put(userEndpoints.updateUserDetailById(userId), userData);
         return response.data;
-    }catch (error) {
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const deleteUserById = async (userId) => {
+    try {
+        const response = await adminAPI.put(userEndpoints.deleteUserById(userId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return response.data;
+    } catch (error) {
         if (!error.response) {
             // Error de red (no llegó al backend)
             throw new Error('Error de conexión con el servidor');

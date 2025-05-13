@@ -9,7 +9,7 @@ import {ThemeContext} from "../../../../context/ThemeContext.jsx"
 import {deleteOfficeById} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 import Swal from "sweetalert2";
-import {getAllUsers} from "../../api/userEndpoints.js";
+import {deleteUserById, getAllUsers} from "../../api/userEndpoints.js";
 import defaultAvatar from "../../../../assets/images/avatar/1.jpg"
 import {Button, Dropdown} from "react-bootstrap";
 
@@ -60,20 +60,6 @@ const UserAdmin = () => {
         setData(document.querySelectorAll("#doctor_list tbody tr"));
     }, []);
 
-    function handleDeleteUser(officeId) {
-        Alerts.confirmDelete('usuario', () => {
-            deleteOfficeById(officeId)
-                .then(() => {
-                    setUsers(current => current.filter(o => o.id !== officeId));
-                    Swal.fire('¡Eliminado!', 'El usuario ha sido borrado.', 'success');
-                })
-                .catch(err => {
-                    Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
-                    console.log(err);
-                });
-        });
-    }
-
     // Active pagginarion
     activePag.current === 0 && chageData(0, sort);
     // paggination
@@ -114,6 +100,20 @@ const UserAdmin = () => {
    useEffect(() => {
        changeBackground({ value: "light", label: "Light" });
    }, []);
+
+   function handleDeleteUser(userId) {
+       Alerts.confirmDelete('usuario', () => {
+           deleteUserById(userId)
+               .then(() => {
+                   setUsers(current => current.filter(o => o.id !== userId));
+                   Swal.fire('Eliminado!', 'El Usuario a sido Borraod!', 'success');
+               })
+               .catch(err => {
+                   Swal.fire('Error', 'No se pudo eliminar el tenant.', 'error');
+                   console.log(err);
+               });
+       });
+   }
 
 
    return (
@@ -300,7 +300,7 @@ const UserAdmin = () => {
                                                                        Editar
                                                                    </Dropdown.Item>
                                                                    <Dropdown.Item
-                                                                       //onClick={() => handleDeleteTenant(tenant.id)}
+                                                                       onClick={() => handleDeleteUser(user.id)}
                                                                    >
                                                                        Eliminar
                                                                    </Dropdown.Item>
