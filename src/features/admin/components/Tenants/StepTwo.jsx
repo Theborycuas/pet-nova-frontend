@@ -13,7 +13,7 @@ const currencyOptions = [
    { value: 3, label: 'MXN' },
 ]
 
-const StepTwo = ({ formData, setFormData}) => {
+const StepTwo = ({ formData: formTenantData, setFormData}) => {
 
    const [selectedPlan, setSelectedPlan] = useState(null)
    const [selectedOption, setSelectedOption] = useState(null)
@@ -44,7 +44,7 @@ const StepTwo = ({ formData, setFormData}) => {
                        name="planId"
                        options={planOptions}
                        value={
-                           planOptions.find(opt => opt.value === formData.planId)
+                           planOptions.find(opt => opt.value === formTenantData.planId)
                            || null
                        }
                        onChange={handlePlanChange}
@@ -68,7 +68,7 @@ const StepTwo = ({ formData, setFormData}) => {
                        name="currency"
                        options={currencyOptions}
                        value={
-                           currencyOptions.find(opt => opt.value === formData.currency)
+                           currencyOptions.find(opt => opt.value === formTenantData.currency)
                            || null
                        }
                        onChange={handleCurrencyChange}

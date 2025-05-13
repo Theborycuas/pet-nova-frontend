@@ -18,5 +18,6 @@ export const cityOptions = [
     { value: 17, label: 'Tulcán' },
     { value: 18, label: 'Santa Elena' },
     { value: 19, label: 'Nueva Loja' },
-    { value: 20, label: 'Zamora' }
+    { value: 20, label: 'Zamora' },
+    { value: 21, label: 'Otra' }
 ];

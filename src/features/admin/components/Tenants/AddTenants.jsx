@@ -12,10 +12,11 @@ import {Alerts} from "../../../../utils/alerts.js";
 
 const AddTenants = () => {
 	const [goSteps, setGoSteps] = useState(0);
-	const [formData, setFormData] = useState({
+	const [formTenantData, setFormTenantData] = useState({
 		//StepOne
 		tenantName: '',
 		address: '',
+		city: '',
 		contactEmail: '',
 		contactPhone: '',
 
@@ -31,7 +32,7 @@ const AddTenants = () => {
 		try {
 			const loadingAlert = Alerts.showLoading('Registrando Tenant', 'Guardando información...');
 
-			const response = await createTenant(formData);
+			const response = await createTenant(formTenantData);
 
 			Alerts.closeAlerts();
 			await Alerts.showSuccess('Tenant creado!', 'El registro se completó exitosamente');
@@ -71,7 +72,7 @@ const AddTenants = () => {
 								</Stepper>
 							  {goSteps === 0 && (
 								<>
-									<StepOne formData={formData} setFormData={setFormData} />
+									<StepOne formData={formTenantData} setFormData={setFormTenantData} />
 									<div className="text-end toolbar toolbar-bottom p-2">
 										<button  className="btn btn-primary sw-btn-next" onClick={() => setGoSteps(1)}>Siguiente</button>
 									</div>	
@@ -79,7 +80,7 @@ const AddTenants = () => {
 							  )}
 							  {goSteps === 1 && (
 								<>
-									<StepTwo formData={formData} setFormData={setFormData} />
+									<StepTwo formData={formTenantData} setFormData={setFormTenantData} />
 									<div className="text-end toolbar toolbar-bottom p-2">
 										<button  className="btn btn-secondary sw-btn-prev me-1" onClick={() => setGoSteps(0)}>Anterior</button>
 										<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar
@@ -90,7 +91,7 @@ const AddTenants = () => {
 							  )}
 								{/*{goSteps === 2 && (
 									<>
-									<StepThree formData={formData} setFormData={setFormData} />
+									<StepThree formTenantData={formTenantData} setFormData={setFormData} />
 									<div className="text-end toolbar toolbar-bottom p-2">
 										<button className="btn btn-secondary sw-btn-prev me-1"
 												onClick={() => setGoSteps(1)}>Anterior
