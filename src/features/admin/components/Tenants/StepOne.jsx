@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 import Select from "react-select";
 import {cityOptions} from "../../../../utils/cityOptions.js";
-import {createUser, getAllUsers} from "../../api/userEndpoints.js";
+import {createUser, getAllUsers, getAllUsersNoTenantManager} from "../../api/userEndpoints.js";
 import {Modal} from "react-bootstrap";
 import {Alerts} from "../../../../utils/alerts.js";
 
@@ -50,7 +50,7 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
       setLoading(true);
       setError(null);
       try {
-         const { data } = await getAllUsers();
+         const { data } = await getAllUsersNoTenantManager();
          const formattedUsers = data.map(user => ({
             value: user.id,
             label: user.name,

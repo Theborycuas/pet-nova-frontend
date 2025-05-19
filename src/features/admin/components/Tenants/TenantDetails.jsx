@@ -5,16 +5,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 //Image
-import widget1 from "../../../../assets/images/widget/1.jpg";
-import widget5 from "../../../../assets/images/widget/5.jpg";
-import widget6 from "../../../../assets/images/widget/6.jpg";
-import widget7 from "../../../../assets/images/widget/7.jpg";
-import widget8 from "../../../../assets/images/widget/8.jpg";
 import map from "../../../../assets/images/svg/map.svg";
 
 /// Scroll
 import {deleteTenantById, getTenantDetailById} from "../../api/tenantEndpoints.js";
-import user from "../../../../assets/images/task/user.jpg";
 import card1 from "../../../../assets/images/task/img1.jpg";
 import {formatDateTimeUtils, formatDateUtils} from "../../../../utils/formatters.js";
 import Select from "react-select";
@@ -22,6 +16,7 @@ import CustomClearIndicator from "../../../../jsx/components/PluginsMenu/Select2
 import {createOffice, getOfficesByTenantId} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 import Swal from "sweetalert2";
+import {getUserByTenantId} from "../../api/userEndpoints.js";
 
 
 const initialFormData = {
@@ -43,6 +38,7 @@ const TenantDetails = () => {
    const [offices, setOffices] = useState([]);
    const [tenant, setTenant] = useState(null);
    const {tenantId} = useParams();
+   const [user, setUser] = useState(null);
 
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
@@ -85,9 +81,24 @@ const TenantDetails = () => {
       }
    };
 
+   const loadUser = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+         const [u] = await Promise.all([
+            getUserByTenantId(tenantId)
+         ]);
+         setUser(u);
+      }catch(err) {
+         setError(err.message);
+      } finally {
+         setLoading(false);
+      }
+   }
 
    useEffect(() => {
       loadTenant();
+      loadUser();
    }, [tenantId])
 
    function handleDeleteTenant(tenantId) {
@@ -454,151 +465,52 @@ const TenantDetails = () => {
                  <div className="alert alert-danger">{error}</div>
              )}
 
-             {!loading && tenant && (
-                <div className=" col-lg-12 col-xl-4 col-xxl-6">
-                   <div className="card">
-                      <div className="card-header border-0 pb-0">
-                         <h4 className="fs-20 font-w600 mb-0">
-                            Administrador
-                         </h4>
-                      </div>
-                      <div className="card-body pt-2 p-0">
-                         <div
-                             id="DZ_W_Todo2"
-                             className="widget-media dz-scroll height370 my-4 px-4"
-                         >
-                            <ul className="timeline">
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget6}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget7}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget8}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget5}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget1}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget6}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                            </ul>
-                         </div>
-                      </div>
-                   </div>
-                </div>
+             {!loading && user && (
+                 <div className=" col-lg-12 col-xl-4 col-xxl-6">
+                    <div className="card">
+                       <div className="card-header border-0 pb-0">
+                          <h4 className="fs-20 font-w600">Administrador</h4>
+                       </div>
+                       <div className="card-body">
+                          <div className="media d-sm-flex text-sm-start d-block text-center">
+                             <div className="media-body">
+                                <h3 className="fs-22 text-black font-w600">
+                                   {user.name}
+                                </h3>
+                                <p className="text-primary">{user.email}</p>
+                                <div
+                                    className="social-media mb-sm-0 mb-3 justify-content-sm-start justify-content-center">
+                                   <Link to="#">
+                                      <i className="lab la-instagram ms-0"/>
+                                   </Link>
+                                   <Link to="#">
+                                      <i className="lab la-facebook-f"/>
+                                   </Link>
+                                   <Link to="#">
+                                      <i className="lab la-twitter"/>
+                                   </Link>
+                                </div>
+                             </div>
+                             <div className="text-center">
+                                <span className="num">4.5</span>
+                                <div className="star-icons">
+                                   <i className="las la-star"/>{" "}
+                                   <i className="las la-star"/>{" "}
+                                   <i className="las la-star"/>{" "}
+                                   <i className="las la-star"/>{" "}
+                                   <i className="las la-star"/>
+                                </div>
+                             </div>
+                          </div>
+                       </div>
+                    </div>
+                 </div>
              )}
              {error && !tenant && (
                  <div className="alert alert-danger">{error}</div>
              )}
              <div className="mb-sm-5 mb-3 d-flex flex-wrap align-items-center text-head">
-               {/* <!-- Modal --> */}
+                {/* <!-- Modal --> */}
                 <Modal className="modal fade" show={postModal} onHide={setPostModal} size={'lg'}>
                    <div className="">
                       <div className="">
