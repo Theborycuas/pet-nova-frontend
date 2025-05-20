@@ -1,6 +1,7 @@
 import {baseAPI} from "../../../api/config/axiosConfig.js";
 import axios from "axios";
 import {handleAdminError} from "../../../utils/errorHandler.js";
+import {tenantEndpoints} from "./tenantEndpoints.js";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,
@@ -12,6 +13,7 @@ export const officeEndpoints = {
     listAllOffices: "/listAllOffice",
     getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
     getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
+    updateOfficeById: (officeId) => `/updateOfficeById/${officeId}`,
     deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`
 }
 
@@ -99,6 +101,21 @@ export const getOfficeById = async (officeId) =>{
         throw error;
     }
 }
+
+export const updateOfficeById = async (officeId, officeData) =>{
+    try {
+        const response = await adminAPI.put(officeEndpoints.updateOfficeById(officeId), officeData);
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
 
 export const deleteOfficeById = async (officeId) => {
     try {
