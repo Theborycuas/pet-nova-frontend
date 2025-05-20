@@ -6,13 +6,15 @@ import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
 import {useDispatch} from "react-redux";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import {createTenant, getBasicTenantById, updateTenantById} from "../../api/tenantEndpoints.js";
+import {createTenant, getTenantDetailById, updateTenantById} from "../../api/tenantEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
-import {getOfficeById} from "../../api/officeEndpoints.js";
 
 const AddEditTenants = () => {
 	const {tenantId} = useParams();
 	const isEditMode = Boolean(tenantId);
+
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
 
 	const [goSteps, setGoSteps] = useState(0);
 	const [formTenantData, setFormTenantData] = useState({
@@ -54,11 +56,15 @@ const AddEditTenants = () => {
 
 	useEffect(() => {
 		if(isEditMode) {
-			getBgetOfficeByIdasicTenantById(tenantId).then((response) => {
+			setLoading(true);
+			setError(null);
+			getTenantDetailById(tenantId).then((response) => {
 				setFormTenantData({
 					...response,
 				});
+				setLoading(false);
 			}).catch((error) => {
+				setLoading(false);
 				Alerts.showError("Error!", error.message);
 			})
 		}
@@ -115,35 +121,51 @@ const AddEditTenants = () => {
 						</div>
 						<div className="card-body">
 
-							<div className="form-wizard ">
-								<Stepper className="nav-wizard" activeStep={goSteps} label={false}>
-									<Step className="nav-link" onClick={() => setGoSteps(0)}/>
-									<Step className="nav-link" onClick={() => setGoSteps(1)}/>{/*
-									<Step className="nav-link" onClick={() => setGoSteps(2)} />*/}
-								</Stepper>
-								{goSteps === 0 && (
-									<>
-										<StepOne formData={formTenantData} setFormData={setFormTenantData}/>
-										<div className="text-end toolbar toolbar-bottom p-2">
-											<button className="btn btn-primary sw-btn-next"
-													onClick={() => setGoSteps(1)}>Siguiente
-											</button>
-										</div>
-									</>
-								)}
-								{goSteps === 1 && (
-									<>
-										<StepTwo formData={formTenantData} setFormData={setFormTenantData}/>
-										<div className="text-end toolbar toolbar-bottom p-2">
-											<button className="btn btn-secondary sw-btn-prev me-1"
-													onClick={() => setGoSteps(0)}>Anterior
-											</button>
-											<button className="btn btn-success ms-1" onClick={handleSubmit}>{isEditMode ? "Editar Tenant" : "Registrar Tenant"}
-											</button>
-										</div>
-									</>
-								)}
-							</div>
+							{loading && isEditMode && (
+								<div className="text-center my-5">
+									<div className="spinner-grow text-success" role="status">
+										<span className="visually-hidden">Cargando...</span>
+									</div>
+									<p className="mt-2">Cargando tenant...</p>
+								</div>
+							)}
+							{!loading && (
+								<div className="form-wizard ">
+									<Stepper className="nav-wizard" activeStep={goSteps} label={false}>
+										<Step className="nav-link" onClick={() => setGoSteps(0)}/>
+										<Step className="nav-link" onClick={() => setGoSteps(1)}/>{/*
+										<Step className="nav-link" onClick={() => setGoSteps(2)} />*/}
+									</Stepper>
+									{goSteps === 0 && (
+										<>
+											<StepOne formData={formTenantData} setFormData={setFormTenantData}/>
+											<div className="text-end toolbar toolbar-bottom p-2">
+												<button className="btn btn-primary sw-btn-next"
+														onClick={() => setGoSteps(1)}>Siguiente
+												</button>
+											</div>
+										</>
+									)}
+									{goSteps === 1 && (
+										<>
+											<StepTwo formData={formTenantData} setFormData={setFormTenantData}/>
+											<div className="text-end toolbar toolbar-bottom p-2">
+												<button className="btn btn-secondary sw-btn-prev me-1"
+														onClick={() => setGoSteps(0)}>Anterior
+												</button>
+												<button className="btn btn-success ms-1" onClick={handleSubmit}>{isEditMode ? "Editar Tenant" : "Registrar Tenant"}
+												</button>
+											</div>
+										</>
+									)}
+								</div>
+							)}
+							{!loading && !formTenantData && !error && (
+								<p className="text-center">No se encontró el Tenant</p>
+							)}
+							{error && (
+								<div className="alert alert-danger">{error}</div>
+							)}
 						</div>
 					</div>
 				</div>

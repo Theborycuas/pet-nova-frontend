@@ -1,7 +1,6 @@
 import {baseAPI} from "../../../api/config/axiosConfig.js";
 import axios from "axios";
 import {handleAdminError} from "../../../utils/errorHandler.js";
-import {tenantEndpoints} from "./tenantEndpoints.js";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,

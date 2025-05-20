@@ -16,20 +16,22 @@ const AddEditOffices = () => {
 	const { officeId } = useParams();
 	const isEditMode = Boolean(officeId);
 
+	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState(null);
+
 	const [goSteps, setGoSteps] = useState(0);
 	const [formOfficeData, setFormOfficeData] = useState({
 		//StepOne
 		name: '',
+		manageId: '',
 		address: '',
+		city: '',
 		taxId: '',
 		logoUrl: '',
 
 		//StepTwo
 		contactEmail: '',
 		contactPhone: '',
-		managerName: '',
-		managerPhone: '',
-		managerEmail: '',
 
 		//Steap Three
 		currentPlan: '',
@@ -41,9 +43,13 @@ const AddEditOffices = () => {
 
 	useEffect(() => {
 		if(isEditMode) {
+			setLoading(true);
+			setError(null);
 			getOfficeById(officeId).then((response) => {
 				setFormOfficeData(response);
+				setLoading(false);
 			}).catch((error) => {
+				setLoading(false);
 				Alerts.showError("Error!", error.message);
 			})
 		}
@@ -51,7 +57,6 @@ const AddEditOffices = () => {
 
 	const handleSubmit = async () => {
 		try {
-			let response = null;
 			if(!isEditMode){
 				Alerts.showLoading('Registrando Consultorio', 'Guardando información...');
 				await createOffice(formOfficeData);
@@ -87,7 +92,7 @@ const AddEditOffices = () => {
 		<Fragment>
 			<div className="page-titles">
 				<ol className="breadcrumb">
-					<li className="breadcrumb-item"><Link to={"/user-admin"}>Office Admin</Link></li>
+					<li className="breadcrumb-item"><Link to={"/office-admin"}>Office Admin</Link></li>
 					<li className="breadcrumb-item active"><Link to={"#"}>{isEditMode ? "Edit office" : "Create office"}</Link></li>
 				</ol>
 			</div>
@@ -100,42 +105,59 @@ const AddEditOffices = () => {
 						</div>
 						<div className="card-body">
 
-							<div className="form-wizard ">
-								<Stepper className="nav-wizard" activeStep={goSteps} label={false}>
-									<Step className="nav-link" onClick={() => setGoSteps(0)} />
-									<Step className="nav-link" onClick={() => setGoSteps(1)} />
-									<Step className="nav-link" onClick={() => setGoSteps(2)} />
-								</Stepper>
-							  {goSteps === 0 && (
-								<>
-									<StepOne formData={formOfficeData} setFormData={setFormOfficeData} />
-									<div className="text-end toolbar toolbar-bottom p-2">
-										<button  className="btn btn-primary sw-btn-next" onClick={() => setGoSteps(1)}>Siguiente</button>
-									</div>	
-								</>
-							  )}
-							  {goSteps === 1 && (
-								<>
-									<StepTwo formData={formOfficeData} setFormData={setFormOfficeData} />
-									<div className="text-end toolbar toolbar-bottom p-2">
-										<button  className="btn btn-secondary sw-btn-prev me-1" onClick={() => setGoSteps(0)}>Anterior</button>
-										<button className="btn btn-primary sw-btn-next ms-1" onClick={() => setGoSteps(2)}>Siguiente</button>
-									</div>	
-								</>
-							  )}
-							  {goSteps === 2 && (
-								<>
-									<StepThree formData={formOfficeData} setFormData={setFormOfficeData} />
-									<div className="text-end toolbar toolbar-bottom p-2">
-										<button className="btn btn-secondary sw-btn-prev me-1"
-												onClick={() => setGoSteps(1)}>Anterior
-										</button>
-										<button className="btn btn-success ms-1" onClick={handleSubmit}>{isEditMode ? "Editar Consultorio" : "Crear Consultorio"}</button>
+							{loading && isEditMode && (
+								<div className="text-center my-5">
+									<div className="spinner-grow text-success" role="status">
+										<span className="visually-hidden">Cargando...</span>
 									</div>
-								</>
-							  )}
+									<p className="mt-2">Cargando consultorios...</p>
+								</div>
+							)}
+							{!loading && (
+								<div className="form-wizard ">
+									<Stepper className="nav-wizard" activeStep={goSteps} label={false}>
+										<Step className="nav-link" onClick={() => setGoSteps(0)} />
+										<Step className="nav-link" onClick={() => setGoSteps(1)} />
+										<Step className="nav-link" onClick={() => setGoSteps(2)} />
+									</Stepper>
+								  {goSteps === 0 && (
+									<>
+										<StepOne formData={formOfficeData} setFormData={setFormOfficeData} />
+										<div className="text-end toolbar toolbar-bottom p-2">
+											<button  className="btn btn-primary sw-btn-next" onClick={() => setGoSteps(1)}>Siguiente</button>
+										</div>
+									</>
+								  )}
+								  {goSteps === 1 && (
+									<>
+										<StepTwo formData={formOfficeData} setFormData={setFormOfficeData} />
+										<div className="text-end toolbar toolbar-bottom p-2">
+											<button  className="btn btn-secondary sw-btn-prev me-1" onClick={() => setGoSteps(0)}>Anterior</button>
+											<button className="btn btn-primary sw-btn-next ms-1" onClick={() => setGoSteps(2)}>Siguiente</button>
+										</div>
+									</>
+								  )}
+								  {goSteps === 2 && (
+									<>
+										<StepThree formData={formOfficeData} setFormData={setFormOfficeData} />
+										<div className="text-end toolbar toolbar-bottom p-2">
+											<button className="btn btn-secondary sw-btn-prev me-1"
+													onClick={() => setGoSteps(1)}>Anterior
+											</button>
+											<button className="btn btn-success ms-1" onClick={handleSubmit}>{isEditMode ? "Editar Consultorio" : "Crear Consultorio"}</button>
+										</div>
+									</>
+								  )}
 
-							</div>
+								</div>
+							)}
+							{!loading && !formOfficeData && !error && (
+								<p className="text-center">No se encontró el Consultorio</p>
+							)}
+							{error && (
+								<div className="alert alert-danger">{error}</div>
+							)}
+
 						</div>
 					</div>
 				</div>

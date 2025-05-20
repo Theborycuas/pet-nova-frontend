@@ -256,6 +256,7 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
                 </div>
              </div>
           </div>
+
           <div className="mb-sm-5 mb-3 d-flex flex-wrap align-items-center text-head">
              {/* <!-- Modal --> */}
              <Modal className="modal fade" show={postModal} onHide={setPostModal} size={'lg'}>

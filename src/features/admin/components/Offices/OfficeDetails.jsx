@@ -84,119 +84,12 @@ const OfficeDetails = () => {
         });
     }
 
-
-/*
-   const handleSubmitSaveOffice = async (e) => {
-      e.preventDefault();
-      const startTime = Date.now();
-      try {
-         Alerts.showLoading('Registrando Consultorio', 'Guardando información...');
-
-         const dataToSend = {
-            ...formData,
-            tenantId: office.id
-         };
-         await createOffice(dataToSend);
-         const elapsed = Date.now() - startTime;
-         if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-
-         Alerts.closeAlerts();
-         await Alerts.showSuccess('Consultorio creado!', 'El registro se completó exitosamente');
-         setPostModal(false);
-      }catch (error) {
-         Alerts.closeAlerts();
-         if (!error.response) {
-            // Error de conexión (no hay respuesta del backend)
-            console.error('Error de red:', error.message);
-            Alerts.showConnectionError();
-         } else {
-            // Error del servidor (4xx/5xx)
-            const errorMessage = error.response.data?.message || 'Error desconocido';
-            Alerts.showError('Error en el servidor', errorMessage);
-         }
-         console.error('Error creando Office: ', error)
-      }
-   }*/
-/*
-   const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData(prev => ({ ...prev, [name]: value }));
-   };
-   const handleSelectManagerChange = (option) => {
-      setFormData(prev => ({
-         ...prev,
-         managerName: option ? option.value : ''
-      }));
-   };
-   const handlePlanChange = (option) => {
-      setFormData(prev => ({
-         ...prev,
-         currentPlan: option ? option.value : ''
-      }));
-   };
-   const handleCurrencyChange = (option) => {
-      setFormData(prev => ({
-         ...prev,
-         currency: option ? option.value : ''
-      }));
-   };
-
-   const managerOptions = [
-      { value: 1, label: 'José' },
-      { value: 2, label: 'Emilio' },
-      { value: 3, label: 'Juan' },
-   ]
-   const planOptions = [
-      { value: 1, label: 'Free' },
-      { value: 2, label: 'Plus' },
-      { value: 3, label: 'Premium' },
-   ]
-   const currencyOptions = [
-      { value: 1, label: 'USD' },
-      { value: 2, label: 'EU' },
-      { value: 3, label: 'MXN' },
-   ]
-
-   const [postModal, setPostModal] = useState(false);
-
-
-
-   const [editModal, setEditModal] = useState(false);
-
-   // Edit function editable page loop
-   const [editContactId, setEditContactId] = useState(null);
-
-   // Edit function button click to edit
-   const handleEditClick = ( event, contact) => {
-
-   };
-
-   // delete data
-   const handleDeleteClick = (contactId) => {
-
-   }
-
-
-   // edit form data submit
-   const handleEditFormSubmit = (event) => {
-
-   }
-
-   //For Image upload in ListBlog
-   const [file, setFile] = React.useState(null)
-   const fileHandler = (e) => {
-      setFile(e.target.files[0]);
-      setTimeout(function(){
-         var src = document.getElementById("saveImageFile").getAttribute("src");
-      }, 200);
-   }*/
-
    return (
        <>
           <div className="page-titles">
              <ol className="breadcrumb">
                 <li className="breadcrumb-item active">
-                   <Link to="/">Home</Link>
+                   <Link to="/office-admin">Office Admin</Link>
                 </li>
                 <li className="breadcrumb-item">
                    <Link to="/office-details">Office Details</Link>
@@ -238,7 +131,9 @@ const OfficeDetails = () => {
                       Acciones
                    </Dropdown.Toggle>
                    <Dropdown.Menu className="dropdown-menu">
-                      <Dropdown.Item className="dropdown-item" to="/doctor-details">
+                      <Dropdown.Item className="dropdown-item"
+                                     as={Link}
+                                     to={`/edit-office/${office.id}`}>
                          Editar
                       </Dropdown.Item>
                       <Dropdown.Item

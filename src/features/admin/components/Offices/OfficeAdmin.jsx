@@ -115,7 +115,7 @@ const OfficeAdmin = () => {
                         to="/add-offices"
                         className="btn btn-primary btn-rounded"
                     >
-                        + Add New
+                        + Agregar nuevo Consultorio
                     </Link>
                 </div>
                 <div className="input-group search-area ms-auto d-inline-flex">
