@@ -6,12 +6,12 @@ import {createUser, getAllUsers, getAllUsersNoTenantManager} from "../../api/use
 import {Modal} from "react-bootstrap";
 import {Alerts} from "../../../../utils/alerts.js";
 
-const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) => {
+const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isEditMode }) => {
 
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
    const [users, setUsers] = useState([]);
-   const [selectedUser, setSelectedUser] = useState(null);
+   const [selectedUsers, setSelectedUsers] = useState([]);
    const [postModal, setPostModal] = useState(false);
    const [formUserData, setFormUserData] = useState({
       name: '',
@@ -50,7 +50,15 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
       setLoading(true);
       setError(null);
       try {
-         const { data } = await getAllUsersNoTenantManager();
+         let data;
+         if (isEditMode) {
+            const response = await getAllUsers(); // todos, para mostrar también los asignados
+            data = response.data;
+         } else {
+            const response = await getAllUsersNoTenantManager(); // solo los disponibles
+            data = response.data;
+         }
+
          const formattedUsers = data.map(user => ({
             value: user.id,
             label: user.name,
@@ -68,13 +76,13 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
    }, []);
 
    useEffect(() => {
-      if (selectedUser) {
+      if (selectedUsers && Array.isArray(selectedUsers)) {
          setFormTenantData(prev => ({
             ...prev,
-            managerId: selectedUser.value,
+            managerIds: selectedUsers.map(user => user.value),
          }));
       }
-   }, [selectedUser]);
+   }, [selectedUsers]);
 
    const userOptions = [
       { value: "add-user", label: "➕ Agregar usuario" },
@@ -83,7 +91,7 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
 
    function handleCreateUser(){
       setPostModal(true);
-      setSelectedUser(null);
+      setSelectedUsers(null);
    }
 
    const handleSubmitSaveUser = async (e) => {
@@ -104,7 +112,12 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
          setUsers(formattedUsers);
 
          const newUserOption = formattedUsers.find(u => u.value === response.id);
-         setSelectedUser(newUserOption);
+         setSelectedUsers(prev => [...prev, newUserOption]);
+
+         setFormTenantData(prev => ({
+            ...prev,
+            managerIds: [...(prev.managerIds || []), newUserOption.value]
+         }));
 
          setPostModal(false);
       } catch (error) {
@@ -123,15 +136,17 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
    }
 
    useEffect(() => {
-      if(!formTenantData || !formTenantData.managerId) return;
-
-      if(users.length > 0 && !selectedUser) {
-         const foundManageId = users.find(u => u.value === formTenantData.managerId);
-         if(foundManageId) setSelectedUser(foundManageId);
+      if (
+          Array.isArray(formTenantData.managerIds) &&
+          formTenantData.managerIds.length > 0 &&
+          users.length > 0
+      ) {
+         const found = users.filter(user =>
+             formTenantData.managerIds.map(String).includes(String(user.value))
+         );
+         setSelectedUsers(found);
       }
-
-   }, [formTenantData.managerId, users]);
-
+   }, [formTenantData.managerIds, users]);
 
    return (
        <section>
@@ -163,18 +178,28 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
                     <div className="form-group mb-3">
                        <label className="text-label">Administrador <span className="required">*</span></label>
                        <Select
-                           name="managerId"
+                           name="managerIds"
                            options={userOptions}
-                           value={selectedUser}
-                           onChange={(selected) => {
-                              if (selected?.value === "add-user") {
+                           value={selectedUsers}
+                           onChange={(selectedOptions) => {
+                              // Manejar el caso de agregar nuevo usuario
+                              const selected = selectedOptions || [];
+                              const isAddUser = selected.some(opt => opt.value === "add-user");
+
+                              if (isAddUser) {
                                  handleCreateUser();
-                              } else {
-                                 setSelectedUser(selected);
+                                 return;
                               }
+
+                              setSelectedUsers(selected);
+                              setFormTenantData(prev => ({
+                                 ...prev,
+                                 managerIds: selected.map(opt => opt.value),
+                              }));
                            }}
+                           isMulti
                            isClearable
-                           placeholder="Selecciona un administrador"
+                           placeholder="Selecciona uno o varios administradores"
                            styles={{
                               control: base => ({
                                  ...base,
@@ -184,6 +209,7 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
                               })
                            }}
                        />
+
                     </div>
                  </div>
              )}
@@ -395,14 +421,14 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData }) =
 StepOne.propTypes = {
    formData: PropTypes.shape({
       tenantName: PropTypes.string.isRequired,
-      managerId: PropTypes.string.isRequired,
+      managerIds: PropTypes.arrayOf(PropTypes.number),
       city: PropTypes.string.isRequired,
       address: PropTypes.string.isRequired,
       contactEmail: PropTypes.string.isRequired,
       contactPhone: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired
    }).isRequired,
-   setFormData:
-   PropTypes.func.isRequired
+   setFormData: PropTypes.func.isRequired,
+   isEditMode: PropTypes.bool.isRequired
 };
 
 export default StepOne;

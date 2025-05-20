@@ -12,7 +12,7 @@ export const userEndpoints = {
     listAllUsers: "/getAllUsers",
     listAllUsersNoTenantManager: "/getAllUsersNoTenantManager",
     getUserById: (userId) => `/getUserDetailById/${userId}`,
-    getUserByTenantId: (tenantId) => `/getUserByTenantId/${tenantId}`,
+    getUsersByTenantId: (tenantId) => `/getUsersByTenantId/${tenantId}`,
     updateUserDetailById: (userId) => `/updateUserDetailById/${userId}`,
     deleteUserById: (userId) => `/deleteUserById/${userId}`
     /*getUserById: (officeId) => `/getUserById/${officeId}`,
@@ -112,9 +112,9 @@ export const getUserById = async (userId) => {
     }
 }
 
-export const getUserByTenantId = async (tenantId) => {
+export const getUsersByTenantId = async (tenantId) => {
     try {
-        const response = await adminAPI.get(userEndpoints.getUserByTenantId(tenantId), {
+        const response = await adminAPI.get(userEndpoints.getUsersByTenantId(tenantId), {
             headers: {
                 'Content-Type': 'application/json',
             }

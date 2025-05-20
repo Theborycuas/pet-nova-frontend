@@ -20,6 +20,7 @@ const AddEditTenants = () => {
 	const [formTenantData, setFormTenantData] = useState({
 		//StepOne
 		tenantName: '',
+		managerIds: [],
 		address: '',
 		city: '',
 		contactEmail: '',
@@ -31,6 +32,7 @@ const AddEditTenants = () => {
 	})
 	const fieldLabels = {
 		name: 'Nombre del Tenant',
+		manageId: 'Administrador',
 		address: 'Dirección',
 		city: 'Ciudad',
 		contactEmail: 'Correo electrónico',
@@ -55,20 +57,37 @@ const AddEditTenants = () => {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if(isEditMode) {
-			setLoading(true);
-			setError(null);
-			getTenantDetailById(tenantId).then((response) => {
-				setFormTenantData({
-					...response,
-				});
-				setLoading(false);
-			}).catch((error) => {
-				setLoading(false);
-				Alerts.showError("Error!", error.message);
-			})
-		}
+		const fetchTenant = async () => {
+			if (isEditMode) {
+				setLoading(true);
+				setError(null);
+				try {
+					const response = await getTenantDetailById(tenantId);
+
+					// Esperamos medio segundo a que `users` cargue
+					setTimeout(() => {
+						setFormTenantData({
+							tenantName: response.tenantName || '',
+							managerIds: response.managerIds || [],
+							address: response.address || '',
+							city: response.city || '',
+							contactEmail: response.contactEmail || '',
+							contactPhone: response.contactPhone || '',
+							planId: response.planId || '',
+							currency: response.currency || ''
+						});
+						setLoading(false);
+					}, 500); // tiempo suficiente para que StepOne tenga los usuarios
+
+				} catch (error) {
+					setLoading(false);
+					Alerts.showError("Error!", error.message);
+				}
+			}
+		};
+		fetchTenant();
 	}, [tenantId]);
+
 
 	const handleSubmit = async () => {
 		try {
@@ -138,7 +157,9 @@ const AddEditTenants = () => {
 									</Stepper>
 									{goSteps === 0 && (
 										<>
-											<StepOne formData={formTenantData} setFormData={setFormTenantData}/>
+											<StepOne formData={formTenantData}
+													 setFormData={setFormTenantData}
+													 isEditMode={isEditMode}/>
 											<div className="text-end toolbar toolbar-bottom p-2">
 												<button className="btn btn-primary sw-btn-next"
 														onClick={() => setGoSteps(1)}>Siguiente
