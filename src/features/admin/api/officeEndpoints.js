@@ -9,9 +9,10 @@ const adminAPI = axios.create({
 
 export const officeEndpoints = {
     resgisterOffice: "/resgisterOffice",
-    listAllOffices: "/listAllOffice",
+    getAllOffices: "/getAllOfficeDTO",
     getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
     getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
+    updateOfficeById: (officeId) => `/updateOfficeById/${officeId}`,
     deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`
 }
 
@@ -45,7 +46,7 @@ export const createOffice = async (officeData) => {
 
 export const getAllOffices = async () =>{
     try {
-        const response = await adminAPI.get(officeEndpoints.listAllOffices, {
+        const response = await adminAPI.get(officeEndpoints.getAllOffices, {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -99,6 +100,21 @@ export const getOfficeById = async (officeId) =>{
         throw error;
     }
 }
+
+export const updateOfficeById = async (officeId, officeData) =>{
+    try {
+        const response = await adminAPI.put(officeEndpoints.updateOfficeById(officeId), officeData);
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
 
 export const deleteOfficeById = async (officeId) => {
     try {

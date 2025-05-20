@@ -15,13 +15,6 @@ const currencyOptions = [
 
 const StepTwo = ({ formData: formTenantData, setFormData}) => {
 
-   const [selectedPlan, setSelectedPlan] = useState(null)
-   const [selectedOption, setSelectedOption] = useState(null)
-
-   const handleChange = (e) => {
-      const { name, value } = e.target;
-      setFormData(prev => ({ ...prev, [name]: value }));
-   };
    const handlePlanChange = (option) => {
       setFormData(prev => ({
          ...prev,
