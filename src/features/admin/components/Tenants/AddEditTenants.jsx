@@ -138,24 +138,11 @@ const AddEditTenants = () => {
 											<button className="btn btn-secondary sw-btn-prev me-1"
 													onClick={() => setGoSteps(0)}>Anterior
 											</button>
-											<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar
-												Tenant
+											<button className="btn btn-success ms-1" onClick={handleSubmit}>{isEditMode ? "Editar Tenant" : "Registrar Tenant"}
 											</button>
 										</div>
 									</>
 								)}
-								{/*{goSteps === 2 && (
-									<>
-									<StepThree formTenantData={formTenantData} setFormData={setFormData} />
-									<div className="text-end toolbar toolbar-bottom p-2">
-										<button className="btn btn-secondary sw-btn-prev me-1"
-												onClick={() => setGoSteps(1)}>Anterior
-										</button>
-										<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar Tenant</button>
-									</div>
-								</>
-							  )}*/}
-
 							</div>
 						</div>
 					</div>

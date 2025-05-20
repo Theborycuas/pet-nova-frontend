@@ -3,6 +3,8 @@ import {Link} from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import '../../../../assets/css/custom-table.css';
+
 /*import {ThemeContext} from "../../../../context/ThemeContext.jsx"*/
 
 // Images
@@ -18,23 +20,17 @@ const UserAdmin = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 10;
+    const totalPages = Math.ceil(users.length / itemsPerPage);
+    const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+
     const [data, setData] = useState(
         document.querySelectorAll("#doctor_list tbody tr")
     );
     const sort = 10;
     const activePag = useRef(0);
-    const [test, settest] = useState(0);
 
-    // Active data
-    const chageData = (frist, sec) => {
-        for (var i = 0; i < data.length; ++i) {
-            if (i >= frist && i < sec) {
-                data[i].classList.remove("d-none");
-            } else {
-                data[i].classList.add("d-none");
-            }
-        }
-    };
 
     // Carga todos los users
     const loadUsers = async () => {
@@ -60,19 +56,12 @@ const UserAdmin = () => {
         setData(document.querySelectorAll("#doctor_list tbody tr"));
     }, []);
 
+
     // Active pagginarion
-    activePag.current === 0 && chageData(0, sort);
-    // paggination
-    let paggination = Array(Math.ceil(data.length / sort))
-        .fill()
-        .map((_, i) => i + 1);
-
-
-    const onClick = (i) => {
-        activePag.current = i;
-        chageData(activePag.current * sort, (activePag.current + 1) * sort);
-        settest(i);
-    };
+    const paginatedUsers = users.slice(
+        currentPage * itemsPerPage,
+        (currentPage + 1) * itemsPerPage
+    );
 
     const chackbox = document.querySelectorAll(".doctor_checkbox input");
     const motherChackBox = document.querySelector(".doctor_strg input");
@@ -168,6 +157,7 @@ const UserAdmin = () => {
                                        </div>
                                    )}
                                    {!loading && users.length > 0 && (
+
                                        <table id="example5"
                                               className="table table-striped patient-list mb-4 dataTablesCard fs-14 dataTable no-footer">
                                            <thead>
@@ -198,16 +188,16 @@ const UserAdmin = () => {
                                                <th>Nombre</th>
                                                <th>Estado</th>
                                                <th>Rol</th>
-                                               <th>Email</th>
-                                               <th>Teléfono</th>
-                                               <th>Cédula</th>
-                                               <th>Ciudad</th>
+                                               <th className="hide-on-mobile hide-on-table">Email</th>
+                                               <th className="hide-on-mobile hide-on-table">Teléfono</th>
+                                               <th className="hide-on-mobile hide-on-table">Cédula</th>
+                                               <th className="hide-on-mobile hide-on-table">Ciudad</th>
                                                <th>Acciones</th>
                                            </tr>
                                            </thead>
                                            <tbody>
-                                           {users.map((user, ind) => (
-                                               <tr className="odd" key={ind}>
+                                           {paginatedUsers.map((user, ind) => (
+                                               <tr key={user.id}>
                                                    <td className="patient_checkbox">
                                                        <div className="checkbox text-right align-self-center">
                                                            <div className="form-check custom-checkbox ">
@@ -243,11 +233,11 @@ const UserAdmin = () => {
                                                    <td>
                                                        <span>{user.role.roleName}</span>
                                                    </td>
-                                                   <td className="text-primary">{user.email}</td>
-                                                   <td className="text-primary">{user.phoneNumber}</td>
-                                                   <td>{user.idNumber}</td>
+                                                   <td className="text-primary hide-on-mobile hide-on-table">{user.email}</td>
+                                                   <td className="text-primary hide-on-mobile hide-on-table">{user.phoneNumber}</td>
+                                                   <td className="hide-on-mobile hide-on-table">{user.idNumber}</td>
 
-                                                   <td>{user.city}</td>
+                                                   <td className="hide-on-mobile hide-on-table">{user.city}</td>
                                                    <td>
                                                        <div className="d-flex align-items-center">
                                                            <Dropdown className="dropdown ms-auto text-right">
@@ -336,36 +326,27 @@ const UserAdmin = () => {
                                        <div
                                            className="dataTables_paginate paging_simple_numbers d-flex  justify-content-center align-items-center pb-3">
                                            <Link
-                                               to="#"
                                                className="paginate_button previous disabled"
                                                aria-controls="example5"
                                                data-dt-idx={0}
                                                tabIndex={0}
-                                               id="example5_previous"
-                                               onClick={() =>
-                                                   activePag.current > 0 &&
-                                                   onClick(activePag.current - 1)
-                                               }
+                                               id="previous"
+                                               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+                                               disabled={currentPage === 0}
                                            >
-                                               Previous
+                                               Anterior
                                            </Link>
-                                           <span className="d-flex">
-                                            {paggination.map((number, i) => (
-                                                <Link
-                                                    key={i}
-                                                    to="#"
-                                                    className={`paginate_button d-flex align-items-center justify-content-center ${
-                                                        activePag.current === i ? "current" : ""
-                                                    } ${i > 0 ? "ms-1" : ""}`}
-                                                    aria-controls="example5"
-                                                    data-dt-idx={1}
-                                                    tabIndex={0}
-                                                    onClick={() => onClick(i)}
-                                                >
-                                                    {number}
-                                                </Link>
-                                            ))}
-                                        </span>
+                                           <span>
+                                              {pageNumbers.map((number) => (
+                                                  <button
+                                                      key={number}
+                                                      className={`paginate_button ${currentPage === number ? 'current' : ''} ${number > 0 ? 'ms-1' : ''}`}
+                                                      onClick={() => setCurrentPage(number)}
+                                                  >
+                                                      {number + 1}
+                                                  </button>
+                                              ))}
+                                            </span>
 
                                            <Link
                                                to="#"
@@ -373,13 +354,15 @@ const UserAdmin = () => {
                                                aria-controls="example5"
                                                data-dt-idx={2}
                                                tabIndex={0}
-                                               id="example5_next"
+                                               id="next"
                                                onClick={() =>
-                                                   activePag.current + 1 < paggination.length &&
-                                                   onClick(activePag.current + 1)
+                                                   setCurrentPage(prev =>
+                                                       prev + 1 < Math.ceil(users.length / itemsPerPage) ? prev + 1 : prev
+                                                   )
                                                }
+                                               disabled={currentPage + 1 >= Math.ceil(users.length / itemsPerPage)}
                                            >
-                                               Next
+                                               Siguiente
                                            </Link>
                                        </div>
                                    </div>

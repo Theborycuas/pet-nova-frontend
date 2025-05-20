@@ -1,10 +1,9 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 /*import {ThemeContext} from "../../../../context/ThemeContext.jsx"*/
-
 // Images
 import doctors9 from "../../../../assets/images/doctors/9.jpg";
 import {Button, Dropdown} from "react-bootstrap";
@@ -18,23 +17,16 @@ const OfficeAdmin = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 10;
+    const totalPages = Math.ceil(offices.length / itemsPerPage);
+    const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+
     const [data, setData] = useState(
         document.querySelectorAll("#doctor_list tbody tr")
     );
     const sort = 10;
     const activePag = useRef(0);
-    const [test, settest] = useState(0);
-
-    // Active data
-    const chageData = (frist, sec) => {
-        for (var i = 0; i < data.length; ++i) {
-            if (i >= frist && i < sec) {
-                data[i].classList.remove("d-none");
-            } else {
-                data[i].classList.add("d-none");
-            }
-        }
-    };
 
     // Carga todos los offices
     const loadOffices = async () => {
@@ -60,6 +52,12 @@ const OfficeAdmin = () => {
         setData(document.querySelectorAll("#doctor_list tbody tr"));
     }, []);
 
+    // Active pagginarion
+    const paginatedOffices = offices.slice(
+        currentPage * itemsPerPage,
+        (currentPage + 1) * itemsPerPage
+    );
+
     function handleDeleteOffice(officeId) {
         Alerts.confirmDelete('consultorio', () => {
             deleteOfficeById(officeId)
@@ -74,19 +72,6 @@ const OfficeAdmin = () => {
         });
     }
 
-    // Active pagginarion
-    activePag.current === 0 && chageData(0, sort);
-    // paggination
-    let paggination = Array(Math.ceil(data.length / sort))
-        .fill()
-        .map((_, i) => i + 1);
-
-
-    const onClick = (i) => {
-        activePag.current = i;
-        chageData(activePag.current * sort, (activePag.current + 1) * sort);
-        settest(i);
-    };
 
     const chackbox = document.querySelectorAll(".doctor_checkbox input");
     const motherChackBox = document.querySelector(".doctor_strg input");
@@ -284,8 +269,8 @@ const OfficeAdmin = () => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {offices.map((office, index) => (
-                                        <tr role="row" className="odd">
+                                    {paginatedOffices.map((office, ind) => (
+                                        <tr key={office.id} role="row" className="odd">
                                             <td className="doctor_checkbox">
                                                 <div className="d-flex align-items-center">
                                                     <div className="checkbox text-right align-self-center">
@@ -428,37 +413,42 @@ const OfficeAdmin = () => {
                                     className="dataTables_paginate paging_simple_numbers d-flex  justify-content-center align-items-center pb-3">
                                     <Link
                                         className="paginate_button previous disabled"
-                                        to="/doctor-list"
-                                        onClick={() =>
-                                            activePag.current > 0 &&
-                                            onClick(activePag.current - 1)
-                                        }
+                                        aria-controls="example5"
+                                        data-dt-idx={0}
+                                        tabIndex={0}
+                                        id="previous"
+                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+                                        disabled={currentPage === 0}
                                     >
-                                        Previous
+                                        Anterior
                                     </Link>
                                     <span>
-                              {paggination.map((number, i) => (
-                                  <Link
-                                      key={i}
-                                      className={`paginate_button  ${
-                                          activePag.current === i ? "current" : ""
-                                      } ${i > 0 ? "ms-1" : ""}`}
-                                      to="/doctor-list"
-                                      onClick={() => onClick(i)}
-                                  >
-                                      {number}
-                                  </Link>
-                              ))}
-                           </span>
+                                              {pageNumbers.map((number) => (
+                                                  <button
+                                                      key={number}
+                                                      className={`paginate_button ${currentPage === number ? 'current' : ''} ${number > 0 ? 'ms-1' : ''}`}
+                                                      onClick={() => setCurrentPage(number)}
+                                                  >
+                                                      {number + 1}
+                                                  </button>
+                                              ))}
+                                            </span>
+
                                     <Link
+                                        to="#"
                                         className="paginate_button next disabled"
-                                        to="/doctor-list"
+                                        aria-controls="example5"
+                                        data-dt-idx={2}
+                                        tabIndex={0}
+                                        id="next"
                                         onClick={() =>
-                                            activePag.current + 1 < paggination.length &&
-                                            onClick(activePag.current + 1)
+                                            setCurrentPage(prev =>
+                                                prev + 1 < Math.ceil(offices.length / itemsPerPage) ? prev + 1 : prev
+                                            )
                                         }
+                                        disabled={currentPage + 1 >= Math.ceil(offices.length / itemsPerPage)}
                                     >
-                                        Next
+                                        Siguiente
                                     </Link>
                                 </div>
                             </div>

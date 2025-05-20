@@ -1,0 +1,23 @@
+.table th.sticky-actions,
+.table td.sticky-actions {
+    right: 0;
+    background: #fff; /* o el color de fondo de tu tabla */
+    z-index: 2;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+.dropdown-menu {
+    z-index: 9999 !important;
+}
+
+@media (max-width: 768px) {
+    .hide-on-mobile {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .hide-on-table {
+        display: none;
+    }
+}
