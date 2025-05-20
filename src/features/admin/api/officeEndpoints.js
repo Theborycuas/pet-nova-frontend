@@ -9,7 +9,7 @@ const adminAPI = axios.create({
 
 export const officeEndpoints = {
     resgisterOffice: "/resgisterOffice",
-    listAllOffices: "/listAllOffice",
+    getAllOffices: "/getAllOfficeDTO",
     getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
     getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
     deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`
@@ -45,7 +45,7 @@ export const createOffice = async (officeData) => {
 
 export const getAllOffices = async () =>{
     try {
-        const response = await adminAPI.get(officeEndpoints.listAllOffices, {
+        const response = await adminAPI.get(officeEndpoints.getAllOffices, {
             headers: {
                 'Content-Type': 'application/json',
             },

@@ -4,10 +4,9 @@ import {Step, Stepper} from 'react-form-stepper';
 
 import StepOne from "./StepOne";
 import StepTwo from "./StepTwo";
-import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
 import {Link, useNavigate, useParams} from "react-router-dom";
-import {createTenant, getBasicTenantById, getTenantDetailById, updateTenantById} from "../../api/tenantEndpoints.js";
+import {createTenant, getBasicTenantById, updateTenantById} from "../../api/tenantEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 
 const AddEditTenants = () => {
