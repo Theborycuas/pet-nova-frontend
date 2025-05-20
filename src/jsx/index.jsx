@@ -105,7 +105,7 @@ import Todo from './pages/Todo';
 //Scroll To Top
 import ScrollToTop from '../layouts/ScrollToTop';
 import HomeAdmin from "../features/admin/components/HomeAdmin.jsx";
-import AddOffices from "../features/admin/components/Offices/AddOffices.jsx";
+import AddEditOffices from "../features/admin/components/Offices/AddEditOffices.jsx";
 import OfficeAdmin from "../features/admin/components/Offices/OfficeAdmin.jsx";
 import TenantDetails from "../features/admin/components/Tenants/TenantDetails.jsx";
 import OfficeDetail from "../features/admin/components/Offices/OfficeDetails.jsx";
@@ -126,8 +126,9 @@ const Markup = () => {
     { url: 'edit-tenant/:tenantId', component: <AddEditTenants/> },
 
     { url: 'office-admin', component: <OfficeAdmin/> },
-    { url: 'add-offices', component: <AddOffices/> },
+    { url: 'add-offices', component: <AddEditOffices/> },
     { url: 'office-details/:officeId', component: <OfficeDetail/>},
+    { url: 'edit-office/:officeId', component: <AddEditOffices/> },
 
     { url: 'subscription-plan-admin', component: <SubscriptionAdmin/> },
 

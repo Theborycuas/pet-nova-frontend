@@ -8,6 +8,7 @@ import {useDispatch} from "react-redux";
 import {Link, useNavigate, useParams} from "react-router-dom";
 import {createTenant, getBasicTenantById, updateTenantById} from "../../api/tenantEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
+import {getOfficeById} from "../../api/officeEndpoints.js";
 
 const AddEditTenants = () => {
 	const {tenantId} = useParams();
@@ -53,7 +54,7 @@ const AddEditTenants = () => {
 
 	useEffect(() => {
 		if(isEditMode) {
-			getBasicTenantById(tenantId).then((response) => {
+			getBgetOfficeByIdasicTenantById(tenantId).then((response) => {
 				setFormTenantData({
 					...response,
 				});

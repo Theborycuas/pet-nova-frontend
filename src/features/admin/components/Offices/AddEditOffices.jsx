@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 //import Multistep from "react-multistep";
 import {Step, Stepper} from 'react-form-stepper';
 
@@ -7,13 +7,17 @@ import StepTwo from "./StepTwo";
 import StepThree from "./StepThree";
 import PageTitle from "../../../../layouts/PageTitle";
 import {useDispatch} from "react-redux";
-import {Link, useNavigate} from "react-router-dom";
-import {createOffice} from "../../api/officeEndpoints.js";
+import {Link, useNavigate, useParams} from "react-router-dom";
+import {createOffice, getOfficeById, updateOfficeById} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
+import {updateTenantById} from "../../api/tenantEndpoints.js";
 
-const AddOffices = () => {
+const AddEditOffices = () => {
+	const { officeId } = useParams();
+	const isEditMode = Boolean(officeId);
+
 	const [goSteps, setGoSteps] = useState(0);
-	const [formData, setFormData] = useState({
+	const [formOfficeData, setFormOfficeData] = useState({
 		//StepOne
 		name: '',
 		address: '',
@@ -35,19 +39,34 @@ const AddOffices = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
+	useEffect(() => {
+		if(isEditMode) {
+			getOfficeById(officeId).then((response) => {
+				setFormOfficeData(response);
+			}).catch((error) => {
+				Alerts.showError("Error!", error.message);
+			})
+		}
+	}, [officeId]);
+
 	const handleSubmit = async () => {
-		const startTime = Date.now();
 		try {
-			Alerts.showLoading('Registrando Consultorio', 'Guardando información...');
+			let response = null;
+			if(!isEditMode){
+				Alerts.showLoading('Registrando Consultorio', 'Guardando información...');
+				await createOffice(formOfficeData);
+			} else {
+				Alerts.showLoading('Editando Consultorio', 'Guardando información...');
+				await updateOfficeById(officeId, formOfficeData);
+			}
 
-			const response = await createOffice(formData);
-
-			const elapsed = Date.now() - startTime;
-			if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
 
 			Alerts.closeAlerts();
-			await Alerts.showSuccess('Consultorio creado!', 'El registro se completó exitosamente');
-
+			if(!isEditMode){
+				await Alerts.showSuccess('Consultorio Creado!', 'El registro se completó exitosamente');
+			} else {
+				await Alerts.showSuccess('Consultorio Editado!', 'El registro se completó exitosamente');
+			}
 			navigate('/office-admin');
 		}catch (error) {
 			Alerts.closeAlerts();
@@ -69,7 +88,7 @@ const AddOffices = () => {
 			<div className="page-titles">
 				<ol className="breadcrumb">
 					<li className="breadcrumb-item"><Link to={"/user-admin"}>Office Admin</Link></li>
-					<li className="breadcrumb-item active"><Link to={"#"}>Add Office</Link></li>
+					<li className="breadcrumb-item active"><Link to={"#"}>{isEditMode ? "Edit office" : "Create office"}</Link></li>
 				</ol>
 			</div>
 
@@ -77,7 +96,7 @@ const AddOffices = () => {
 				<div className="col-xl-12 col-xxl-12">
 					<div className="card">
 						<div className="card-header">
-							<h4 className="card-title">Crear Consultorio</h4>
+							<h4 className="card-title">{isEditMode ? "Editar Consultorio" : "Crear Consultorio"}</h4>
 						</div>
 						<div className="card-body">
 
@@ -89,7 +108,7 @@ const AddOffices = () => {
 								</Stepper>
 							  {goSteps === 0 && (
 								<>
-									<StepOne formData={formData} setFormData={setFormData} />
+									<StepOne formData={formOfficeData} setFormData={setFormOfficeData} />
 									<div className="text-end toolbar toolbar-bottom p-2">
 										<button  className="btn btn-primary sw-btn-next" onClick={() => setGoSteps(1)}>Siguiente</button>
 									</div>	
@@ -97,7 +116,7 @@ const AddOffices = () => {
 							  )}
 							  {goSteps === 1 && (
 								<>
-									<StepTwo formData={formData} setFormData={setFormData} />
+									<StepTwo formData={formOfficeData} setFormData={setFormOfficeData} />
 									<div className="text-end toolbar toolbar-bottom p-2">
 										<button  className="btn btn-secondary sw-btn-prev me-1" onClick={() => setGoSteps(0)}>Anterior</button>
 										<button className="btn btn-primary sw-btn-next ms-1" onClick={() => setGoSteps(2)}>Siguiente</button>
@@ -106,12 +125,12 @@ const AddOffices = () => {
 							  )}
 							  {goSteps === 2 && (
 								<>
-									<StepThree formData={formData} setFormData={setFormData} />
+									<StepThree formData={formOfficeData} setFormData={setFormOfficeData} />
 									<div className="text-end toolbar toolbar-bottom p-2">
 										<button className="btn btn-secondary sw-btn-prev me-1"
 												onClick={() => setGoSteps(1)}>Anterior
 										</button>
-										<button className="btn btn-success ms-1" onClick={handleSubmit}>Registrar Tenant</button>
+										<button className="btn btn-success ms-1" onClick={handleSubmit}>{isEditMode ? "Editar Consultorio" : "Crear Consultorio"}</button>
 									</div>
 								</>
 							  )}
@@ -125,4 +144,4 @@ const AddOffices = () => {
 	);
 };
 
-export default AddOffices;
+export default AddEditOffices;
