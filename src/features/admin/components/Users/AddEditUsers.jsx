@@ -47,7 +47,6 @@ const AddEditUsers = () => {
                 return false;
             }
         }
-
         return true;
     };
 
@@ -74,7 +73,6 @@ const AddEditUsers = () => {
     }, [userId]);
 
     const handleSubmit = async () => {
-        const startTime = Date.now();
         try {
             if (!isEditMode) {
                 Alerts.showLoading('Registrando Usuario', 'Guardando información...');
@@ -83,10 +81,6 @@ const AddEditUsers = () => {
                 Alerts.showLoading('Editando Usuario', 'Guardando información...');
                 const response = await updateUserDetailById(userId, formData);
             }
-
-            const elapsed = Date.now() - startTime;
-            if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-
             Alerts.closeAlerts();
             if (!isEditMode) {
                 await Alerts.showSuccess('Usuario creado!', 'El registro se completó exitosamente');

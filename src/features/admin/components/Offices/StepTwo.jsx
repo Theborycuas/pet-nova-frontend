@@ -66,10 +66,13 @@ const StepTwo = ({ formData, setFormData}) => {
                       onChange={handleSelectChange}
                       isClearable
                       placeholder="Selecciona un administrador"
-                      style={{
-                         lineHeight: '40px',
-                         color: '#7e7e7e',
-                         paddingLeft: ' 15px',
+                      styles={{
+                         control: base => ({
+                            ...base,
+                            lineHeight: '40px',
+                            color: '#7e7e7e',
+                            paddingLeft: '15px'
+                         })
                       }}
                   />
                </div>

@@ -61,7 +61,7 @@ export function loginAction(credentials, navigate) {
                     navigate,
                 );
                 dispatch(loginConfirmedAction(response.data));
-
+/*
                 try {
                     await dispatch(getAllOffices()).then((response) => {
                         sessionStorage.setItem('cachedTenants', JSON.stringify(response.data))
@@ -73,7 +73,7 @@ export function loginAction(credentials, navigate) {
                         payload: "No se pudo cargar la lista de offices"
                     });
                     // Mostrar toast/notificación
-                }
+                }*/
                 navigate('/home-admin');
             })
             .catch((error) => {

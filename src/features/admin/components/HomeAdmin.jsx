@@ -1,11 +1,10 @@
-import React, {useContext, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Link} from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import {ThemeContext} from "../../../context/ThemeContext.jsx"
-
+/*import {ThemeContext} from "../../../context/ThemeContext.jsx"*/
 // Images
 import DrAlexandro from "../../../assets/images/doctors/5.jpg";
 import DrSamantha from "../../../assets/images/doctors/1.jpg";
@@ -16,9 +15,7 @@ import widget01 from "../../../assets/images/widget/1.jpg";
 import widget02 from "../../../assets/images/widget/2.jpg";
 import widget03 from "../../../assets/images/widget/3.jpg";
 import widget05 from "../../../assets/images/widget/5.jpg";
-import doctors9 from "../../../assets/images/doctors/9.jpg";
-import {Dropdown} from "react-bootstrap";
-import {deleteOfficeById, getAllOffices} from "../api/officeEndpoints.js";
+import {Button, Dropdown} from "react-bootstrap";
 import {deleteTenantById, getAllTenants} from "../api/tenantEndpoints.js";
 import {formatDateUtils} from "../../../utils/formatters.js";
 import {Alerts} from "../../../utils/alerts.js";
@@ -29,23 +26,17 @@ const HomeAdmin = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
+    const [currentPage, setCurrentPage] = useState(0);
+    const itemsPerPage = 10;
+    const totalPages = Math.ceil(tenants.length / itemsPerPage);
+    const pageNumbers = Array.from({ length: totalPages }, (_, i) => i);
+
     const [data, setData] = useState(
         document.querySelectorAll("#doctor_list tbody tr")
     );
     const sort = 10;
     const activePag = useRef(0);
-    const [test, settest] = useState(0);
 
-    // Active data
-    const chageData = (frist, sec) => {
-        for (var i = 0; i < data.length; ++i) {
-            if (i >= frist && i < sec) {
-                data[i].classList.remove("d-none");
-            } else {
-                data[i].classList.add("d-none");
-            }
-        }
-    };
 
     // Carga todos los tenants
     const loadTenants = async () => {
@@ -70,8 +61,12 @@ const HomeAdmin = () => {
     useEffect(() => {
         loadTenants();
         setData(document.querySelectorAll("#doctor_list tbody tr"));
-    }, [test]);
+    }, []);
 
+    const paginatedTenants = tenants.slice(
+        currentPage * itemsPerPage,
+        (currentPage + 1) * itemsPerPage
+    );
 
     function handleDeleteTenant(tenantId) {
         Alerts.confirmDelete('tenant', () => {
@@ -86,21 +81,6 @@ const HomeAdmin = () => {
                 });
         });
     }
-
-
-    // Active pagginarion
-    activePag.current === 0 && chageData(0, sort);
-    // paggination
-    let paggination = Array(Math.ceil(data.length / sort))
-        .fill()
-        .map((_, i) => i + 1);
-
-
-    const onClick = (i) => {
-        activePag.current = i;
-        chageData(activePag.current * sort, (activePag.current + 1) * sort);
-        settest(i);
-    };
 
     const chackbox = document.querySelectorAll(".doctor_checkbox input");
     const motherChackBox = document.querySelector(".doctor_strg input");
@@ -169,10 +149,10 @@ const HomeAdmin = () => {
          },
       ],
    };
-   const { changeBackground } = useContext(ThemeContext);
+/*   const { changeBackground } = useContext(ThemeContext);
    useEffect(() => {
        changeBackground({ value: "light", label: "Light" });
-   }, []);
+   }, []);*/
 
 
    return (
@@ -271,6 +251,17 @@ const HomeAdmin = () => {
                                            aria-controls="example5"
                                            rowSpan={1}
                                            colSpan={1}
+                                           aria-label="Status: activate to sort column ascending"
+                                           style={{width: 98}}
+                                       >
+                                           Estado
+                                       </th>
+                                       <th
+                                           className="sorting"
+                                           tabIndex={0}
+                                           aria-controls="example5"
+                                           rowSpan={1}
+                                           colSpan={1}
                                            aria-label="Date Join: activate to sort column ascending"
                                            style={{width: 123}}
                                        >
@@ -307,7 +298,7 @@ const HomeAdmin = () => {
                                            aria-label="Schedule: activate to sort column ascending"
                                            style={{width: 150}}
                                        >
-                                           Dirección
+                                           Ciudad
                                        </th>
                                        <th
                                            className="sorting"
@@ -338,17 +329,6 @@ const HomeAdmin = () => {
                                            rowSpan={1}
                                            colSpan={1}
                                            aria-label="Status: activate to sort column ascending"
-                                           style={{width: 98}}
-                                       >
-                                           Estado
-                                       </th>
-                                       <th
-                                           className="sorting"
-                                           tabIndex={0}
-                                           aria-controls="example5"
-                                           rowSpan={1}
-                                           colSpan={1}
-                                           aria-label="Status: activate to sort column ascending"
                                            style={{width: 10}}
                                        >
                                            Acciones
@@ -356,8 +336,8 @@ const HomeAdmin = () => {
                                    </tr>
                                    </thead>
                                    <tbody>
-                                   {tenants.map((tenant, index) => (
-                                       <tr role="row" className="odd">
+                                   {paginatedTenants.map((tenant, index) => (
+                                       <tr key={tenant.id} role="row" className="odd">
                                            <td className="doctor_checkbox">
                                                <div className="d-flex align-items-center">
                                                    <div className="checkbox text-right align-self-center">
@@ -378,6 +358,15 @@ const HomeAdmin = () => {
                                                </div>
                                            </td>
                                            <td>{`#T-${tenant.id.toString().padStart(4, '0')}`}</td>
+                                           <td>
+                                               <Button
+                                                   variant={`${tenant.active ? 'success' : 'danger'} btn-sm btn-rounded mb-1`}
+                                                   className="d-inline-flex align-items-center"
+                                               >
+                                                   <i className={`fa ${tenant.active ? 'fa-check text-white' : 'fa-times text-white'} me-1`}/>
+                                                   {tenant.active ? 'ACTIVO' : 'INACTIVO'}
+                                               </Button>
+                                           </td>
                                            <td>{tenant.tenantName}</td>
                                            <td>{tenant.contactEmail}</td>
                                            <td>
@@ -388,7 +377,7 @@ const HomeAdmin = () => {
                                                    {tenant.contactPhone}
                                                </Link>
                                            </td>
-                                           <td>{tenant.address}</td>
+                                           <td>{tenant.city}</td>
                                            <td>
                                             <span className="font-w500">
                                                 {formatDateUtils(tenant.subscriptionStartDate) || 'N/A'}
@@ -398,14 +387,6 @@ const HomeAdmin = () => {
                                             <span className="font-w500">
                                                 {formatDateUtils(tenant.subscriptionEndDate) || 'N/A'}
                                             </span>
-                                           </td>
-                                           <td>
-                                               <div className="d-flex align-items-center">
-                                                <span
-                                                    className={`${tenant.active ? 'text-primary' : 'text-danger'} font-w600`}>
-                                                      {(tenant.active ? 'ACTIVO' : 'INACTIVO')}
-                                                </span>
-                                               </div>
                                            </td>
                                            <td>
                                                <div className="d-flex align-items-center">
@@ -453,7 +434,7 @@ const HomeAdmin = () => {
                                                            </Dropdown.Item>
                                                            <Dropdown.Item
                                                                as={Link}
-                                                               to={`/tenant-details/${tenant.id}`}
+                                                               to={`/edit-tenant/${tenant.id}`}
                                                            >
                                                                Editar
                                                            </Dropdown.Item>
@@ -495,35 +476,30 @@ const HomeAdmin = () => {
                                    className="dataTables_paginate paging_simple_numbers d-flex  justify-content-center align-items-center pb-3">
                                    <Link
                                        className="paginate_button previous disabled"
-                                       to="/tenant-details"
-                                       onClick={() =>
-                                           activePag.current > 0 &&
-                                           onClick(activePag.current - 1)
-                                       }
+                                       onClick={() => setCurrentPage(prev => Math.max(prev - 1, 0))}
+                                       disabled={currentPage === 0}
                                    >
                                        Previous
                                    </Link>
                                    <span>
-                              {paggination.map((number, i) => (
-                                  <Link
-                                      key={i}
-                                      className={`paginate_button  ${
-                                          activePag.current === i ? "current" : ""
-                                      } ${i > 0 ? "ms-1" : ""}`}
-                                      to="/tenant-details"
-                                      onClick={() => onClick(i)}
-                                  >
-                                      {number}
-                                  </Link>
-                              ))}
-                           </span>
+                                      {pageNumbers.map((number) => (
+                                          <button
+                                              key={number}
+                                              className={`paginate_button ${currentPage === number ? 'current' : ''} ${number > 0 ? 'ms-1' : ''}`}
+                                              onClick={() => setCurrentPage(number)}
+                                          >
+                                              {number + 1}
+                                          </button>
+                                      ))}
+                                    </span>
                                    <Link
                                        className="paginate_button next disabled"
-                                       to="/tenant-details"
                                        onClick={() =>
-                                           activePag.current + 1 < paggination.length &&
-                                           onClick(activePag.current + 1)
+                                           setCurrentPage(prev =>
+                                               prev + 1 < Math.ceil(tenants.length / itemsPerPage) ? prev + 1 : prev
+                                           )
                                        }
+                                       disabled={currentPage + 1 >= Math.ceil(tenants.length / itemsPerPage)}
                                    >
                                        Next
                                    </Link>

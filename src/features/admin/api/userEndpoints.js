@@ -10,7 +10,9 @@ const adminAPI = axios.create({
 export const userEndpoints = {
     resgisterUser: "/createUser",
     listAllUsers: "/getAllUsers",
+    listAllUsersNoTenantManager: "/getAllUsersNoTenantManager",
     getUserById: (userId) => `/getUserDetailById/${userId}`,
+    getUserByTenantId: (tenantId) => `/getUserByTenantId/${tenantId}`,
     updateUserDetailById: (userId) => `/updateUserDetailById/${userId}`,
     deleteUserById: (userId) => `/deleteUserById/${userId}`
     /*getUserById: (officeId) => `/getUserById/${officeId}`,
@@ -70,9 +72,49 @@ export const getAllUsers = async () => {
     }
 };
 
+export const getAllUsersNoTenantManager = async () => {
+    try {
+        const response = await adminAPI.get(userEndpoints.listAllUsersNoTenantManager, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data); // Parsea la respuesta manualmente
+                return Array.isArray(parsedData) ? parsedData : []; // Fuerza un array
+            }],
+        });
+        return response;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+};
+
 export const getUserById = async (userId) => {
     try {
         const response = await adminAPI.get(userEndpoints.getUserById(userId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const getUserByTenantId = async (tenantId) => {
+    try {
+        const response = await adminAPI.get(userEndpoints.getUserByTenantId(tenantId), {
             headers: {
                 'Content-Type': 'application/json',
             }

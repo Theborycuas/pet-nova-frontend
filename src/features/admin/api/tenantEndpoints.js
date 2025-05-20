@@ -1,6 +1,7 @@
 import {baseAPI} from "../../../api/config/axiosConfig.js";
 import axios from "axios";
 import {handleAdminError} from "../../../utils/errorHandler.js";
+import {userEndpoints} from "./userEndpoints.js";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,
@@ -10,7 +11,9 @@ const adminAPI = axios.create({
 export const tenantEndpoints = {
     createTenant: "/createTenant",
     getAllTenants: "/getAllTenants",
-    getTenantById: (tenantId) => `/getTenantById/${tenantId}`,
+    getTenantDetailById: (tenantId) => `/getTenantDetailById/${tenantId}`,
+    getBasicTenantById: (tenantId) => `/getBasicTenantById/${tenantId}`,
+    updateTenantById: (tenantId) => `/updateTenantById/${tenantId}`,
     deleteTenantById: (tenantId) => `/deleteTenantById/${tenantId}`
 }
 
@@ -63,9 +66,9 @@ export const getAllTenants = async () =>{
         throw error;
     }
 };
-export const getTenantById = async (tenantId) =>{
+export const getTenantDetailById = async (tenantId) =>{
     try {
-        const response = await adminAPI.get(tenantEndpoints.getTenantById(tenantId), {
+        const response = await adminAPI.get(tenantEndpoints.getTenantDetailById(tenantId), {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -81,6 +84,42 @@ export const getTenantById = async (tenantId) =>{
         throw error;
     }
 }
+
+export const getBasicTenantById = async (tenantId) =>{
+    try {
+        const response = await adminAPI.get(tenantEndpoints.getBasicTenantById(tenantId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const updateTenantById = async (tenantId, tenantData) =>{
+    try {
+        const response = await adminAPI.put(tenantEndpoints.updateTenantById(tenantId), tenantData);
+
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+
 
 export const deleteTenantById = async (tenantId) => {
     try {
