@@ -11,7 +11,6 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isE
    const [loading, setLoading] = useState(true);
    const [error, setError] = useState(null);
    const [users, setUsers] = useState([]);
-   const [selectedUsers, setSelectedUsers] = useState([]);
    const [postModal, setPostModal] = useState(false);
    const [formUserData, setFormUserData] = useState({
       name: '',
@@ -75,15 +74,6 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isE
       loadAllUser();
    }, []);
 
-   useEffect(() => {
-      if (selectedUsers && Array.isArray(selectedUsers)) {
-         setFormTenantData(prev => ({
-            ...prev,
-            managerIds: selectedUsers.map(user => user.value),
-         }));
-      }
-   }, [selectedUsers]);
-
    const userOptions = [
       { value: "add-user", label: "➕ Agregar usuario" },
       ...users
@@ -91,7 +81,6 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isE
 
    function handleCreateUser(){
       setPostModal(true);
-      setSelectedUsers(null);
    }
 
    const handleSubmitSaveUser = async (e) => {
@@ -112,7 +101,6 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isE
          setUsers(formattedUsers);
 
          const newUserOption = formattedUsers.find(u => u.value === response.id);
-         setSelectedUsers(prev => [...prev, newUserOption]);
 
          setFormTenantData(prev => ({
             ...prev,
@@ -135,25 +123,6 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isE
       }
    }
 
-   useEffect(() => {
-      if (
-          Array.isArray(formTenantData.managerIds) &&
-          formTenantData.managerIds.length > 0 &&
-          users.length > 0
-      ) {
-         const selected = users.filter(user =>
-             formTenantData.managerIds.includes(user.value)
-         );
-
-         // Evita setear de nuevo si ya están iguales (optimización)
-         const currentIds = selectedUsers.map(u => u.value).sort().join(',');
-         const newIds = selected.map(u => u.value).sort().join(',');
-
-         if (currentIds !== newIds) {
-            setSelectedUsers(selected);
-         }
-      }
-   }, [formTenantData.managerIds, users]);
 
    return (
        <section>
@@ -187,9 +156,12 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isE
                        <Select
                            name="managerIds"
                            options={userOptions}
-                           value={selectedUsers}
+                           value={
+                              Array.isArray(formTenantData.managerIds)
+                                  ? users.filter(user => formTenantData.managerIds.includes(user.value))
+                                  : []
+                           }
                            onChange={(selectedOptions) => {
-                              // Manejar el caso de agregar nuevo usuario
                               const selected = selectedOptions || [];
                               const isAddUser = selected.some(opt => opt.value === "add-user");
 
@@ -198,7 +170,6 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isE
                                  return;
                               }
 
-                              setSelectedUsers(selected);
                               setFormTenantData(prev => ({
                                  ...prev,
                                  managerIds: selected.map(opt => opt.value),

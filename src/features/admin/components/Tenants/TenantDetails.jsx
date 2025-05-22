@@ -268,7 +268,6 @@ const TenantDetails = () => {
                     </div>
                 )}
                 <div className="row">
-
                     {tenantLoading && !tenant && (
                         <div className="text-center my-5">
                             <div className="spinner-grow text-success" role="status">
@@ -481,22 +480,17 @@ const TenantDetails = () => {
                             </div>
                         )}
                         {!userLoading && users && users.length > 0 && (
-                            <div className="card">
+                            <div className="card" style={{maxHeight: "600px", overflowY: "auto"}}>
                                 <div className="card-header border-0 pb-0">
                                     <h4 className="fs-20 font-w600">Administradores</h4>
                                 </div>
+
                                 {users.map((user, index) => (
-                                    <div key={index} className="card-body">
+                                    <div key={index} className="card-body border-bottom">
                                         <div className="media d-sm-flex text-sm-start d-block text-center">
                                             <div className="media-body">
-                                                <h3 className="fs-22 text-black font-w600">
-                                                    {user.name}
-                                                </h3>
+                                                <h3 className="fs-22 text-black font-w600">{user.name}</h3>
                                                 <p className="text-primary">{user.email}</p>
-                                                <div
-                                                    className="social-media mb-sm-0 mb-3 justify-content-sm-start justify-content-center">
-
-                                                </div>
                                             </div>
                                             <div className="text-center">
                                                 <span className="num">4.5</span>
