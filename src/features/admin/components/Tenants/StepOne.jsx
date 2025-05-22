@@ -141,10 +141,17 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isE
           formTenantData.managerIds.length > 0 &&
           users.length > 0
       ) {
-         const found = users.filter(user =>
-             formTenantData.managerIds.map(String).includes(String(user.value))
+         const selected = users.filter(user =>
+             formTenantData.managerIds.includes(user.value)
          );
-         setSelectedUsers(found);
+
+         // Evita setear de nuevo si ya están iguales (optimización)
+         const currentIds = selectedUsers.map(u => u.value).sort().join(',');
+         const newIds = selected.map(u => u.value).sort().join(',');
+
+         if (currentIds !== newIds) {
+            setSelectedUsers(selected);
+         }
       }
    }, [formTenantData.managerIds, users]);
 

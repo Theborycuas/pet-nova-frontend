@@ -106,7 +106,7 @@ const AddEditTenants = () => {
 			} else {
 				await Alerts.showSuccess('Tenant Editado!', 'El registro se completó exitosamente');
 			}
-			navigate(`/tenant-details/${response.id}`);
+			navigate(`/tenant-details/${response}`);
 		}catch (error) {
 			Alerts.closeAlerts();
 			if (!error.response) {
