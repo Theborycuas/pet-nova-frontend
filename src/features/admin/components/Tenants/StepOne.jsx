@@ -54,7 +54,7 @@ const StepOne = ({ formData: formTenantData, setFormData: setFormTenantData, isE
             const response = await getAllUsers(); // todos, para mostrar también los asignados
             data = response.data;
          } else {
-            const response = await getAllUsersNoTenantManager(); // solo los disponibles
+            const response = await getAllUsersNoTenantManager("TENANT"); // solo los disponibles
             data = response.data;
          }
 

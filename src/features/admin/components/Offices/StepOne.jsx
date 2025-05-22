@@ -51,7 +51,7 @@ const StepOne = ({ formData, setFormData }) => {
       setLoading(true);
       setError(null);
       try {
-         const { data } = await getAllUsersNoTenantManager();
+         const { data } = await getAllUsersNoTenantManager("OFFICE");
          const formattedUsers = data.map(user => ({
             value: user.id,
             label: user.name,

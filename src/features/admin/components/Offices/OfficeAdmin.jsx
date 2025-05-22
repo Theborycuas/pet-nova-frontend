@@ -239,17 +239,6 @@ const OfficeAdmin = () => {
                                             aria-controls="example5"
                                             rowSpan={1}
                                             colSpan={1}
-                                            aria-label="Doctor Name: activate to sort column ascending"
-                                            style={{width: 111}}
-                                        >
-                                            Administrador
-                                        </th>
-                                        <th
-                                            className="sorting"
-                                            tabIndex={0}
-                                            aria-controls="example5"
-                                            rowSpan={1}
-                                            colSpan={1}
                                             aria-label="Contact: activate to sort column ascending"
                                             style={{width: 79}}
                                         >
@@ -319,7 +308,6 @@ const OfficeAdmin = () => {
                                                     {office.contactPhone}
                                                 </Link>
                                             </td>
-                                            <td>{office.managerName}</td>
                                             <td>
                                             <span className="font-w500">
                                                 {formatDateTimeUtils(office.createdAt) || 'N/A'}
