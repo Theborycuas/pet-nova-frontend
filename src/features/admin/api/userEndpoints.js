@@ -10,9 +10,10 @@ const adminAPI = axios.create({
 export const userEndpoints = {
     resgisterUser: "/createUser",
     listAllUsers: "/getAllUsers",
-    listAllUsersNoTenantManager: "/getAllUsersNoTenantManager",
+    listEligibleUsers: (context) => `/getEligibleUsersForAssignment?context=${context}`,
     getUserById: (userId) => `/getUserDetailById/${userId}`,
-    getUserByTenantId: (tenantId) => `/getUserByTenantId/${tenantId}`,
+    getUsersByTenantId: (tenantId) => `/getUsersByTenantId/${tenantId}`,
+    getUsersByOfficeId: (officeId) => `/getUsersByOfficeId/${officeId}`,
     updateUserDetailById: (userId) => `/updateUserDetailById/${userId}`,
     deleteUserById: (userId) => `/deleteUserById/${userId}`
     /*getUserById: (officeId) => `/getUserById/${officeId}`,
@@ -72,27 +73,31 @@ export const getAllUsers = async () => {
     }
 };
 
-export const getAllUsersNoTenantManager = async () => {
+export const getAllUsersNoTenantManager = async (context) => {
+    if (!context) {
+        throw new Error("El parámetro 'context' es requerido ('TENANT' o 'OFFICE')");
+    }
+
     try {
-        const response = await adminAPI.get(userEndpoints.listAllUsersNoTenantManager, {
+        const response = await adminAPI.get(userEndpoints.listEligibleUsers(context), {
             headers: {
                 'Content-Type': 'application/json',
             },
             transformResponse: [(data) => {
-                const parsedData = JSON.parse(data); // Parsea la respuesta manualmente
-                return Array.isArray(parsedData) ? parsedData : []; // Fuerza un array
+                const parsedData = JSON.parse(data);
+                return Array.isArray(parsedData) ? parsedData : [];
             }],
         });
         return response;
     } catch (error) {
         if (!error.response) {
-            // Error de red (no llegó al backend)
             throw new Error('Error de conexión con el servidor');
         }
         handleAdminError(error);
         throw error;
     }
 };
+
 
 export const getUserById = async (userId) => {
     try {
@@ -112,9 +117,27 @@ export const getUserById = async (userId) => {
     }
 }
 
-export const getUserByTenantId = async (tenantId) => {
+export const getUsersByTenantId = async (tenantId) => {
     try {
-        const response = await adminAPI.get(userEndpoints.getUserByTenantId(tenantId), {
+        const response = await adminAPI.get(userEndpoints.getUsersByTenantId(tenantId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const getUsersByOfficeId = async (officeId) => {
+    try {
+        const response = await adminAPI.get(userEndpoints.getUsersByOfficeId(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }

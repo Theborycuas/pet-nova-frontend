@@ -42,13 +42,10 @@ const HomeAdmin = () => {
     const loadTenants = async () => {
         setLoading(true);
         setError(null);
-        const startTime = Date.now();
         try {
             const { data } = await getAllTenants();
-            // Espera al menos 500ms para evitar parpadeos
-            const elapsed = Date.now() - startTime;
-            if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-            setTenants(data);
+            const sorted = data.sort((a, b) => a.tenantName.localeCompare(b.tenantName));
+            setTenants(sorted);
         } catch (err) {
             setError(err.message);
         } finally {

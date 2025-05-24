@@ -8,9 +8,10 @@ const adminAPI = axios.create({
 })
 
 export const officeEndpoints = {
-    resgisterOffice: "/resgisterOffice",
+    createOffice: "/createOffice",
     getAllOffices: "/getAllOfficeDTO",
     getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
+    getOfficeDetailById: (officeId) => `/getOfficeDetailById/${officeId}`,
     getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
     updateOfficeById: (officeId) => `/updateOfficeById/${officeId}`,
     deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`
@@ -32,7 +33,7 @@ adminAPI.interceptors.request.use((config) => {
 
 export const createOffice = async (officeData) => {
     try {
-        const response = await adminAPI.post(officeEndpoints.resgisterOffice, officeData);
+        const response = await adminAPI.post(officeEndpoints.createOffice, officeData);
         return response.data;
     } catch (error) {
         if (!error.response) {
@@ -44,7 +45,7 @@ export const createOffice = async (officeData) => {
     }
 }
 
-export const getAllOffices = async () =>{
+export const getAllOffices = async () => {
     try {
         const response = await adminAPI.get(officeEndpoints.getAllOffices, {
             headers: {
@@ -69,13 +70,13 @@ export const getAllOffices = async () =>{
 export const getOfficesByTenantId = async (tenantId) => {
     try {
         const response = await adminAPI.get(officeEndpoints.getOfficesByTenantId(tenantId), {
-            headers:{
+            headers: {
                 'Content-Type': 'application/json',
             }
-            });
+        });
         return response.data;
-    } catch (error){
-        if(!error.response){
+    } catch (error) {
+        if (!error.response) {
             throw new Error('Error de conexión con el servidor');
         }
         handleAdminError(error);
@@ -83,7 +84,7 @@ export const getOfficesByTenantId = async (tenantId) => {
     }
 }
 
-export const getOfficeById = async (officeId) =>{
+export const getOfficeById = async (officeId) => {
     try {
         const response = await adminAPI.get(officeEndpoints.getOfficeById(officeId), {
             headers: {
@@ -91,7 +92,7 @@ export const getOfficeById = async (officeId) =>{
             }
         });
         return response.data;
-    } catch (error){
+    } catch (error) {
         if (!error.response) {
             // Error de red (no llegó al backend)
             throw new Error('Error de conexión con el servidor');
@@ -101,7 +102,25 @@ export const getOfficeById = async (officeId) =>{
     }
 }
 
-export const updateOfficeById = async (officeId, officeData) =>{
+export const getOfficeDetailById = async (officeId) => {
+    try {
+        const response = await adminAPI.get(officeEndpoints.getOfficeDetailById(officeId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const updateOfficeById = async (officeId, officeData) => {
     try {
         const response = await adminAPI.put(officeEndpoints.updateOfficeById(officeId), officeData);
         return response.data;
@@ -124,7 +143,7 @@ export const deleteOfficeById = async (officeId) => {
             }
         });
         return response.data;
-    } catch (error){
+    } catch (error) {
         if (!error.response) {
             // Error de red (no llegó al backend)
             throw new Error('Error de conexión con el servidor');

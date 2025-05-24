@@ -1,7 +1,6 @@
 import {baseAPI} from "../../../api/config/axiosConfig.js";
 import axios from "axios";
 import {handleAdminError} from "../../../utils/errorHandler.js";
-import {userEndpoints} from "./userEndpoints.js";
 
 const adminAPI = axios.create({
     ...baseAPI.defaults,
@@ -35,7 +34,7 @@ export const createTenant = async (tenantData) => {
     try {
         const response = await adminAPI.post(tenantEndpoints.createTenant, tenantData);
         return response.data;
-    }catch (error) {
+    } catch (error) {
         if (!error.response) {
             // Error de red (no llegó al backend)
             throw new Error('Error de conexión con el servidor');
@@ -45,7 +44,7 @@ export const createTenant = async (tenantData) => {
     }
 }
 
-export const getAllTenants = async () =>{
+export const getAllTenants = async () => {
     try {
         const response = await adminAPI.get(tenantEndpoints.getAllTenants, {
             headers: {
@@ -66,7 +65,7 @@ export const getAllTenants = async () =>{
         throw error;
     }
 };
-export const getTenantDetailById = async (tenantId) =>{
+export const getTenantDetailById = async (tenantId) => {
     try {
         const response = await adminAPI.get(tenantEndpoints.getTenantDetailById(tenantId), {
             headers: {
@@ -85,7 +84,7 @@ export const getTenantDetailById = async (tenantId) =>{
     }
 }
 
-export const getBasicTenantById = async (tenantId) =>{
+export const getBasicTenantById = async (tenantId) => {
     try {
         const response = await adminAPI.get(tenantEndpoints.getBasicTenantById(tenantId), {
             headers: {
@@ -104,7 +103,7 @@ export const getBasicTenantById = async (tenantId) =>{
     }
 }
 
-export const updateTenantById = async (tenantId, tenantData) =>{
+export const updateTenantById = async (tenantId, tenantData) => {
     try {
         const response = await adminAPI.put(tenantEndpoints.updateTenantById(tenantId), tenantData);
 
@@ -118,7 +117,6 @@ export const updateTenantById = async (tenantId, tenantData) =>{
         throw error;
     }
 }
-
 
 
 export const deleteTenantById = async (tenantId) => {
