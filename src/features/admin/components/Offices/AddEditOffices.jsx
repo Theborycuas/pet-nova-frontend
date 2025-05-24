@@ -23,7 +23,8 @@ const AddEditOffices = () => {
 	const [formOfficeData, setFormOfficeData] = useState({
 		//StepOne
 		name: '',
-		manageId: '',
+		managerIds: [],
+		tenantId: '',
 		address: '',
 		city: '',
 		taxId: '',

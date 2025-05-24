@@ -5,11 +5,6 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 //Image
-import widget1 from "../../../../assets/images/widget/1.jpg";
-import widget5 from "../../../../assets/images/widget/5.jpg";
-import widget6 from "../../../../assets/images/widget/6.jpg";
-import widget7 from "../../../../assets/images/widget/7.jpg";
-import widget8 from "../../../../assets/images/widget/8.jpg";
 import map from "../../../../assets/images/svg/map.svg";
 
 /// Scroll
@@ -17,6 +12,7 @@ import {formatDateTimeUtils} from "../../../../utils/formatters.js";
 import {deleteOfficeById, getOfficeById} from "../../api/officeEndpoints.js";
 import {Alerts} from "../../../../utils/alerts.js";
 import Swal from "sweetalert2";
+import {getUsersByOfficeId} from "../../api/userEndpoints.js";
 
 /*
 const initialFormData = {
@@ -38,36 +34,59 @@ const OfficeDetails = () => {
    const [office, setOffice] = useState(null);
    const {officeId} = useParams();
 
-   const [loading, setLoading] = useState(true);
-   const [error, setError] = useState(null);
+    const [users, setUsers] = useState([]);
+
+    const [officeLoading, setOfficeLoading] = useState(true);
+    const [userLoading, setUserLoading] = useState(true);
+    const [loadingEverything, setLoadingEverything] = useState(true);
+
+    const [error, setError] = useState(null);
 
 /*   const [formData, setFormData] = useState(initialFormData);
    */
     const navigate = useNavigate();
 
-    // Carga el office details
-    const loadOffice = async () => {
-        setLoading(true);
+    const loadEverything = async () => {
+        setLoadingEverything(true);
+        setOfficeLoading(true);
+        setUserLoading(true);
         setError(null);
+
         const startTime = Date.now();
+
         try {
-            const [o] = await Promise.all([
+            const [officesRes, usersRes] = await Promise.allSettled([
                 getOfficeById(officeId),
+                getUsersByOfficeId(officeId)
             ]);
-            // Espera al menos 500ms para evitar parpadeos
+
+            if (officesRes.status === 'fulfilled') {
+                setOffice(officesRes.value);
+            } else {
+                setError("Error en la carga de Consultorios");
+            }
+
+            if (usersRes.status === 'fulfilled') {
+                setUsers(usersRes.value);
+            } else {
+                setError("Error en la carga de Administradores");
+            }
+
             const elapsed = Date.now() - startTime;
-            if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-            setOffice(o);
+            if (elapsed < 500) await new Promise(res => setTimeout(res, 500 - elapsed));
+
         } catch (err) {
-            setError(err.message);
+            setError("Error inesperado: " + err.message);
         } finally {
-            setLoading(false);
+            setOfficeLoading(false);
+            setUserLoading(false);
+            setLoadingEverything(false);
         }
     };
 
-   useEffect(() => {
-       loadOffice();
-   }, [officeId])
+    useEffect(() => {
+        loadEverything();
+    }, [officeId])
 
 
     function handleDeleteOffice(officeId) {
@@ -85,6 +104,14 @@ const OfficeDetails = () => {
     }
 
    return (
+       loadingEverything ? (
+           <div className="text-center my-5">
+               <div className="spinner-grow text-success" role="status">
+                   <span className="visually-hidden">Cargando pantalla completa...</span>
+               </div>
+               <p className="mt-2">Cargando datos del Consultorio, Administradores...</p>
+           </div>
+       ) : (
        <>
           <div className="page-titles">
              <ol className="breadcrumb">
@@ -101,7 +128,7 @@ const OfficeDetails = () => {
                 <h3 className="text-black font-w600">Detalles del Consultorio</h3>
              </div>
           </div>
-          {!loading && (
+          {!officeLoading && office && (
              <div className="d-block d-sm-flex mb-3 mb-md-4">
                 <Link className="btn btn-primary font-w600 mb-2 me-auto"
                       /*onClick={() => {
@@ -149,79 +176,80 @@ const OfficeDetails = () => {
 
              </div>
           )}
-          <div className="row">
+           <div className="row">
 
-             {loading && (
-                 <div className="text-center my-5">
-                    <div className="spinner-grow text-success" role="status">
-                       <span className="visually-hidden">Cargando...</span>
-                    </div>
-                    <p className="mt-2">Cargando información del consultorio...</p>
-                 </div>
-             )}
-             {!loading && (
-                <div className="col-xl-8 col-xxl-10 col-lg-12">
-                   <div className="card">
-                      <div className="card-body">
-                         <div className="media d-sm-flex d-block text-center text-sm-start pb-4 mb-4 border-bottom">
+               {officeLoading && !office && (
+                   <div className="text-center my-5">
+                       <div className="spinner-grow text-success" role="status">
+                           <span className="visually-hidden">Cargando...</span>
+                       </div>
+                       <p className="mt-2">Cargando información del consultorio...</p>
+                   </div>
+               )}
+               {!officeLoading && office && (
+                   <div className="col-xl-8 col-xxl-10 col-lg-12">
+                       <div className="card">
+                           <div className="card-body">
+                               <div
+                                   className="media d-sm-flex d-block text-center text-sm-start pb-4 mb-4 border-bottom">
 
-                            <div className="media-body align-items-center">
-                               <div className="d-sm-flex d-block justify-content-between my-3 my-sm-0">
-                                  <div>
-                                     <h3 className="fs-22 text-black font-w600 mb-0">
-                                        {office.name || 'S/N'}
-                                     </h3>
-                                     <p className="mb-2 mb-sm-2">
-                                        Creado el {formatDateTimeUtils(office.createdAt) || 'S/N'}
-                                     </p>
-                                  </div>
-                                  <span>{`#O-${office.id.toString().padStart(4, '0')}`}</span>
+                                   <div className="media-body align-items-center">
+                                       <div className="d-sm-flex d-block justify-content-between my-3 my-sm-0">
+                                           <div>
+                                               <h3 className="fs-22 text-black font-w600 mb-0">
+                                                   {office.name || 'S/N'}
+                                               </h3>
+                                               <p className="mb-2 mb-sm-2">
+                                                   Creado el {formatDateTimeUtils(office.createdAt) || 'S/N'}
+                                               </p>
+                                           </div>
+                                           <span>{`#O-${office.id.toString().padStart(4, '0')}`}</span>
+                                       </div>
+                                       <Link
+                                           to="/doctor-details"
+                                           className="btn bgl-primary btn-rounded text-black mb-2 me-2"
+                                       >
+                                           <svg
+                                               className="me-2 scale5"
+                                               width={14}
+                                               height={14}
+                                               viewBox="0 0 26 26"
+                                               fill="none"
+                                               xmlns="http://www.w3.org/2000/svg"
+                                           >
+                                               <path
+                                                   d="M18 0.500061V3.00006H21.25L16.625 7.62506C15 6.25006 12.875 5.50006 10.5 5.50006C5 5.50006 0.5 10.0001 0.5 15.5001C0.5 21.0001 5 25.5001 10.5 25.5001C16 25.5001 20.5 21.0001 20.5 15.5001C20.5 13.1251 19.75 11.0001 18.375 9.37506L23 4.75006V8.00006H25.5V0.500061H18ZM10.5 23.0001C6.375 23.0001 3 19.6251 3 15.5001C3 11.3751 6.375 8.00006 10.5 8.00006C14.625 8.00006 18 11.3751 18 15.5001C18 19.6251 14.625 23.0001 10.5 23.0001Z"
+                                                   fill="#2BC155"
+                                               />
+                                           </svg>
+                                           {" "}
+                                           Male
+                                       </Link>
+                                       <Link
+                                           to="/doctor-details"
+                                           className="btn bgl-primary btn-rounded mb-2 text-black"
+                                       >
+                                           <svg
+                                               className="me-2 scale5"
+                                               width={14}
+                                               height={14}
+                                               viewBox="0 0 28 28"
+                                               fill="none"
+                                               xmlns="http://www.w3.org/2000/svg"
+                                           >
+                                               <path
+                                                   d="M27.75 11.5C27.7538 10.8116 27.568 10.1355 27.213 9.54575C26.8581 8.95597 26.3476 8.47527 25.7376 8.15632C25.1276 7.83737 24.4415 7.69248 23.7547 7.73752C23.0678 7.78257 22.4065 8.01581 21.8434 8.4117C21.2803 8.80758 20.837 9.35083 20.5621 9.98192C20.2872 10.613 20.1913 11.3076 20.2849 11.9896C20.3785 12.6715 20.6581 13.3146 21.0929 13.8482C21.5277 14.3819 22.101 14.7855 22.75 15.015V19C22.75 20.6576 22.0915 22.2473 20.9194 23.4194C19.7473 24.5915 18.1576 25.25 16.5 25.25C14.8424 25.25 13.2527 24.5915 12.0806 23.4194C10.9085 22.2473 10.25 20.6576 10.25 19V17.65C12.3301 17.3482 14.2323 16.3083 15.6092 14.7203C16.9861 13.1322 17.746 11.1019 17.75 9V1.5C17.75 1.16848 17.6183 0.850537 17.3839 0.616116C17.1495 0.381696 16.8315 0.25 16.5 0.25H12.75C12.4185 0.25 12.1005 0.381696 11.8661 0.616116C11.6317 0.850537 11.5 1.16848 11.5 1.5C11.5 1.83152 11.6317 2.14946 11.8661 2.38388C12.1005 2.6183 12.4185 2.75 12.75 2.75H15.25V9C15.25 10.6576 14.5915 12.2473 13.4194 13.4194C12.2473 14.5915 10.6576 15.25 9 15.25C7.34239 15.25 5.75268 14.5915 4.58058 13.4194C3.40848 12.2473 2.75 10.6576 2.75 9V2.75H5.25C5.58152 2.75 5.89946 2.6183 6.13388 2.38388C6.3683 2.14946 6.5 1.83152 6.5 1.5C6.5 1.16848 6.3683 0.850537 6.13388 0.616116C5.89946 0.381696 5.58152 0.25 5.25 0.25H1.5C1.16848 0.25 0.850537 0.381696 0.616116 0.616116C0.381696 0.850537 0.25 1.16848 0.25 1.5V9C0.25402 11.1019 1.01386 13.1322 2.3908 14.7203C3.76773 16.3083 5.6699 17.3482 7.75 17.65V19C7.75 21.3206 8.67187 23.5462 10.3128 25.1872C11.9538 26.8281 14.1794 27.75 16.5 27.75C18.8206 27.75 21.0462 26.8281 22.6872 25.1872C24.3281 23.5462 25.25 21.3206 25.25 19V15.015C25.9792 14.7599 26.6114 14.2848 27.0591 13.6552C27.5069 13.0256 27.7483 12.2726 27.75 11.5Z"
+                                                   fill="#2BC155"
+                                               />
+                                           </svg>
+                                           {" "}
+                                           Diabetes
+                                       </Link>
+                                   </div>
                                </div>
-                               <Link
-                                   to="/doctor-details"
-                                   className="btn bgl-primary btn-rounded text-black mb-2 me-2"
-                               >
-                                  <svg
-                                      className="me-2 scale5"
-                                      width={14}
-                                      height={14}
-                                      viewBox="0 0 26 26"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                     <path
-                                         d="M18 0.500061V3.00006H21.25L16.625 7.62506C15 6.25006 12.875 5.50006 10.5 5.50006C5 5.50006 0.5 10.0001 0.5 15.5001C0.5 21.0001 5 25.5001 10.5 25.5001C16 25.5001 20.5 21.0001 20.5 15.5001C20.5 13.1251 19.75 11.0001 18.375 9.37506L23 4.75006V8.00006H25.5V0.500061H18ZM10.5 23.0001C6.375 23.0001 3 19.6251 3 15.5001C3 11.3751 6.375 8.00006 10.5 8.00006C14.625 8.00006 18 11.3751 18 15.5001C18 19.6251 14.625 23.0001 10.5 23.0001Z"
-                                         fill="#2BC155"
-                                     />
-                                  </svg>
-                                  {" "}
-                                  Male
-                               </Link>
-                               <Link
-                                   to="/doctor-details"
-                                   className="btn bgl-primary btn-rounded mb-2 text-black"
-                               >
-                                  <svg
-                                      className="me-2 scale5"
-                                      width={14}
-                                      height={14}
-                                      viewBox="0 0 28 28"
-                                      fill="none"
-                                      xmlns="http://www.w3.org/2000/svg"
-                                  >
-                                     <path
-                                         d="M27.75 11.5C27.7538 10.8116 27.568 10.1355 27.213 9.54575C26.8581 8.95597 26.3476 8.47527 25.7376 8.15632C25.1276 7.83737 24.4415 7.69248 23.7547 7.73752C23.0678 7.78257 22.4065 8.01581 21.8434 8.4117C21.2803 8.80758 20.837 9.35083 20.5621 9.98192C20.2872 10.613 20.1913 11.3076 20.2849 11.9896C20.3785 12.6715 20.6581 13.3146 21.0929 13.8482C21.5277 14.3819 22.101 14.7855 22.75 15.015V19C22.75 20.6576 22.0915 22.2473 20.9194 23.4194C19.7473 24.5915 18.1576 25.25 16.5 25.25C14.8424 25.25 13.2527 24.5915 12.0806 23.4194C10.9085 22.2473 10.25 20.6576 10.25 19V17.65C12.3301 17.3482 14.2323 16.3083 15.6092 14.7203C16.9861 13.1322 17.746 11.1019 17.75 9V1.5C17.75 1.16848 17.6183 0.850537 17.3839 0.616116C17.1495 0.381696 16.8315 0.25 16.5 0.25H12.75C12.4185 0.25 12.1005 0.381696 11.8661 0.616116C11.6317 0.850537 11.5 1.16848 11.5 1.5C11.5 1.83152 11.6317 2.14946 11.8661 2.38388C12.1005 2.6183 12.4185 2.75 12.75 2.75H15.25V9C15.25 10.6576 14.5915 12.2473 13.4194 13.4194C12.2473 14.5915 10.6576 15.25 9 15.25C7.34239 15.25 5.75268 14.5915 4.58058 13.4194C3.40848 12.2473 2.75 10.6576 2.75 9V2.75H5.25C5.58152 2.75 5.89946 2.6183 6.13388 2.38388C6.3683 2.14946 6.5 1.83152 6.5 1.5C6.5 1.16848 6.3683 0.850537 6.13388 0.616116C5.89946 0.381696 5.58152 0.25 5.25 0.25H1.5C1.16848 0.25 0.850537 0.381696 0.616116 0.616116C0.381696 0.850537 0.25 1.16848 0.25 1.5V9C0.25402 11.1019 1.01386 13.1322 2.3908 14.7203C3.76773 16.3083 5.6699 17.3482 7.75 17.65V19C7.75 21.3206 8.67187 23.5462 10.3128 25.1872C11.9538 26.8281 14.1794 27.75 16.5 27.75C18.8206 27.75 21.0462 26.8281 22.6872 25.1872C24.3281 23.5462 25.25 21.3206 25.25 19V15.015C25.9792 14.7599 26.6114 14.2848 27.0591 13.6552C27.5069 13.0256 27.7483 12.2726 27.75 11.5Z"
-                                         fill="#2BC155"
-                                     />
-                                  </svg>
-                                  {" "}
-                                  Diabetes
-                               </Link>
-                            </div>
-                         </div>
-                         <div className="row">
-                            <div className="col-lg-6 mb-3">
-                               <div className="media">
+                               <div className="row">
+                                   <div className="col-lg-6 mb-3">
+                                       <div className="media">
                                  <span className="p-3 border border-primary-light rounded-circle me-3">
                                     <svg
                                         width={22}
@@ -258,29 +286,29 @@ const OfficeDetails = () => {
                                        </defs>
                                     </svg>
                                  </span>
-                                  <div className="media-body">
+                                           <div className="media-body">
                                     <span className="d-block text-light mb-2">
                                        Dirección
                                     </span>
-                                     <p className="fs-18 text-dark">
-                                        {office.address}
-                                     </p>
-                                  </div>
-                               </div>
-                            </div>
-                            <div className="col-lg-6">
-                               <div className="map-bx mb-3">
-                                  <img src={map} alt=""/>
-                                  <Link to="/doctor-details" className="map-button">
-                                     Ver en Google Maps
-                                  </Link>
-                                  <Link className="map-marker" to="#">
-                                     <i className="las la-map-marker-alt"/>
-                                  </Link>
-                               </div>
-                            </div>
-                            <div className="col-lg-6 mb-lg-0 mb-3">
-                               <div className="media">
+                                               <p className="fs-18 text-dark">
+                                                   {office.address}
+                                               </p>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div className="col-lg-6">
+                                       <div className="map-bx mb-3">
+                                           <img src={map} alt=""/>
+                                           <Link to="/doctor-details" className="map-button">
+                                               Ver en Google Maps
+                                           </Link>
+                                           <Link className="map-marker" to="#">
+                                               <i className="las la-map-marker-alt"/>
+                                           </Link>
+                                       </div>
+                                   </div>
+                                   <div className="col-lg-6 mb-lg-0 mb-3">
+                                       <div className="media">
                                  <span className="p-3 border border-primary-light rounded-circle me-3">
                                     <svg
                                         width={22}
@@ -298,18 +326,18 @@ const OfficeDetails = () => {
                                        />
                                     </svg>
                                  </span>
-                                  <div className="media-body">
+                                           <div className="media-body">
                                     <span className="d-block text-light mb-2">
                                        Teléfono
                                     </span>
-                                     <p className="fs-18 text-dark font-w600 mb-0">
-                                        (+593) {office.contactPhone}
-                                     </p>
-                                  </div>
-                               </div>
-                            </div>
-                            <div className="col-lg-6">
-                               <div className="media">
+                                               <p className="fs-18 text-dark font-w600 mb-0">
+                                                   (+593) {office.contactPhone}
+                                               </p>
+                                           </div>
+                                       </div>
+                                   </div>
+                                   <div className="col-lg-6">
+                                       <div className="media">
                                  <span className="p-3 border border-primary-light rounded-circle me-3">
                                     <svg
                                         width={22}
@@ -334,169 +362,67 @@ const OfficeDetails = () => {
                                        />
                                     </svg>
                                  </span>
-                                  <div className="media-body">
+                                           <div className="media-body">
                                     <span className="d-block text-light mb-2">
                                        Email
                                     </span>
-                                     <p className="fs-18 text-dark font-w600 mb-0">
-                                        {office.contactEmail}
-                                     </p>
-                                  </div>
+                                               <p className="fs-18 text-dark font-w600 mb-0">
+                                                   {office.contactEmail}
+                                               </p>
+                                           </div>
+                                       </div>
+                                   </div>
                                </div>
-                            </div>
-                         </div>
-                      </div>
+                           </div>
+                       </div>
                    </div>
-                </div>
-             )}
-             {error && (
-                 <div className="alert alert-danger">{error}</div>
-             )}
+               )}
+               {error && (
+                   <div className="alert alert-danger">{error}</div>
+               )}
 
-             {!loading && (
-                <div className=" col-lg-12 col-xl-4 col-xxl-6">
-                   <div className="card">
-                      <div className="card-header border-0 pb-0">
-                         <h4 className="fs-20 font-w600 mb-0">
-                            Appointment Schdule
-                         </h4>
-                      </div>
-                      <div className="card-body pt-2 p-0">
-                         <div
-                             id="DZ_W_Todo2"
-                             className="widget-media dz-scroll height370 my-4 px-4"
-                         >
-                            <ul className="timeline">
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget6}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget7}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget8}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget5}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget1}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                               <li>
-                                  <div className="timeline-panel bgl-dark flex-wrap border-0 p-3 rounded">
-                                     <div className="media bg-transparent me-2">
-                                        <img
-                                            className="rounded-circle"
-                                            alt="widget"
-                                            width={48}
-                                            src={widget6}
-                                        />
-                                     </div>
-                                     <div className="media-body">
-                                        <h5 className="mb-1 fs-18">Cive Slauw</h5>
-                                        <span>Physical Therapy</span>
-                                     </div>
-                                     <ul className="mt-3 d-flex flex-wrap text-primary font-w600">
-                                        <li className="me-2">Sat, 23/08/2020</li>
-                                        <li>08:00 - 09:30 AM</li>
-                                     </ul>
-                                  </div>
-                               </li>
-                            </ul>
-                         </div>
-                      </div>
-                   </div>
-                </div>
-             )}
-             {error && (
-                 <div className="alert alert-danger">{error}</div>
-             )}
-             {/*<div className="mb-sm-5 mb-3 d-flex flex-wrap align-items-center text-head">
+               <div className="col-lg-12 col-xl-4 col-xxl-6">
+                   {userLoading && !users && (
+                       <div className="text-center my-5">
+                           <div className="spinner-grow text-success" role="status">
+                               <span className="visually-hidden">Cargando...</span>
+                           </div>
+                           <p className="mt-2">Cargando información del Administradores...</p>
+                       </div>
+                   )}
+                   {!userLoading && users && users.length > 0 && (
+                       <div className="card" style={{maxHeight: "600px", overflowY: "auto"}}>
+                           <div className="card-header border-0 pb-0">
+                               <h4 className="fs-20 font-w600">Administradores</h4>
+                           </div>
+
+                           {users.map((user, index) => (
+                               <div key={index} className="card-body border-bottom">
+                                   <div className="media d-sm-flex text-sm-start d-block text-center">
+                                       <div className="media-body">
+                                           <h3 className="fs-22 text-black font-w600">{user.name}</h3>
+                                           <p className="text-primary">{user.email}</p>
+                                       </div>
+                                       <div className="text-center">
+                                           <span className="num">4.5</span>
+                                           <div className="star-icons">
+                                               <i className="las la-star"/>
+                                               <i className="las la-star"/>
+                                               <i className="las la-star"/>
+                                               <i className="las la-star"/>
+                                               <i className="las la-star"/>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           ))}
+                           {error && !users && (
+                               <div className="alert alert-danger">{error}</div>
+                           )}
+                       </div>
+                   )}
+               </div>
+               {/*<div className="mb-sm-5 mb-3 d-flex flex-wrap align-items-center text-head">
                 <!-- Modal -->
                 <Modal className="modal fade" show={postModal} onHide={setPostModal} size={'lg'}>
                    <div className="">
@@ -825,8 +751,10 @@ const OfficeDetails = () => {
                    </div>
                 </Modal>
              </div>*/}
-          </div>
+           </div>
        </>
+
+       )
    );
 };
 

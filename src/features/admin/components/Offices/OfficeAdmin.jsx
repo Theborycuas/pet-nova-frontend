@@ -32,13 +32,10 @@ const OfficeAdmin = () => {
     const loadOffices = async () => {
         setLoading(true);
         setError(null);
-        const startTime = Date.now();
         try {
             const {data} = await getAllOffices();
-            // Espera al menos 500ms para evitar parpadeos
-            const elapsed = Date.now() - startTime;
-            if (elapsed < 500) await new Promise(resolve => setTimeout(resolve, 500 - elapsed));
-            setOffices(data);
+            const sortedOffices = data.sort((a, b) => a.name.localeCompare(b.name));
+            setOffices(sortedOffices);
         } catch (err) {
             setError(err.message);
         } finally {

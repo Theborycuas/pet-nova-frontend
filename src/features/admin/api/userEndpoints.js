@@ -13,6 +13,7 @@ export const userEndpoints = {
     listEligibleUsers: (context) => `/getEligibleUsersForAssignment?context=${context}`,
     getUserById: (userId) => `/getUserDetailById/${userId}`,
     getUsersByTenantId: (tenantId) => `/getUsersByTenantId/${tenantId}`,
+    getUsersByOfficeId: (officeId) => `/getUsersByOfficeId/${officeId}`,
     updateUserDetailById: (userId) => `/updateUserDetailById/${userId}`,
     deleteUserById: (userId) => `/deleteUserById/${userId}`
     /*getUserById: (officeId) => `/getUserById/${officeId}`,
@@ -119,6 +120,24 @@ export const getUserById = async (userId) => {
 export const getUsersByTenantId = async (tenantId) => {
     try {
         const response = await adminAPI.get(userEndpoints.getUsersByTenantId(tenantId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const getUsersByOfficeId = async (officeId) => {
+    try {
+        const response = await adminAPI.get(userEndpoints.getUsersByOfficeId(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }
