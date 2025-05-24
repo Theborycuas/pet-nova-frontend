@@ -91,8 +91,8 @@ const StepThree = ({ formData, setFormData}) => {
 };
 StepThree.propTypes = {
     formData: PropTypes.shape({
-        currentPlan: PropTypes.string.isRequired,
-        currency: PropTypes.string.isRequired
+        currentPlan: PropTypes.number.isRequired,
+        currency: PropTypes.number.isRequired
     }).isRequired,
     setFormData: PropTypes.func.isRequired
 };

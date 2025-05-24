@@ -11,6 +11,7 @@ export const officeEndpoints = {
     createOffice: "/createOffice",
     getAllOffices: "/getAllOfficeDTO",
     getOfficeById: (officeId) => `/getOfficeById/${officeId}`,
+    getOfficeDetailById: (officeId) => `/getOfficeDetailById/${officeId}`,
     getOfficesByTenantId: (tenantId) => `/getOfficesByTenantId/${tenantId}`,
     updateOfficeById: (officeId) => `/updateOfficeById/${officeId}`,
     deleteOfficeById: (officeId) => `/deleteOfficeById/${officeId}`
@@ -86,6 +87,24 @@ export const getOfficesByTenantId = async (tenantId) => {
 export const getOfficeById = async (officeId) => {
     try {
         const response = await adminAPI.get(officeEndpoints.getOfficeById(officeId), {
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        return response.data;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+}
+
+export const getOfficeDetailById = async (officeId) => {
+    try {
+        const response = await adminAPI.get(officeEndpoints.getOfficeDetailById(officeId), {
             headers: {
                 'Content-Type': 'application/json',
             }
