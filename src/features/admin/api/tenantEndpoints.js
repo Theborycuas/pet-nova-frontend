@@ -13,7 +13,9 @@ export const tenantEndpoints = {
     getTenantDetailById: (tenantId) => `/getTenantDetailById/${tenantId}`,
     getBasicTenantById: (tenantId) => `/getBasicTenantById/${tenantId}`,
     updateTenantById: (tenantId) => `/updateTenantById/${tenantId}`,
-    deleteTenantById: (tenantId) => `/deleteTenantById/${tenantId}`
+    deleteTenantById: (tenantId) => `/deleteTenantById/${tenantId}`,
+
+    getRecentInactiveTenants: "/getRecentInactiveTenants",
 }
 
 
@@ -136,6 +138,28 @@ export const deleteTenantById = async (tenantId) => {
         throw error;
     }
 }
+
+export const getRecentInactiveTenants = async () => {
+    try {
+        const response = await adminAPI.get(tenantEndpoints.getRecentInactiveTenants, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            transformResponse: [(data) => {
+                const parsedData = JSON.parse(data); // Parsea la respuesta manualmente
+                return Array.isArray(parsedData) ? parsedData : []; // Fuerza un array
+            }],
+        });
+        return response;
+    } catch (error) {
+        if (!error.response) {
+            // Error de red (no llegó al backend)
+            throw new Error('Error de conexión con el servidor');
+        }
+        handleAdminError(error);
+        throw error;
+    }
+};
 
 
 function getToken() {

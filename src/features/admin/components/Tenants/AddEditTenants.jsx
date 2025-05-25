@@ -126,7 +126,7 @@ const AddEditTenants = () => {
 		<Fragment>
 			<div className="page-titles">
 				<ol className="breadcrumb">
-					<li className="breadcrumb-item"><Link to={"/home-admin"}>Home Admin</Link></li>
+					<li className="breadcrumb-item"><Link to={"/tenant-admin"}>Home Admin</Link></li>
 					<li className="breadcrumb-item active"><Link
 						to={"#"}>{isEditMode ? "Edit tenant" : "Create tenant"}</Link></li>
 				</ol>

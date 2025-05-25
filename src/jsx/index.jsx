@@ -113,6 +113,7 @@ import SubscriptionAdmin from "../features/admin/components/Subscriptions/Subscr
 import UserAdmin from "../features/admin/components/Users/UserAdmin.jsx";
 import AddEditUsers from "../features/admin/components/Users/AddEditUsers.jsx";
 import UserDetails from "../features/admin/components/Users/UserDetails.jsx";
+import TenantAdmin from "../features/admin/components/Tenants/TenantAdmin.jsx";
 
 
 const Markup = () => {
@@ -121,6 +122,7 @@ const Markup = () => {
     /// Dashboard
     { url: "", component: <HomeAdmin/> },
     { url: "home-admin", component: <HomeAdmin/> },
+    { url: "tenant-admin", component: <TenantAdmin/> },
     { url: 'add-tenants', component: <AddEditTenants/> },
     { url: 'tenant-details/:tenantId', component: <TenantDetails/>},
     { url: 'edit-tenant/:tenantId', component: <AddEditTenants/> },

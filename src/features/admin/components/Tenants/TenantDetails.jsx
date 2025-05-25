@@ -104,7 +104,7 @@ const TenantDetails = () => {
             deleteTenantById(tenantId)
                 .then(() => {
                     Swal.fire('¡Eliminado!', 'El tenant ha sido borrado.', 'success');
-                    navigate('/home-admin');
+                    navigate('/tenant-admin');
                 })
                 .catch(err => {
                     Swal.fire('Error', 'No se pudo eliminar el tenant.', 'error');
